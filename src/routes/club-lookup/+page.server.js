@@ -25,7 +25,7 @@ export const actions = {
 		try {
 			const clubRecords = await base('Clubs')
 				.select({
-					filterByFormula: `{club_name} = '${clubName.toString().replace(/'/g, "\\'")}'`,
+					filterByFormula: `LOWER({club_name}) = LOWER('${clubName.toString().replace(/'/g, "\\'").toLowerCase()}')`,
 					maxRecords: 1
 				})
 				.firstPage();
@@ -43,7 +43,7 @@ export const actions = {
 		try {
 			const shipRecords = await base('Club Ships')
 				.select({
-					filterByFormula: `{club_name (from Clubs)} = '${clubName.toString().replace(/'/g, "\\'")}'`
+					filterByFormula: `LOWER({club_name (from Clubs)}) = LOWER('${clubName.toString().replace(/'/g, "\\'").toLowerCase()}')`
 				})
 				.all();
 
