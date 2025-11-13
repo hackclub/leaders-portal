@@ -142,6 +142,12 @@
 			</div>
 		{/if}
 	</main>
+
+	<footer>
+		<a href="https://ysws.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-button">
+			View all YSWS Programs
+		</a>
+	</footer>
 </div>
 
 {#if selectedEvent}
@@ -341,5 +347,28 @@
 
 	.banner-close:hover {
 		background-color: rgba(0, 0, 0, 0.1);
+	}
+
+	footer {
+		text-align: center;
+		margin-top: 12px;
+	}
+
+	.footer-button {
+		display: inline-block;
+		padding: 12px 64px;
+		border-radius: 6px;
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 16px;
+		transition: all 0.2s;
+		border: 2px solid #ec3750;
+		background-color: #ec3750;
+		color: white;
+	}
+
+	.footer-button:hover {
+		background-color: #d62c47;
+		border-color: #d62c47;
 	}
 </style>

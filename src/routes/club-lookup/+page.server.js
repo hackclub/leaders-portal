@@ -41,16 +41,21 @@ export const actions = {
 		}
 
 		try {
+			console.log('Searching for ships with club name:', clubName);
 			const shipRecords = await base('Club Ships')
 				.select({
-					filterByFormula: `LOWER({club_name (from Clubs)}) = LOWER('${clubName.toString().replace(/'/g, "\\'").toLowerCase()}')`
-				})
+					filterByFormula: `{club_name (from Clubs)} = '${clubName.toString().replace(/'/g, "\\'")}'`
+							})
 				.all();
 
+			console.log('Found ship records:', shipRecords.length);
+			
 			ships = shipRecords.map((record) => ({
 				name: record.get('YSWS–Name (from Unified YSWS Database)') || 'Unnamed Ship',
 				codeUrl: record.get('code_url') || null
 			}));
+			
+			console.log('Mapped ships:', ships);
 		} catch (error) {
 			console.error('Error fetching ships from Airtable:', error);
 		}
