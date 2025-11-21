@@ -12,7 +12,7 @@
 	<header>
 		<h1 class="page-title">My Club</h1>
 		<div class="header-buttons">
-			<a href="/" class="nav-button">Home</a>
+			<a href="javascript:window.location.href = '/'" class="nav-button">Home</a>
 			<form method="POST" action="/logout" style="display: inline;">
 				<button type="submit" class="nav-button">Logout</button>
 			</form>
