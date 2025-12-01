@@ -140,6 +140,16 @@
 			<EventGrid {events} category="CAD" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
 		</div>
 
+		<div class="category-bubble gamedev">
+			<h2 class="section-title">Game Development Series:</h2>
+			<EventGrid {events} category="GameDev" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
+		</div>
+		
+		<div class="category-bubble hardware">
+			<h2 class="section-title">Hardware Series:</h2>
+			<EventGrid {events} category="Hardware" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
+		</div>
+
 		<div class="category-bubble other">
 			<h2 class="section-title">Other Clubs YSWS:</h2>
 			<EventGrid {events} category="Other" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
@@ -286,22 +296,32 @@
 
 	.category-bubble.webdev {
 		background: #dbeafe;
-		border: 3px solid #3b82f6;
+		border: 3px solid #338eda;
 	}
 
 	.category-bubble.cad {
 		background: #fef3c7;
-		border: 3px solid #f59e0b;
+		border: 3px solid #f1c40f;
+	}
+
+	.category-bubble.gamedev {
+		background: #eed7f7;
+		border: 3px solid #a633d6;
+	}
+
+	.category-bubble.hardware {
+		background: #d3ebf2;
+		border: 3px solid #5bc0de;
 	}
 
 	.category-bubble.other {
-		background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
-		border: 3px solid #ec4899;
+		background: #fce7f3;
+		border: 3px solid #ec3750;
 	}
 
 	.category-bubble.completed {
 		background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-		border: 3px solid #10b981;
+		border: 3px solid #33d6a6;
 	}
 
 	.section-title {

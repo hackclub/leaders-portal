@@ -26,7 +26,11 @@
 		</button>
 	{/if}
 	<div class="event-compact">
+		{#if event.category == "Hardware"}
+		<img src={event.icon} alt="{event.title} icon" class="event-icon-hardware" />
+		{:else}
 		<img src={event.icon} alt="{event.title} icon" class="event-icon" />
+		{/if}
 		<h3 style="color: {event.textColor};">{event.title}</h3>
 		<span class="type-badge">{event.type}</span>
 		<span class="et" style="color: {event.textColor};">Estimated time: {event.et}</span>
@@ -57,7 +61,6 @@
 	}
 
 	.event-card:hover {
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 		transform: translateY(-2px);
 	}
 
@@ -75,7 +78,12 @@
 		width: 40px;
 		height: 40px;
 		margin-bottom: 4px;
-		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+	}
+
+	.event-icon-hardware {
+		max-width: 60px;
+		max-height: 60px;
+		margin-bottom: 4px;
 	}
 
 	.event-compact h3 {
