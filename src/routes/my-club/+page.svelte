@@ -56,7 +56,10 @@
 										</div>
 									{/each}
 								</div>
+								<h4 class="ships-title">Fill out <a href="https://forms.hackclub.com/club-ships">this</a> form to link shipped projects to your club!</h4>
 							</div>
+						{:else}
+							<h4 class="ships-title">Fill out <a href="https://forms.hackclub.com/club-ships">this</a> form to link shipped projects to your club!</h4>
 						{/if}
 					</div>
 				{/each}
@@ -299,10 +302,34 @@
 		margin: 0 0 12px 0;
 	}
 
+		.ships-title a {
+		font-size: 16px;
+		font-weight: 600;
+		color: #338eda;
+		text-decoration: underline;
+		margin: 0 0 12px 0;
+	}
+
+	.ships-footer {
+		font-size: 16px;
+		font-weight: 600;
+		color: #1f2d3d;
+		margin: 0 0 4px 0;
+	}
+
+		.ships-footer a {
+		font-size: 16px;
+		font-weight: 600;
+		color: #338eda;
+		text-decoration: underline;
+		margin: 0 0 4px 0;
+	}
+
 	.ships-list {
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
+		margin-bottom:16px;
 	}
 
 	.ship-item {
