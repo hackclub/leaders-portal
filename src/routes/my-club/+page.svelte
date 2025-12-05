@@ -41,7 +41,7 @@
 						
 					
 
-						{#if club.members}
+						{#if club.members && typeof club.members === 'string' && club.members.trim()}
 							<div class="members-section">
 								<h4 class="members-title">Members</h4>
 								<div class="members-list">
@@ -49,10 +49,10 @@
 										<span class="member-name">{club.members}</span>
 									</div>
 								</div>
-								{#if club.joinCode}
-									<h4 class="ships-title">Invite members using <a href="https://hack.club/join/{club.joinCode}" target="_blank" rel="noopener noreferrer">hack.club/join/{club.joinCode}</a></h4>
-								{/if}
 							</div>
+						{/if}
+						{#if club.joinCode}
+							<h4 class="ships-title">Invite members using <a href="https://hack.club/join/{club.joinCode}" target="_blank" rel="noopener noreferrer">hack.club/join/{club.joinCode}</a></h4>
 						{/if}
 						<div class="ships-section">
 						<h4 class="ships-title">Ships ({club.ships.length})</h4>
