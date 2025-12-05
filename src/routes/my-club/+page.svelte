@@ -41,13 +41,15 @@
 						
 					
 
-						{#if club.members && typeof club.members === 'string' && club.members.trim()}
+						{#if club.members && club.members.length > 0}
 							<div class="members-section">
 								<h4 class="members-title">Members</h4>
 								<div class="members-list">
-									<div class="member-item">
-										<span class="member-name">{club.members}</span>
-									</div>
+									{#each club.members as member}
+										<div class="member-item">
+											<span class="member-name">{member}</span>
+										</div>
+									{/each}
 								</div>
 							</div>
 						{/if}
