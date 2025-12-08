@@ -1,7 +1,11 @@
 <script>
-	import { page } from '$app/stores';
+	export let data;
 
-	$: code = $page.params.code;
+	$: code = data.code;
+	$: clubName = data.clubName;
+	$: iframeSrc = clubName 
+		? `https://forms.hackclub.com/join-club?code=${code}&name=${encodeURIComponent(clubName)}`
+		: `https://forms.hackclub.com/join-club?code=${code}`;
 </script>
 
 <svelte:head>
@@ -9,7 +13,7 @@
 </svelte:head>
 
 <iframe
-	src="https://forms.hackclub.com/join-club?code={code}"
+	src={iframeSrc}
 	title="Join Club Form"
 ></iframe>
 

@@ -72,6 +72,16 @@ export async function getClubByName(clubName) {
 	}
 }
 
+export async function getClubByCode(code) {
+	try {
+		const data = await fetchClubApi('/club/code', { code });
+		return data;
+	} catch (error) {
+		console.error(`Error fetching club by code ${code}:`, error);
+		return null;
+	}
+}
+
 export async function getClubLevel(clubName) {
 	try {
 		const data = await fetchClubApi('/level', { club_name: clubName });
