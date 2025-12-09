@@ -2,6 +2,12 @@
 	import LevelCard from '$lib/LevelCard.svelte';
 	
 	let { data } = $props();
+
+	function confirmRemove(event, memberName) {
+		if (!confirm(`Remove ${memberName} from the club?`)) {
+			event.preventDefault();
+		}
+	}
 </script>
 
 <svelte:head>
@@ -43,12 +49,20 @@
 
 						{#if club.members && club.members.length > 0}
 							<div class="members-section">
-								<h4 class="members-title">Members</h4>
+								<h4 class="members-title">Members <span class="member-count">{club.members.length}</span></h4>
 								<div class="members-list">
 									{#each club.members as member}
-										<div class="member-item">
+										<span class="member-pill">
+											<span class="member-avatar">{member.charAt(0).toUpperCase()}</span>
 											<span class="member-name">{member}</span>
-										</div>
+											{#if club.role === 'leader'}
+												<form method="POST" action="?/removeMember" class="remove-form" onsubmit={(e) => confirmRemove(e, member)}>
+													<input type="hidden" name="memberName" value={member} />
+													<input type="hidden" name="clubName" value={club.name} />
+													<button type="submit" class="remove-btn" title="Remove member">×</button>
+												</form>
+											{/if}
+										</span>
 									{/each}
 								</div>
 							</div>
@@ -321,25 +335,89 @@
 
 	.members-list {
 		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		margin-bottom:8px;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-bottom: 8px;
 	}
 
-	.member-item {
-		display: flex;
-		justify-content: space-between;
+	.member-pill {
+		display: inline-flex;
 		align-items: center;
-		padding: 8px 12px;
+		gap: 6px;
+		padding: 4px 10px 4px 4px;
 		background: #f9fafc;
-		border-radius: 6px;
-		border: 1px solid #e5e7eb;
+		border: 1px solid #e0e6ed;
+		border-radius: 20px;
+		font-size: 12px;
+		font-weight: 500;
+		color: #1f2d3d;
+		transition: border-color 0.2s;
+	}
+
+	.member-pill:hover {
+		border-color: #ec3750;
+		border-width: 2px;
+		padding: 2px 9px 2px 2px;
+	}
+
+	.member-avatar {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 22px;
+		height: 22px;
+		background: #ec3750;
+		color: white;
+		border-radius: 50%;
+		font-size: 11px;
+		font-weight: 700;
 	}
 
 	.member-name {
+		white-space: nowrap;
+	}
+
+	.member-count {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 20px;
+		height: 20px;
+		padding: 0 6px;
+		background: #ec3750;
+		color: white;
+		border-radius: 10px;
+		font-size: 11px;
+		font-weight: 700;
+		margin-left: 6px;
+	}
+
+	.remove-form {
+		display: contents;
+	}
+
+	.remove-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 16px;
+		height: 16px;
+		padding: 0;
+		margin-left: 2px;
+		background: transparent;
+		border: none;
+		border-radius: 50%;
+		color: #8492a6;
 		font-size: 14px;
-		color: #1f2d3d;
-		font-weight: 500;
+		font-weight: bold;
+		cursor: pointer;
+		line-height: 1;
+		transition: all 0.2s;
+	}
+
+	.remove-btn:hover {
+		background: #ec3750;
+		color: white;
 	}
 
 	.ships-section {

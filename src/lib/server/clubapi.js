@@ -125,6 +125,33 @@ export async function getClubMembers(clubName) {
 	}
 }
 
+export async function deleteMember(memberName) {
+	const url = new URL('/member', CLUB_API_BASE);
+	url.searchParams.append('name', memberName);
+
+	const headers = {};
+	if (env.CLUB_API_KEY) {
+		headers['Authorization'] = env.CLUB_API_KEY;
+	}
+
+	console.log('[ClubAPI] Deleting member:', memberName);
+
+	const response = await fetch(url.toString(), {
+		method: 'DELETE',
+		headers
+	});
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		console.error('[ClubAPI] Delete member error:', errorText);
+		throw new Error(`Failed to delete member: ${response.status}`);
+	}
+
+	const data = await response.json();
+	console.log('[ClubAPI] Delete member result:', data);
+	return data;
+}
+
 export async function getClubsForLeaderEmail(email) {
 	console.log('[ClubAPI] getClubsForLeaderEmail called with:', email);
 	try {
