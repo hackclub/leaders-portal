@@ -92,6 +92,19 @@ export async function getClubLevel(clubName) {
 	}
 }
 
+function sanitizeUrl(url) {
+	if (!url || typeof url !== 'string') return null;
+	try {
+		const parsed = new URL(url);
+		if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+			return null;
+		}
+		return parsed.toString();
+	} catch {
+		return null;
+	}
+}
+
 export async function getClubShips(clubName) {
 	try {
 		const data = await fetchClubApi('/ships', { club_name: clubName });
@@ -104,7 +117,7 @@ export async function getClubShips(clubName) {
 			console.log('[ClubAPI] Ship fields:', JSON.stringify(fields, null, 2));
 			return {
 				name: fields['YSWS–Name (from Unified YSWS Database)']?.[0] || fields.name || 'Unnamed Ship',
-				codeUrl: fields.code_url || null,
+				codeUrl: sanitizeUrl(fields.code_url),
 				memberName: fields.member_name || null
 			};
 		});
@@ -125,16 +138,19 @@ export async function getClubMembers(clubName) {
 	}
 }
 
-export async function deleteMember(memberName) {
+export async function deleteMember(memberName, clubName) {
 	const url = new URL('/member', CLUB_API_BASE);
 	url.searchParams.append('name', memberName);
+	if (clubName) {
+		url.searchParams.append('club_name', clubName);
+	}
 
 	const headers = {};
 	if (env.CLUB_API_KEY) {
 		headers['Authorization'] = env.CLUB_API_KEY;
 	}
 
-	console.log('[ClubAPI] Deleting member:', memberName);
+	console.log('[ClubAPI] Deleting member:', memberName, 'from club:', clubName);
 
 	const response = await fetch(url.toString(), {
 		method: 'DELETE',
