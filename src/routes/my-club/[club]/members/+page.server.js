@@ -1,7 +1,7 @@
 import { redirect, fail } from '@sveltejs/kit';
 import { getKnex } from '$lib/server/db/knex.js';
 import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clubs.js';
-import { deleteMember, sendAnnouncement } from '$lib/server/clubapi.js';
+import { deleteMember, sendAnnouncement, getMember, updateMember, createMember } from '$lib/server/clubapi.js';
 
 export async function load({ locals, params }) {
 	if (!locals.userPublic) {
@@ -105,6 +105,125 @@ export const actions = {
 		} catch (error) {
 			console.error('[Members] Error sending announcement:', error);
 			return fail(500, { error: 'Failed to send announcement' });
+		}
+	},
+
+	getMemberInfo: async ({ request, locals, params }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/login');
+		}
+
+		const formData = await request.formData();
+		const memberName = formData.get('memberName');
+		const clubName = decodeURIComponent(params.club);
+
+		if (!memberName) {
+			return fail(400, { error: 'Missing member name' });
+		}
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club) {
+			return fail(403, { error: 'You do not have access to this club' });
+		}
+
+		if (club.role !== 'leader') {
+			return fail(403, { error: 'Only club leaders can view member details' });
+		}
+
+		try {
+			const member = await getMember(memberName);
+			return { success: true, member };
+		} catch (error) {
+			console.error('[Members] Error getting member info:', error);
+			return fail(500, { error: 'Failed to get member info' });
+		}
+	},
+
+	editMember: async ({ request, locals, params }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/login');
+		}
+
+		const formData = await request.formData();
+		const memberName = formData.get('memberName');
+		const newName = formData.get('newName');
+		const newEmail = formData.get('newEmail');
+		const clubName = decodeURIComponent(params.club);
+
+		if (!memberName) {
+			return fail(400, { error: 'Missing member name' });
+		}
+
+		if (!newName && !newEmail) {
+			return fail(400, { error: 'No updates provided' });
+		}
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club) {
+			return fail(403, { error: 'You do not have access to this club' });
+		}
+
+		if (club.role !== 'leader') {
+			return fail(403, { error: 'Only club leaders can edit members' });
+		}
+
+		try {
+			const result = await updateMember(memberName, newName || null, newEmail || null);
+			return { success: true, editSuccess: true, member: result };
+		} catch (error) {
+			console.error('[Members] Error editing member:', error);
+			return fail(500, { error: 'Failed to edit member' });
+		}
+	},
+
+	addMember: async ({ request, locals, params }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/login');
+		}
+
+		const formData = await request.formData();
+		const name = formData.get('name');
+		const email = formData.get('email');
+		const clubName = decodeURIComponent(params.club);
+
+		if (!name || !email) {
+			return fail(400, { error: 'Name and email are required' });
+		}
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club) {
+			return fail(403, { error: 'You do not have access to this club' });
+		}
+
+		if (club.role !== 'leader') {
+			return fail(403, { error: 'Only club leaders can add members' });
+		}
+
+		if (!club.joinCode) {
+			return fail(400, { error: 'Club does not have a join code' });
+		}
+
+		try {
+			const result = await createMember(name, email, club.joinCode);
+			return { success: true, addSuccess: true, member: result };
+		} catch (error) {
+			console.error('[Members] Error adding member:', error);
+			return fail(500, { error: 'Failed to add member' });
 		}
 	}
 };

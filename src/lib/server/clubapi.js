@@ -196,6 +196,78 @@ export async function sendAnnouncement(clubName, message) {
 	return data;
 }
 
+export async function getMember(memberName) {
+	try {
+		const data = await fetchClubApi('/member', { name: memberName });
+		return data;
+	} catch (error) {
+		console.error(`Error fetching member ${memberName}:`, error);
+		return null;
+	}
+}
+
+export async function updateMember(memberName, newName, newEmail) {
+	const url = new URL('/member', CLUB_API_BASE);
+	url.searchParams.append('name', memberName);
+	if (newName) {
+		url.searchParams.append('new_name', newName);
+	}
+	if (newEmail) {
+		url.searchParams.append('new_email', newEmail);
+	}
+
+	const headers = {};
+	if (env.CLUB_API_KEY) {
+		headers['Authorization'] = env.CLUB_API_KEY;
+	}
+
+	console.log('[ClubAPI] Updating member:', memberName, 'newName:', newName, 'newEmail:', newEmail);
+
+	const response = await fetch(url.toString(), {
+		method: 'POST',
+		headers
+	});
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		console.error('[ClubAPI] Update member error:', errorText);
+		throw new Error(`Failed to update member: ${response.status}`);
+	}
+
+	const data = await response.json();
+	console.log('[ClubAPI] Update member result:', data);
+	return data;
+}
+
+export async function createMember(name, email, joinCode) {
+	const url = new URL('/member/create', CLUB_API_BASE);
+	url.searchParams.append('name', name);
+	url.searchParams.append('email', email);
+	url.searchParams.append('join_code', joinCode);
+
+	const headers = {};
+	if (env.CLUB_API_KEY) {
+		headers['Authorization'] = env.CLUB_API_KEY;
+	}
+
+	console.log('[ClubAPI] Creating member:', name, 'email:', email, 'joinCode:', joinCode);
+
+	const response = await fetch(url.toString(), {
+		method: 'POST',
+		headers
+	});
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		console.error('[ClubAPI] Create member error:', errorText);
+		throw new Error(`Failed to create member: ${response.status}`);
+	}
+
+	const data = await response.json();
+	console.log('[ClubAPI] Create member result:', data);
+	return data;
+}
+
 export async function getClubsForLeaderEmail(email) {
 	console.log('[ClubAPI] getClubsForLeaderEmail called with:', email);
 	try {

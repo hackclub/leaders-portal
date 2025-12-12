@@ -1,0 +1,791 @@
+openapi: 3.0.0
+info:
+  title: Clubs API
+  description: API for Hack Club clubs, built in Lua using Astra.
+  version: 1.0.0
+servers:
+  - url: https://clubapi.hackclub.com
+    description: Production server
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+security:
+  - {}
+  - ApiKeyAuth: []
+
+paths:
+  /:
+    get:
+      summary: API Root
+      description: Returns API status and available routes.
+      security: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  response:
+                    type: string
+                    example: "Clubs API"
+                  routes:
+                    type: array
+                    items:
+                      type: string
+
+  /clubs:
+    get:
+      summary: Get total number of clubs
+      description: Returns the total number of clubs registered.
+      security: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalClubs:
+                    type: integer
+
+  /clubs/country:
+    get:
+      summary: Get amount of clubs in a country
+      description: Returns the count of clubs in the specified country.
+      security: []
+      parameters:
+        - in: query
+          name: country
+          schema:
+            type: string
+          required: true
+          description: The country to filter by (e.g. "USA", "India")
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clubs:
+                    type: integer
+
+  /clubs/level:
+    get:
+      summary: Get amount of clubs at a level
+      description: Returns the count of clubs at the specified level.
+      security: []
+      parameters:
+        - in: query
+          name: level
+          schema:
+            type: string
+          required: true
+          description: The level to filter by (e.g. "1", "2", "3")
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  clubs:
+                    type: integer
+
+  /club/code:
+    get:
+      summary: Get club info from code
+      description: Returns information about a club by its code. Requires Read permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: code
+          schema:
+            type: string
+          required: true
+          description: Code of the club
+      responses:
+        '200':
+          description: Club information
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '404':
+          description: Club not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Club not found"
+
+  /club:
+    get:
+      summary: Get club info from name
+      description: |
+        Returns information about a club.
+        Authentication is optional. Authenticated requests return more fields.
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: true
+          description: Name of the club
+      responses:
+        '200':
+          description: Club information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  club_name:
+                    type: string
+                    nullable: true
+                  'Est. # of Attendees':
+                    type: integer
+                  call_meeting_days:
+                    type: string
+                  call_meeting_length:
+                    type: number
+                  club_status:
+                    type: string
+                  id:
+                    type: string
+                  leader_slack_id:
+                    type: string
+                  level:
+                    type: string
+                  venue_address_country:
+                    type: string
+
+  /leader:
+    get:
+      summary: Get leader from email
+      description: |
+        Checks if a leader exists by email.
+        Authentication is optional. 
+        - Authenticated: Returns the club name associated with the leader.
+        - Unauthenticated: Returns true/false indicating existence.
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          required: true
+          description: Email of the leader
+      responses:
+        '200':
+          description: Leader information
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      club_name:
+                        type: string
+                        nullable: true
+                  - type: object
+                    properties:
+                      leader:
+                        type: boolean
+    post:
+      summary: Change club leader's email
+      description: Updates a leader's email address. Requires Write permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          required: true
+          description: Old email of the leader
+        - in: query
+          name: new_email
+          schema:
+            type: string
+            format: email
+          required: true
+          description: New email of the leader
+      responses:
+        '200':
+          description: Email updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new_email:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '400':
+          description: Bad Request or Leader not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /member:
+    get:
+      summary: Get member's club and email by name
+      description: Returns the club and email associated with a member by name. Requires Read permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: true
+          description: Name of the member
+      responses:
+        '200':
+          description: Member information including club and email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '404':
+          description: Member not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Member not found"
+    post:
+      summary: Update member information
+      description: Updates a member's name and/or email. Requires Write permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: true
+          description: Current name of the member to update
+        - in: query
+          name: new_name
+          schema:
+            type: string
+          required: false
+          description: New name for the member
+        - in: query
+          name: new_email
+          schema:
+            type: string
+            format: email
+          required: false
+          description: New email for the member
+      responses:
+        '200':
+          description: Member updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '400':
+          description: Bad Request (no updates provided or member not found)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    delete:
+      summary: Delete a member
+      description: Deletes a member by name. Requires Write permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: true
+          description: Name of the member to delete
+      responses:
+        '200':
+          description: Member deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted:
+                    type: boolean
+                    example: true
+                  id:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '404':
+          description: Member not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Member not found"
+
+  /member/email:
+    get:
+      summary: Get member's club by email
+      description: Returns the club associated with a member by email. Requires Read permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          required: true
+          description: Email of the member
+      responses:
+        '200':
+          description: Club name associated with the member
+          content:
+            application/json:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '404':
+          description: Member not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Member not found"
+
+  /member/create:
+    post:
+      summary: Create a new member
+      description: Creates a new member with the specified name, email, and join code. Requires Write permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: true
+          description: Name of the new member
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          required: true
+          description: Email of the new member
+        - in: query
+          name: join_code
+          schema:
+            type: string
+          required: true
+          description: Join code of the club to associate the member with
+      responses:
+        '200':
+          description: Member created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '400':
+          description: Missing required parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing required parameters (name, email, join_code)"
+
+  /ships:
+    get:
+      summary: Get club ships
+      description: Returns the list of ships (projects) associated with a club.
+      parameters:
+        - in: query
+          name: club_name
+          schema:
+            type: string
+          required: true
+          description: Name of the club
+      responses:
+        '200':
+          description: List of ships
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    workshop:
+                      type: string
+                    Rating:
+                      type: number
+                    code_url:
+                      type: string
+                    'club_name (from Clubs)':
+                      type: array
+                      items: 
+                        type: string
+                    'YSWS–Name (from Unified YSWS Database)':
+                      type: array
+                      items:
+                        type: string
+
+  /members:
+    get:
+      summary: Get club members
+      description: Returns the members of the specified club. Requires Read permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: club_name
+          schema:
+            type: string
+          required: true
+          description: Name of the club
+      responses:
+        '200':
+          description: Club members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  members:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '404':
+          description: Club not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Club not found"
+
+  /level:
+    get:
+      summary: Get club level
+      description: Returns the level of the specified club.
+      security: []
+      parameters:
+        - in: query
+          name: club_name
+          schema:
+            type: string
+          required: true
+          description: Name of the club
+      responses:
+        '200':
+          description: Club level
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  level:
+                    type: string
+    post:
+      summary: Change club level
+      description: Updates the level of a club. Requires Write permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: level
+          schema:
+            type: string
+          required: true
+          description: New level of the club
+        - in: query
+          name: club_name
+          schema:
+            type: string
+          required: true
+          description: Name of the club
+      responses:
+        '200':
+          description: Level updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new_level:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '400':
+          description: Bad Request or Club not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /status:
+    get:
+      summary: Get club status
+      description: Returns the status of the specified club.
+      security: []
+      parameters:
+        - in: query
+          name: club_name
+          schema:
+            type: string
+          required: true
+          description: Name of the club
+      responses:
+        '200':
+          description: Club status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+    post:
+      summary: Change club status
+      description: Updates the status of a club. Requires Write permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+          required: true
+          description: New status of the club
+        - in: query
+          name: club_name
+          schema:
+            type: string
+          required: true
+          description: Name of the club
+      responses:
+        '200':
+          description: Status updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new_status:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '400':
+          description: Bad Request or Club not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /announce:
+    post:
+      summary: Send announcement to club members
+      description: Sets the announcement message and triggers sending to all members of a club. Requires Write permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: club
+          schema:
+            type: string
+          required: true
+          description: Name of the club
+        - in: query
+          name: message
+          schema:
+            type: string
+          required: true
+          description: Announcement message to send
+      responses:
+        '200':
+          description: Announcement sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  membersUpdated:
+                    type: integer
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+        '400':
+          description: Missing parameters or no members found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
