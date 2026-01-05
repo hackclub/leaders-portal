@@ -24,8 +24,9 @@
 			</div>
 			<div class="button-row">
 				<a href="{event.link}" class="button" style="background-color: {event.buttonColor}; color: {event.buttonTextColor};" target="_blank" rel="noopener noreferrer">Learn more</a>
-				<a href="{event.guide}" class="button" style="background-color: {event.buttonColor}; color: {event.buttonTextColor};" target="_blank" rel="noopener noreferrer"> Tutorial Slideshow</a>
-
+				{#if !event.noGuide}
+					<a href="{event.guide}" class="button" style="background-color: {event.buttonColor}; color: {event.buttonTextColor};" target="_blank" rel="noopener noreferrer"> Tutorial Slideshow</a>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -183,8 +184,6 @@
 	}
 
 	.button:hover {
-		background: #d63447;
-		transform: translateY(-1px);
-		box-shadow: 0 4px 8px rgba(236, 55, 80, 0.3);
+		transform: translateY(-2px);
 	}
 </style>

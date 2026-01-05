@@ -45,6 +45,7 @@ export async function GET({ locals }) {
 				buttonTextColor: record.get('buttonTextColor'),
 				icon: record.get('icon'),
 				guide: record.get('guide'),
+				noGuide: record.get('no-guide'),
 				backgroundUrl: record.get('background-url'),
 				completed: isCompleted
 			});
