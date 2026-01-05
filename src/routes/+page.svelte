@@ -2,20 +2,13 @@
 	import { onMount } from 'svelte';
 	import EventGrid from '$lib/EventGrid.svelte';
 	import EventModal from '$lib/EventModal.svelte';
-	import NewLeaderModal from '$lib/NewLeaderModal.svelte';
 
 	let { data } = $props();
 	let events = $state([]);
 	let selectedEvent = $state(null);
-	let showNewLeaderModal = $state(false);
-	let bannerDismissed = $state(false);
 	let hasCompletedEvents = $derived(events.some(e => e.completed));
 
 	onMount(async () => {
-		const dismissed = localStorage.getItem('newLeaderBannerDismissed');
-		if (dismissed === 'true') {
-			bannerDismissed = true;
-		}
 		await fetchEvents();
 	});
 
@@ -38,21 +31,6 @@
 
 	function closeModal() {
 		selectedEvent = null;
-	}
-
-	function closeNewLeaderModal() {
-		showNewLeaderModal = false;
-	}
-
-	function openNewLeaderModal(e) {
-		e.preventDefault();
-		showNewLeaderModal = true;
-	}
-
-	function dismissBanner(e) {
-		e.stopPropagation();
-		bannerDismissed = true;
-		localStorage.setItem('newLeaderBannerDismissed', 'true');
 	}
 
 	async function handleComplete(eventId, markAsComplete) {
@@ -110,26 +88,13 @@
 		</div>
 	</header>
 
-	{#if !bannerDismissed}
-		<div class="banner">
-			<button class="banner-content" onclick={openNewLeaderModal}>
-				New leader? Click here
-			</button>
-			<button class="banner-close" onclick={dismissBanner} aria-label="Close banner">
-				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
-			</button>
-		</div>
-	{:else}
-		<button class="help-button" onclick={openNewLeaderModal} aria-label="New leader help">
-			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-				<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-				<circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
-			</svg>
-		</button>
-	{/if}
+	<a href="https://guide.leaders.hackclub.com/" target="_blank" rel="noopener noreferrer" class="help-button" aria-label="Club Leaders Guide">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+			<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			<circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
+		</svg>
+	</a>
 
 	<main>
 		<div class="category-bubble webdev">
@@ -182,9 +147,7 @@
 	<EventModal event={selectedEvent} {closeModal} />
 {/if}
 
-{#if showNewLeaderModal}
-	<NewLeaderModal closeModal={closeNewLeaderModal} />
-{/if}
+
 
 <style>
 	@font-face {
@@ -337,54 +300,6 @@
 		font-weight: bold;
 		font-size: 32px;
 		margin: 0 0 16px 0;
-	}
-
-	.banner {
-		position: relative;
-		display: block;
-		width: 100%;
-		background-color: #ffeaa7;
-		border-radius: 8px;
-		margin-bottom: 24px;
-	}
-
-	.banner-content {
-		width: 100%;
-		color: #1f2d3d;
-		text-align: center;
-		padding: 32px;
-		font-size: 24px;
-		font-weight: 600;
-		text-decoration: none;
-		border: none;
-		background: transparent;
-		border-radius: 8px;
-		transition: background-color 0.2s;
-		cursor: pointer;
-		font-family: 'Phantom Sans', sans-serif;
-	}
-
-	.banner-content:hover {
-		background-color: rgba(0, 0, 0, 0.05);
-	}
-
-	.banner-close {
-		position: absolute;
-		top: 12px;
-		right: 12px;
-		background: none;
-		border: none;
-		cursor: pointer;
-		padding: 4px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 4px;
-		transition: background-color 0.2s;
-	}
-
-	.banner-close:hover {
-		background-color: rgba(0, 0, 0, 0.1);
 	}
 
 	.help-button {

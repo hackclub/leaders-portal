@@ -1,15 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import crypto from 'node:crypto';
 import { env } from '$env/dynamic/private';
-
-function sanitizeReturnTo(path) {
-	if (!path) return '/';
-	if (typeof path !== 'string') return '/';
-	if (!path.startsWith('/')) return '/';
-	if (path.startsWith('//')) return '/';
-	if (path.includes('://')) return '/';
-	return path;
-}
+import { sanitizeReturnTo } from '$lib/server/auth/utils.js';
 
 export const GET = async ({ cookies, url }) => {
 	const state = crypto.randomBytes(32).toString('base64url');

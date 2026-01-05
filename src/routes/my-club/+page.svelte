@@ -1,22 +1,15 @@
 <script>
 	import LevelCard from '$lib/LevelCard.svelte';
 	import RefreshButton from '$lib/RefreshButton.svelte';
+	import Modal from '$lib/Modal.svelte';
+	import { mergeClubData } from '$lib/club-utils.js';
 	
 	let { data } = $props();
 	let clubs = $state(data.clubs);
 	let helpModal = $state({ open: false, clubName: null, loading: false, ambassador: null, error: null });
 
 	function handleRefresh(clubName, refreshedClub) {
-		clubs = clubs.map(c => {
-			if (c.name === clubName) {
-				return {
-					...c,
-					...refreshedClub,
-					role: c.role
-				};
-			}
-			return c;
-		});
+		clubs = clubs.map(c => c.name === clubName ? mergeClubData(c, refreshedClub) : c);
 	}
 
 	async function openHelpModal(clubName) {
@@ -115,39 +108,29 @@
 	</section>
 </div>
 
-{#if helpModal.open}
-	<div class="modal-overlay" role="button" tabindex="-1" onclick={closeHelpModal} onkeydown={(e) => e.key === 'Escape' && closeHelpModal()}>
-		<div class="modal" role="dialog" aria-modal="true" tabindex="-1" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
-			<div class="modal-header">
-				<h2>Contact Us</h2>
-				<button class="modal-close" onclick={closeHelpModal}>&times;</button>
-			</div>
-			<div class="modal-body">
-				{#if helpModal.loading}
-					<p class="loading-text">Loading ambassador info...</p>
-				{:else if helpModal.error}
-					<p class="error-text">{helpModal.error}</p>
-				{:else if helpModal.ambassador}
-					<p class="help-intro">How would you like to contact your ambassador?</p>
-					<div class="contact-options">
-						{#if helpModal.ambassador.email}
-							<a href="mailto:{helpModal.ambassador.email}" class="contact-button email-button">
-								Email
-							</a>
-						{/if}
-						{#if helpModal.ambassador.slackId}
-							<a href="https://hackclub.enterprise.slack.com/team/{helpModal.ambassador.slackId}" target="_blank" rel="noopener noreferrer" class="contact-button slack-button">
-								Slack
-							</a>
-						{/if}
-					</div>
-				{:else}
-					<p class="error-text">No ambassador assigned to this club.</p>
-				{/if}
-			</div>
+<Modal open={helpModal.open} title="Contact Us" onClose={closeHelpModal}>
+	{#if helpModal.loading}
+		<p class="loading-text">Loading ambassador info...</p>
+	{:else if helpModal.error}
+		<p class="error-text">{helpModal.error}</p>
+	{:else if helpModal.ambassador}
+		<p class="help-intro">How would you like to contact your ambassador?</p>
+		<div class="contact-options">
+			{#if helpModal.ambassador.email}
+				<a href="mailto:{helpModal.ambassador.email}" class="contact-button email-button">
+					Email
+				</a>
+			{/if}
+			{#if helpModal.ambassador.slackId}
+				<a href="https://hackclub.enterprise.slack.com/team/{helpModal.ambassador.slackId}" target="_blank" rel="noopener noreferrer" class="contact-button slack-button">
+					Slack
+				</a>
+			{/if}
 		</div>
-	</div>
-{/if}
+	{:else}
+		<p class="error-text">No ambassador assigned to this club.</p>
+	{/if}
+</Modal>
 
 <style>
 	@font-face {
@@ -395,59 +378,6 @@
 
 	.contact-us-button span {
 		white-space: nowrap;
-	}
-
-	.modal-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: rgba(0, 0, 0, 0.5);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 1000;
-	}
-
-	.modal {
-		background: white;
-		border-radius: 12px;
-		width: 90%;
-		max-width: 400px;
-		font-family: 'Phantom Sans', system-ui, sans-serif;
-	}
-
-	.modal-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 20px 24px;
-		border-bottom: 1px solid #e0e6ed;
-	}
-
-	.modal-header h2 {
-		margin: 0;
-		font-size: 20px;
-		color: #1f2d3d;
-	}
-
-	.modal-close {
-		background: none;
-		border: none;
-		font-size: 28px;
-		color: #8492a6;
-		cursor: pointer;
-		padding: 0;
-		line-height: 1;
-	}
-
-	.modal-close:hover {
-		color: #1f2d3d;
-	}
-
-	.modal-body {
-		padding: 24px;
 	}
 
 	.loading-text {

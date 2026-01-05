@@ -4,15 +4,7 @@ import { env } from '$env/dynamic/private';
 import { getKnex } from '$lib/server/db/knex.js';
 import { createSession } from '$lib/server/auth/sessions.js';
 import { checkLeaderClubStatus } from '$lib/server/clubapi.js';
-
-function sanitizeReturnTo(path) {
-	if (!path) return '/';
-	if (typeof path !== 'string') return '/';
-	if (!path.startsWith('/')) return '/';
-	if (path.startsWith('//')) return '/';
-	if (path.includes('://')) return '/';
-	return path;
-}
+import { sanitizeReturnTo } from '$lib/server/auth/utils.js';
 
 export const GET = async ({ url, cookies, fetch, getClientAddress, request, locals }) => {
 	const stateCookie = cookies.get('oauth_state');

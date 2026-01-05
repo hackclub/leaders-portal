@@ -1,15 +1,12 @@
 <script>
 	import RefreshButton from '$lib/RefreshButton.svelte';
+	import { mergeClubData } from '$lib/club-utils.js';
 	
 	let { data, form } = $props();
 	let club = $state(data.club);
 
 	function handleRefresh(refreshedClub) {
-		club = {
-			...club,
-			...refreshedClub,
-			role: club.role
-		};
+		club = mergeClubData(club, refreshedClub);
 	}
 
 	let showAnnouncementModal = $state(false);

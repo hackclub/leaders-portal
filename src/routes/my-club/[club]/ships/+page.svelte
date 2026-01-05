@@ -1,16 +1,13 @@
 <script>
 	import LevelCard from '$lib/LevelCard.svelte';
 	import RefreshButton from '$lib/RefreshButton.svelte';
+	import { mergeClubData } from '$lib/club-utils.js';
 	
 	let { data } = $props();
 	let club = $state(data.club);
 
 	function handleRefresh(refreshedClub) {
-		club = {
-			...club,
-			...refreshedClub,
-			role: club.role
-		};
+		club = mergeClubData(club, refreshedClub);
 	}
 </script>
 
