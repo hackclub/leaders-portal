@@ -166,8 +166,14 @@
 	</main>
 
 	<footer>
+		<a href="https://apply.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-button">
+			Start a club
+		</a>
 		<a href="https://ysws.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-button">
-			View all YSWS Programs
+			All YSWS Programs
+		</a>
+		<a href="https://guide.leaders.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-button">
+			Club Leaders Guide
 		</a>
 	</footer>
 </div>
@@ -415,24 +421,33 @@
 
 	footer {
 		text-align: center;
-		margin-top: 12px;
+		margin-top: 48px;
+		padding: 32px;
+		border-radius: 16px;
+		background-color: #f9fafc;
+		border: 2px solid #e0e6ed;
 	}
 
 	.footer-button {
 		display: inline-block;
-		padding: 12px 64px;
-		border-radius: 6px;
+		padding: 12px 28px;
+		border-radius: 8px;
 		text-decoration: none;
 		font-weight: 600;
-		font-size: 16px;
-		transition: all 0.2s;
-		border: 2px solid #ec3750;
+		font-size: 14px;
+		transition: all 0.3s ease;
+		border: none;
 		background-color: #ec3750;
 		color: white;
+		cursor: pointer;
+		margin: 0px 5px;
 	}
 
 	.footer-button:hover {
 		background-color: #d62c47;
-		border-color: #d62c47;
+	}
+
+	.footer-button:active {
+		transform: scale(0.98);
 	}
 </style>
