@@ -7,6 +7,33 @@
 	let { data } = $props();
 	let clubs = $state(data.clubs);
 	let helpModal = $state({ open: false, clubName: null, loading: false, ambassador: null, error: null });
+	let mapOptOutState = $state({});
+	let optInModal = $state({ open: false, clubName: null, latitude: '', longitude: '', loading: false, error: null });
+
+	$effect(() => {
+		clubs.forEach(club => {
+			if (club.role === 'leader' && !mapOptOutState[club.name]) {
+				fetchMapOptOutStatus(club.name);
+			}
+		});
+	});
+
+	async function fetchMapOptOutStatus(clubName) {
+		try {
+			const response = await fetch(`/api/club/map-opt-out?clubName=${encodeURIComponent(clubName)}`);
+			if (response.ok) {
+				const data = await response.json();
+				mapOptOutState[clubName] = { 
+					optedOut: data.optedOut, 
+					hasLocation: data.hasLocation,
+					venueLat: data.venueLat,
+					venueLng: data.venueLng
+				};
+			}
+		} catch (err) {
+			// Silently fail - button will show default state
+		}
+	}
 
 	function handleRefresh(clubName, refreshedClub) {
 		clubs = clubs.map(c => c.name === clubName ? mergeClubData(c, refreshedClub) : c);
@@ -30,6 +57,90 @@
 
 	function closeHelpModal() {
 		helpModal = { open: false, clubName: null, loading: false, ambassador: null, error: null };
+	}
+
+	function handleMapButtonClick(clubName) {
+		const state = mapOptOutState[clubName];
+		const needsLocation = !state?.hasLocation;
+		const currentlyOptedOut = state?.optedOut ?? !needsLocation;
+		
+		if (needsLocation || currentlyOptedOut) {
+			optInModal = { open: true, clubName, latitude: '', longitude: '', loading: false, error: null };
+		} else {
+			handleMapOptOut(clubName);
+		}
+	}
+
+	function closeOptInModal() {
+		optInModal = { open: false, clubName: null, latitude: '', longitude: '', loading: false, error: null };
+	}
+
+	async function submitOptIn() {
+		const lat = parseFloat(optInModal.latitude);
+		const lng = parseFloat(optInModal.longitude);
+		
+		if (isNaN(lat) || isNaN(lng)) {
+			optInModal = { ...optInModal, error: 'Please enter valid latitude and longitude values' };
+			return;
+		}
+		
+		if (lat < -90 || lat > 90) {
+			optInModal = { ...optInModal, error: 'Latitude must be between -90 and 90' };
+			return;
+		}
+		
+		if (lng < -180 || lng > 180) {
+			optInModal = { ...optInModal, error: 'Longitude must be between -180 and 180' };
+			return;
+		}
+		
+		optInModal = { ...optInModal, loading: true, error: null };
+		
+		try {
+			const response = await fetch('/api/club/map-opt-out', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ 
+					clubName: optInModal.clubName, 
+					action: 'optIn', 
+					latitude: lat, 
+					longitude: lng 
+				})
+			});
+			
+			if (!response.ok) {
+				const data = await response.json();
+				optInModal = { ...optInModal, loading: false, error: data.error || 'Failed to opt in' };
+				return;
+			}
+			
+			const data = await response.json();
+			mapOptOutState[optInModal.clubName] = { optedOut: data.optedOut, hasLocation: data.hasLocation };
+			closeOptInModal();
+		} catch (err) {
+			optInModal = { ...optInModal, loading: false, error: 'Failed to opt in' };
+		}
+	}
+
+	async function handleMapOptOut(clubName) {
+		const currentState = mapOptOutState[clubName];
+		mapOptOutState[clubName] = { ...currentState, loading: true };
+		try {
+			const response = await fetch('/api/club/map-opt-out', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ clubName })
+			});
+			if (!response.ok) {
+				const data = await response.json();
+				mapOptOutState[clubName] = { ...currentState, error: data.error || 'Failed to update' };
+				return;
+			}
+			const data = await response.json();
+			mapOptOutState[clubName] = { optedOut: data.optedOut, hasLocation: currentState?.hasLocation };
+		} catch (err) {
+			mapOptOutState[clubName] = { ...currentState, error: 'Failed to update' };
+		}
 	}
 </script>
 
@@ -97,6 +208,39 @@
 								</a>
 							</div>
 						{/if}
+
+						{#if club.role === 'leader'}
+							<div class="map-opt-out-section">
+								{#if mapOptOutState[club.name]?.error}
+									<span class="opt-out-error">{mapOptOutState[club.name].error}</span>
+								{/if}
+								<div class="map-buttons">
+									{#if mapOptOutState[club.name]?.hasLocation && !mapOptOutState[club.name]?.optedOut}
+										<a 
+											href="https://hackclub.com/map#lat={mapOptOutState[club.name].venueLat}&lng={mapOptOutState[club.name].venueLng}&z=15"
+											target="_blank"
+											rel="noopener noreferrer"
+											class="view-map-button"
+										>
+											View Club in Club Map
+										</a>
+									{/if}
+									<button 
+										class="map-opt-out-button" 
+										onclick={() => handleMapButtonClick(club.name)}
+										disabled={mapOptOutState[club.name]?.loading}
+									>
+										{#if mapOptOutState[club.name]?.loading}
+											Updating...
+										{:else if !mapOptOutState[club.name]?.hasLocation || mapOptOutState[club.name]?.optedOut}
+											Opt in to Club Map
+										{:else}
+											Opt out of Club Map
+										{/if}
+									</button>
+								</div>
+							</div>
+						{/if}
 					</div>
 				{/each}
 			</div>
@@ -130,6 +274,50 @@
 	{:else}
 		<p class="error-text">No ambassador assigned to this club.</p>
 	{/if}
+</Modal>
+
+<Modal open={optInModal.open} title="Opt In to Club Map" onClose={closeOptInModal}>
+	<p class="opt-in-intro">Enter your club's location to appear on the Hack Club Clubs Map. Click <a href="https://www.latlong.net/convert-address-to-lat-long.html">here</a> to convert an address into lat/long values.</p>
+	
+	{#if optInModal.error}
+		<p class="error-text">{optInModal.error}</p>
+	{/if}
+	
+	<div class="opt-in-form">
+		<div class="form-field">
+			<label for="latitude">Latitude</label>
+			<input 
+				type="number" 
+				id="latitude" 
+				step="any"
+				placeholder="e.g. 37.7749"
+				bind:value={optInModal.latitude}
+				disabled={optInModal.loading}
+			/>
+		</div>
+		<div class="form-field">
+			<label for="longitude">Longitude</label>
+			<input 
+				type="number" 
+				id="longitude" 
+				step="any"
+				placeholder="e.g. -122.4194"
+				bind:value={optInModal.longitude}
+				disabled={optInModal.loading}
+			/>
+		</div>
+		<button 
+			class="submit-opt-in" 
+			onclick={submitOptIn}
+			disabled={optInModal.loading}
+		>
+			{#if optInModal.loading}
+				Saving...
+			{:else}
+				Opt In
+			{/if}
+		</button>
+	</div>
 </Modal>
 
 <style>
@@ -430,5 +618,140 @@
 
 	.slack-button:hover {
 		background-color: #2bc095;
+	}
+
+	.map-opt-out-section {
+		margin-top: 16px;
+		padding-top: 16px;
+		border-top: 1px solid #e0e6ed;
+	}
+
+	.map-buttons {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+
+	.view-map-button {
+		padding: 10px 16px;
+		background: #338eda;
+		border: 2px solid #338eda;
+		border-radius: 6px;
+		font-size: 14px;
+		font-weight: 500;
+		color: white;
+		cursor: pointer;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+		transition: all 0.2s;
+		text-decoration: none;
+	}
+
+	.view-map-button:hover {
+		background: #2a7bc5;
+		border-color: #2a7bc5;
+	}
+
+	.map-opt-out-button {
+		padding: 10px 16px;
+		background: #f9fafc;
+		border: 2px solid #e0e6ed;
+		border-radius: 6px;
+		font-size: 14px;
+		font-weight: 500;
+		color: #8492a6;
+		cursor: pointer;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+		transition: all 0.2s;
+	}
+
+	.map-opt-out-button:hover:not(:disabled) {
+		border-color: #ec3750;
+		color: #ec3750;
+	}
+
+	.map-opt-out-button:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.opt-out-success {
+		font-size: 14px;
+		font-weight: 500;
+		color: #33d6a6;
+	}
+
+	.opt-out-error {
+		font-size: 14px;
+		font-weight: 500;
+		color: #ec3750;
+	}
+
+	.opt-in-intro {
+		color: #1f2d3d;
+		margin: 0 0 16px 0;
+		text-align: center;
+	}
+
+	.opt-in-intro a {
+		color: #338eda;
+		text-decoration: underline;
+	}
+
+	.opt-in-form {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.form-field {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.form-field label {
+		font-size: 14px;
+		font-weight: 600;
+		color: #1f2d3d;
+	}
+
+	.form-field input {
+		padding: 10px 12px;
+		border: 2px solid #e0e6ed;
+		border-radius: 6px;
+		font-size: 14px;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+	}
+
+	.form-field input:focus {
+		outline: none;
+		border-color: #338eda;
+	}
+
+	.form-field input:disabled {
+		background-color: #f9fafc;
+		color: #8492a6;
+	}
+
+	.submit-opt-in {
+		padding: 12px 20px;
+		background-color: #33d6a6;
+		color: white;
+		border: none;
+		border-radius: 6px;
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+		margin-top: 8px;
+	}
+
+	.submit-opt-in:hover:not(:disabled) {
+		background-color: #2bc095;
+	}
+
+	.submit-opt-in:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
 	}
 </style>

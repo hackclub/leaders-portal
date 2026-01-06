@@ -78,7 +78,7 @@
 <div class="container">
 	<header>
 		<iframe 
-			src="https://hackclub.com/map/" 
+			src="https://hackclub.com/map?mode={data.user ? 'manage' : 'signin'}" 
 			class="header-map"
 			title="Hack Club Map"
 			loading="lazy"

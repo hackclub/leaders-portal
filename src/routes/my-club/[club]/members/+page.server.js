@@ -5,7 +5,7 @@ import { deleteMember, sendAnnouncement, getMember, updateMember, createMember }
 
 export async function load({ locals, params }) {
 	if (!locals.userPublic) {
-		throw redirect(302, '/login');
+		throw redirect(302, '/auth/login');
 	}
 
 	const knex = getKnex();
@@ -29,7 +29,7 @@ export async function load({ locals, params }) {
 export const actions = {
 	removeMember: async ({ request, locals, params }) => {
 		if (!locals.userPublic) {
-			throw redirect(302, '/login');
+			throw redirect(302, '/auth/login');
 		}
 
 		const formData = await request.formData();
@@ -70,7 +70,7 @@ export const actions = {
 
 	sendAnnouncement: async ({ request, locals, params }) => {
 		if (!locals.userPublic) {
-			throw redirect(302, '/login');
+			throw redirect(302, '/auth/login');
 		}
 
 		const formData = await request.formData();
@@ -110,7 +110,7 @@ export const actions = {
 
 	getMemberInfo: async ({ request, locals, params }) => {
 		if (!locals.userPublic) {
-			throw redirect(302, '/login');
+			throw redirect(302, '/auth/login');
 		}
 
 		const formData = await request.formData();
@@ -146,7 +146,7 @@ export const actions = {
 
 	editMember: async ({ request, locals, params }) => {
 		if (!locals.userPublic) {
-			throw redirect(302, '/login');
+			throw redirect(302, '/auth/login');
 		}
 
 		const formData = await request.formData();
@@ -188,7 +188,7 @@ export const actions = {
 
 	addMember: async ({ request, locals, params }) => {
 		if (!locals.userPublic) {
-			throw redirect(302, '/login');
+			throw redirect(302, '/auth/login');
 		}
 
 		const formData = await request.formData();

@@ -27,3 +27,5 @@ export async function sendOTPEmail(email, code) {
 		throw new Error("Failed to create OTP record");
 	}
 }
+
+

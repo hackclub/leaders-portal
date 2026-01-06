@@ -7,7 +7,7 @@ export async function load({ locals }) {
 	console.log('[MyClub] load called, userPublic:', !!locals.userPublic, 'userId:', locals.userId);
 	if (!locals.userPublic) {
 		console.log('[MyClub] No userPublic, redirecting to login');
-		throw redirect(302, '/login');
+		throw redirect(302, '/auth/login');
 	}
 
 	const knex = getKnex();
@@ -27,7 +27,7 @@ export async function load({ locals }) {
 export const actions = {
 	removeMember: async ({ request, locals }) => {
 		if (!locals.userPublic) {
-			throw redirect(302, '/login');
+			throw redirect(302, '/auth/login');
 		}
 
 		const formData = await request.formData();
@@ -63,7 +63,7 @@ export const actions = {
 
 	sendAnnouncement: async ({ request, locals }) => {
 		if (!locals.userPublic) {
-			throw redirect(302, '/login');
+			throw redirect(302, '/auth/login');
 		}
 
 		const formData = await request.formData();
