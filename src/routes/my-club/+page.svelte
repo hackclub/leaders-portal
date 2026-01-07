@@ -213,7 +213,7 @@
 								<div class="map-buttons">
 									{#if mapOptOutState[club.name]?.hasLocation && !mapOptOutState[club.name]?.optedOut}
 										<a 
-											href="https://hackclub.com/map#lat={mapOptOutState[club.name].venueLat}&lng={mapOptOutState[club.name].venueLng}&z=15"
+											href="https://hackclub.com/map#lat={mapOptOutState[club.name].venueLat}&lng={mapOptOutState[club.name].venueLng}&z=10"
 											target="_blank"
 											rel="noopener noreferrer"
 											class="view-map-button"
