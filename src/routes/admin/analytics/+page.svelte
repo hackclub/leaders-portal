@@ -2,115 +2,333 @@
     let { data } = $props();
 </script>
 
-<div class="px-4 sm:px-0 mb-6">
-    <h1 class="text-2xl font-semibold text-gray-900">Analytics</h1>
-</div>
+<div class="analytics-page">
+    <h1>Analytics</h1>
 
-<div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
-    <!-- Event Analytics -->
-    <div class="space-y-6">
-        <h2 class="text-lg font-medium text-gray-900">Most Completed Events</h2>
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-            <ul role="list" class="divide-y divide-gray-200">
+    <div class="nav-links">
+        <a href="/admin/analytics/members" class="nav-link">
+            <span class="nav-icon">👥</span>
+            <span class="nav-text">Member Analytics</span>
+        </a>
+        <a href="/admin/analytics/ships" class="nav-link">
+            <span class="nav-icon">🚀</span>
+            <span class="nav-text">Ship Analytics</span>
+        </a>
+        <a href="/admin/analytics/clubs" class="nav-link">
+            <span class="nav-icon">🏫</span>
+            <span class="nav-text">Club Analytics</span>
+        </a>
+    </div>
+
+    <div class="grid-layout">
+        <section class="panel">
+            <h2>Most Completed Events</h2>
+            <div class="list-container">
                 {#if data.eventStats.length === 0}
-                    <li class="px-4 py-4 sm:px-6 text-sm text-gray-500">No events completed yet.</li>
+                    <p class="empty-state">No events completed yet.</p>
                 {:else}
                     {#each data.eventStats as event}
-                        <li class="px-4 py-4 sm:px-6">
-                            <div class="flex items-center justify-between">
-                                <div class="flex flex-col">
-                                    <p class="text-sm font-medium text-indigo-600 truncate">{event.title}</p>
-                                    <p class="text-xs text-gray-500">{event.category}</p>
-                                </div>
-                                <div class="ml-2 flex-shrink-0 flex">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        {event.count} completions
-                                    </span>
-                                </div>
+                        <div class="list-item">
+                            <div class="item-info">
+                                <span class="item-title">{event.title}</span>
+                                <span class="item-subtitle">{event.category}</span>
                             </div>
-                        </li>
+                            <span class="badge green">{event.count} completions</span>
+                        </div>
                     {/each}
                 {/if}
-            </ul>
-        </div>
-    </div>
-
-    <!-- Ship Analytics -->
-    <div class="space-y-6">
-        <h2 class="text-lg font-medium text-gray-900">Ship Analytics</h2>
-        
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white overflow-hidden shadow rounded-lg px-4 py-5 sm:p-6">
-                <dt class="text-sm font-medium text-gray-500 truncate">Total Ships</dt>
-                <dd class="mt-1 text-3xl font-semibold text-gray-900">{data.shipStats.totalShips}</dd>
             </div>
-            <div class="bg-white overflow-hidden shadow rounded-lg px-4 py-5 sm:p-6">
-                <dt class="text-sm font-medium text-gray-500 truncate">Avg Ships / Club</dt>
-                <dd class="mt-1 text-3xl font-semibold text-gray-900">{data.shipStats.avgShipsPerClub}</dd>
-            </div>
-        </div>
+        </section>
 
-        <!-- Top Projects -->
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-            <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Top Projects</h3>
-            </div>
-            <ul role="list" class="divide-y divide-gray-200">
-                {#each data.shipStats.topShips as ship}
-                    <li class="px-4 py-4 sm:px-6 flex justify-between items-center">
-                        <span class="text-sm font-medium text-gray-900">{ship.name}</span>
-                        <span class="text-sm text-gray-500">{ship.count} ships</span>
-                    </li>
-                {/each}
-            </ul>
-        </div>
-    </div>
-</div>
-
-<!-- Recent Ships List -->
-<div class="mt-8">
-    <h2 class="text-lg font-medium text-gray-900 mb-4">Recent Ships (Sample)</h2>
-    <div class="flex flex-col">
-        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Club</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            {#if data.shipStats.sampleShips.length === 0}
-                                <tr>
-                                    <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No ships found.</td>
-                                </tr>
-                            {:else}
-                                {#each data.shipStats.sampleShips as ship}
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{ship.name}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ship.memberName || 'Unknown'}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <a href="/admin/clubs/{ship.clubId}/users" class="text-indigo-600 hover:underline">{ship.clubName}</a>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
-                                            {#if ship.codeUrl}
-                                                <a href={ship.codeUrl} target="_blank" rel="noopener noreferrer" class="hover:underline">View Code</a>
-                                            {:else}
-                                                <span class="text-gray-400">No link</span>
-                                            {/if}
-                                        </td>
-                                    </tr>
-                                {/each}
-                            {/if}
-                        </tbody>
-                    </table>
+        <section class="panel">
+            <h2>Ship Analytics</h2>
+            
+            <div class="stats-row">
+                <div class="stat-card">
+                    <span class="stat-label">Total Ships</span>
+                    <span class="stat-value">{data.shipStats.totalShips}</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Clubs with Ships</span>
+                    <span class="stat-value">{data.shipStats.clubCount}</span>
                 </div>
             </div>
-        </div>
+
+            <h3>Top YSWS Programs</h3>
+            <div class="list-container">
+                {#each data.shipStats.topYsws as ysws}
+                    <div class="list-item">
+                        <span class="item-title">{ysws.name}</span>
+                        <span class="badge orange">{ysws.count} ships</span>
+                    </div>
+                {/each}
+                {#if data.shipStats.topYsws.length === 0}
+                    <p class="empty-state">No ships found.</p>
+                {/if}
+            </div>
+
+            <h3>Top Clubs by Ships</h3>
+            <div class="list-container">
+                {#each data.shipStats.topClubs as club}
+                    <div class="list-item">
+                        <span class="item-title">{club.name}</span>
+                        <span class="badge blue">{club.count} ships</span>
+                    </div>
+                {/each}
+                {#if data.shipStats.topClubs.length === 0}
+                    <p class="empty-state">No ships found.</p>
+                {/if}
+            </div>
+        </section>
     </div>
+
+    <section class="panel full-width">
+        <h2>Recent Ships</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Member</th>
+                        <th>Club</th>
+                        <th>Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#if data.shipStats.sampleShips.length === 0}
+                        <tr>
+                            <td colspan="4" class="empty-state">No ships found.</td>
+                        </tr>
+                    {:else}
+                        {#each data.shipStats.sampleShips as ship}
+                            <tr>
+                                <td class="font-medium">{ship.name}</td>
+                                <td>{ship.memberName || 'Unknown'}</td>
+                                <td>{ship.clubName}</td>
+                                <td>
+                                    {#if ship.codeUrl}
+                                        <a href={ship.codeUrl} target="_blank" rel="noopener noreferrer">View Code</a>
+                                    {:else}
+                                        <span class="muted">No link</span>
+                                    {/if}
+                                </td>
+                            </tr>
+                        {/each}
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </section>
 </div>
+
+<style>
+    .analytics-page {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1f2d3d;
+        margin-bottom: 1.5rem;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        background: #fff;
+        border: 2px solid #e0e6ed;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #1f2d3d;
+        font-weight: 500;
+        transition: border-color 0.15s;
+    }
+
+    .nav-link:hover {
+        border-color: #338eda;
+    }
+
+    .nav-icon {
+        font-size: 1.25rem;
+    }
+
+    .nav-text {
+        font-size: 0.875rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1f2d3d;
+        margin-bottom: 1rem;
+    }
+
+    h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1f2d3d;
+        margin: 1.5rem 0 0.75rem;
+    }
+
+    .grid-layout {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .panel {
+        background: #fff;
+        border: 2px solid #e0e6ed;
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .panel.full-width {
+        margin-top: 1.5rem;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card {
+        background: #f9fafc;
+        border: 2px solid #e0e6ed;
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .stat-label {
+        display: block;
+        font-size: 0.875rem;
+        color: #8492a6;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+        display: block;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1f2d3d;
+    }
+
+    .list-container {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e0e6ed;
+    }
+
+    .list-item:last-child {
+        border-bottom: none;
+    }
+
+    .item-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .item-title {
+        font-weight: 500;
+        color: #1f2d3d;
+    }
+
+    .item-subtitle {
+        font-size: 0.75rem;
+        color: #8492a6;
+    }
+
+    .badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .badge.green {
+        background: #33d6a6;
+        color: white;
+    }
+
+    .badge.orange {
+        background: #ff8c37;
+        color: white;
+    }
+
+    .badge.blue {
+        background: #338eda;
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: #8492a6;
+        padding: 1rem;
+        font-style: italic;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        text-align: left;
+        padding: 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #8492a6;
+        text-transform: uppercase;
+        border-bottom: 2px solid #e0e6ed;
+    }
+
+    td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e0e6ed;
+        color: #1f2d3d;
+    }
+
+    td.font-medium {
+        font-weight: 500;
+    }
+
+    td a {
+        color: #338eda;
+        text-decoration: none;
+    }
+
+    td a:hover {
+        text-decoration: underline;
+    }
+
+    .muted {
+        color: #8492a6;
+    }
+</style>
