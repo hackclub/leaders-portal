@@ -128,12 +128,12 @@
 		<p class="help-intro">How would you like to contact your ambassador?</p>
 		<div class="contact-options">
 			{#if helpModal.ambassador.email}
-				<a href="mailto:{helpModal.ambassador.email}" class="contact-button email-button">
+				<a href="mailto:{helpModal.ambassador.email}" class="btn email-button">
 					Email
 				</a>
 			{/if}
 			{#if helpModal.ambassador.slackId}
-				<a href="https://hackclub.enterprise.slack.com/team/{helpModal.ambassador.slackId}" target="_blank" rel="noopener noreferrer" class="contact-button slack-button">
+				<a href="https://hackclub.enterprise.slack.com/team/{helpModal.ambassador.slackId}" target="_blank" rel="noopener noreferrer" class="btn slack-button">
 					Slack
 				</a>
 			{/if}
@@ -146,15 +146,6 @@
 
 
 <style>
-	@font-face {
-		font-family: 'Phantom Sans';
-		src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff') format('woff'),
-			url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff2') format('woff2');
-		font-weight: normal;
-		font-style: normal;
-		font-display: swap;
-	}
-
 	.container {
 		max-width: 1024px;
 		margin: 0 auto;
@@ -189,17 +180,22 @@
 		text-decoration: none;
 		font-weight: 600;
 		font-size: 14px;
-		border: 2px solid #ec3750;
+		font-family: inherit;
+		transition: all 0.2s;
+		border: 2px solid var(--red);
 		cursor: pointer;
-		font-family: 'Phantom Sans', sans-serif;
-		background-color: #ec3750;
-		color: white;
+		background-color: var(--red);
+		color: var(--white);
+		box-shadow: none;
 	}
 
 	.nav-button:hover {
-		background-color: #d62c47;
-		border-color: #d62c47;
+		opacity: 0.9;
+		box-shadow: none;
+		transform: scale(1.0625);
 	}
+
+	
 
 	.clubs-grid {
 		display: flex;
@@ -415,31 +411,14 @@
 		justify-content: center;
 	}
 
-	.contact-button {
-		padding: 12px 24px;
-		border-radius: 6px;
-		font-weight: 600;
-		font-size: 14px;
-		text-decoration: none;
+	.email-button,
+	.slack-button {
 		flex: 1;
 		text-align: center;
 	}
 
-	.email-button {
-		background-color: #ec3750;
-		color: white;
-	}
-
-	.email-button:hover {
-		background-color: #d62c47;
-	}
-
 	.slack-button {
-		background-color: #33d6a6;
-		color: white;
-	}
-
-	.slack-button:hover {
-		background-color: #2bc095;
+		background-color: var(--green) !important;
+		border-color: var(--green) !important;
 	}
 </style>

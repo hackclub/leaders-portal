@@ -70,15 +70,6 @@
 </div>
 
 <style>
-	@font-face {
-		font-family: 'Phantom Sans';
-		src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff') format('woff'),
-			url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff2') format('woff2');
-		font-weight: normal;
-		font-style: normal;
-		font-display: swap;
-	}
-
 	.container {
 		max-width: 1024px;
 		margin: 0 auto;

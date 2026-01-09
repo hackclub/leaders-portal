@@ -24,10 +24,12 @@
 <div class="container">
 	<div class="card">
 		{#if hasLeft}
-			<div class="success-icon">✓</div>
+			<div class="success-icon">
+				<img src="https://icons.hackclub.com/api/icons/white/checkmark" alt="Success" width="32" height="32" />
+			</div>
 			<h1>You've left the club</h1>
 			<p class="message">You have successfully left <strong>{data.clubName}</strong>.</p>
-			<a href="/" class="button secondary">Go to Home</a>
+			<a href="/" class="btn outline">Go to Home</a>
 		{:else}
 			<h1>Leave Club</h1>
 			<p class="message">
@@ -46,8 +48,8 @@
 
 			<form method="POST" use:enhance={handleSubmit}>
 				<div class="button-group">
-					<a href="/" class="button secondary">Cancel</a>
-					<button type="submit" class="button danger" disabled={isSubmitting}>
+					<a href="/" class="btn outline">Cancel</a>
+					<button type="submit" class="btn danger-btn" disabled={isSubmitting}>
 						{isSubmitting ? 'Leaving...' : 'Leave Club'}
 					</button>
 				</div>
@@ -117,43 +119,13 @@
 		justify-content: center;
 	}
 
-	.button {
-		padding: 12px 24px;
-		border-radius: 6px;
-		font-weight: 600;
-		font-size: 14px;
-		text-decoration: none;
-		border: 2px solid transparent;
-		cursor: pointer;
-		font-family: 'Phantom Sans', system-ui, sans-serif;
-		transition: all 0.2s;
+	.danger-btn {
+		background: var(--red) !important;
+		border-color: var(--red) !important;
 	}
 
-	.button.secondary {
-		background: white;
-		color: #8492a6;
-		border-color: #e0e6ed;
-	}
-
-	.button.secondary:hover {
-		background: #f9fafc;
-		border-color: #8492a6;
-	}
-
-	.button.danger {
-		background: #ec3750;
-		color: white;
-		border-color: #ec3750;
-	}
-
-	.button.danger:hover:not(:disabled) {
-		background: #d62c47;
-		border-color: #d62c47;
-	}
-
-	.button:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
+	.danger-btn:hover:not(:disabled) {
+		opacity: 0.9;
 	}
 
 	.error {

@@ -94,7 +94,7 @@
 			<div class="error">{errorMessages[urlError] || 'An error occurred. Please try again.'}</div>
 		{/if}
 
-		<a href="/auth/login" class="hackclub-button">
+		<a href="/auth/login" class="btn cta hackclub-button">
 			Sign in with Hack Club
 		</a>
 
@@ -120,7 +120,7 @@
 					<div class="error">{error}</div>
 				{/if}
 
-				<button type="submit" class="submit-button" disabled={loading}>
+				<button type="submit" class="btn submit-button" disabled={loading}>
 					{loading ? 'Sending...' : 'Send OTP Code'}
 				</button>
 
@@ -153,12 +153,12 @@
 					<div class="error">{error}</div>
 				{/if}
 
-				<button type="submit" class="submit-button" disabled={loading}>
+				<button type="submit" class="btn submit-button" disabled={loading}>
 					{loading ? 'Verifying...' : 'Verify & Login'}
 				</button>
 
 				<div class="back-link">
-					<button type="button" onclick={goBack} disabled={loading}>
+					<button type="button" class="btn outline" onclick={goBack} disabled={loading}>
 						Use a different email
 					</button>
 				</div>
@@ -167,31 +167,8 @@
 	</div>
 </div>
 <style>
-	@font-face {
-		font-family: 'Phantom Sans';
-		src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff')
-			format('woff'),
-		url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff2')
-			format('woff2');
-		font-weight: normal;
-		font-style: normal;
-		font-display: swap;
-	}
-
-	@font-face {
-		font-family: 'Phantom Sans';
-		src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Bold.woff')
-			format('woff'),
-		url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Bold.woff2')
-			format('woff2');
-		font-weight: bold;
-		font-style: normal;
-		font-display: swap;
-	}
-
 	:global(body) {
-		font-family: 'Phantom Sans', sans-serif;
-		color: #1f2d3d;
+		color: var(--black);
 		margin: 0;
 		padding: 0;
 	}
@@ -260,25 +237,6 @@
 
 	.submit-button {
 		width: 100%;
-		padding: 14px 24px;
-		background-color: #ec3750;
-		color: white;
-		border: none;
-		border-radius: 8px;
-		font-size: 16px;
-		font-weight: 600;
-		font-family: 'Phantom Sans', sans-serif;
-		cursor: pointer;
-		transition: background-color 0.2s;
-	}
-
-	.submit-button:hover:not(:disabled) {
-		background-color: #d62c47;
-	}
-
-	.submit-button:disabled {
-		background-color: #ccc;
-		cursor: not-allowed;
 	}
 
 	.error {
@@ -307,52 +265,20 @@
 		text-align: center;
 	}
 
-	.back-link a,
-	.back-link button {
-		color: #ec3750;
+	.back-link a {
+		color: var(--primary);
 		text-decoration: none;
 		font-size: 14px;
-		background: none;
-		border: none;
-		cursor: pointer;
-		font-family: 'Phantom Sans', sans-serif;
 		font-weight: 600;
 	}
 
-	.back-link a:hover,
-	.back-link button:hover:not(:disabled) {
+	.back-link a:hover {
 		text-decoration: underline;
 	}
 
-	.back-link button:disabled {
-		color: #999;
-		cursor: not-allowed;
-	}
-
 	.hackclub-button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 12px;
 		width: 100%;
-		padding: 14px 24px;
-		background-color: #ec3750;
-		color: white;
-		border: none;
-		border-radius: 8px;
-		font-size: 16px;
-		font-weight: 600;
-		font-family: 'Phantom Sans', sans-serif;
-		cursor: pointer;
-		transition: background-color 0.2s;
-		text-decoration: none;
-		box-sizing: border-box;
-	}
-
-
-
-	.hackclub-button:hover {
-		background-color: #d62c47;
+		justify-content: center;
 	}
 
 	.divider {

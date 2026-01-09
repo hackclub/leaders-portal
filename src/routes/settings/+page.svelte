@@ -56,10 +56,7 @@
 			{#if data.user.hackclubAuthId}
 				<div class="linked-status">
 					<div class="linked-badge">
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-							<polyline points="22 4 12 14.01 9 11.01"></polyline>
-						</svg>
+						<img src="https://icons.hackclub.com/api/icons/0x16a34a/checkmark" alt="Linked" width="20" height="20" />
 						Linked
 					</div>
 					<p class="linked-info">Your account is linked to Hack Club Auth.</p>
@@ -85,10 +82,8 @@
 			{:else}
 				<div class="unlinked-status">
 					<p>Link your Hack Club account to enable additional features and use your Hack Club identity for club management.</p>
-					<a href="/auth/link" class="link-button">
-						<svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-							<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-						</svg>
+					<a href="/auth/link" class="btn link-button">
+						<img src="https://icons.hackclub.com/api/icons/white/github" alt="GitHub" width="20" height="20" />
 						Link Hack Club Account
 					</a>
 				</div>
@@ -98,28 +93,9 @@
 </div>
 
 <style>
-	@font-face {
-		font-family: 'Phantom Sans';
-		src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff') format('woff'),
-			url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff2') format('woff2');
-		font-weight: normal;
-		font-style: normal;
-		font-display: swap;
-	}
-
-	@font-face {
-		font-family: 'Phantom Sans';
-		src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Bold.woff') format('woff'),
-			url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Bold.woff2') format('woff2');
-		font-weight: bold;
-		font-style: normal;
-		font-display: swap;
-	}
-
 	:global(body) {
-		font-family: 'Phantom Sans', sans-serif;
-		background-color: #ffffff;
-		color: #1f2d3d;
+		background-color: var(--white);
+		color: var(--black);
 		margin: 0;
 		padding: 0;
 	}
@@ -255,21 +231,6 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
-		padding: 12px 20px;
-		background-color: #ec3750;
-		color: white;
-		border: none;
-		border-radius: 8px;
-		font-size: 14px;
-		font-weight: 600;
-		font-family: 'Phantom Sans', sans-serif;
-		cursor: pointer;
-		text-decoration: none;
-		transition: background-color 0.2s;
-	}
-
-	.link-button:hover {
-		background-color: #d62c47;
 	}
 
 	.success-banner {

@@ -13,12 +13,17 @@ function getAirtableBase() {
 	return new Airtable({ apiKey: env.AIRTABLE_API_KEY }).base(env.AIRTABLE_BASE_ID);
 }
 
+function escapeAirtableString(str) {
+	if (!str) return '';
+	return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
 export async function getMapOptOut(clubName) {
 	const base = getAirtableBase();
 	
 	try {
 		const records = await base('Clubs').select({
-			filterByFormula: `{club_name} = "${clubName}"`,
+			filterByFormula: `{club_name} = "${escapeAirtableString(clubName)}"`,
 			maxRecords: 1
 		}).firstPage();
 
@@ -48,7 +53,7 @@ export async function toggleMapOptOut(clubName) {
 	
 	try {
 		const records = await base('Clubs').select({
-			filterByFormula: `{club_name} = "${clubName}"`,
+			filterByFormula: `{club_name} = "${escapeAirtableString(clubName)}"`,
 			maxRecords: 1
 		}).firstPage();
 
@@ -76,7 +81,7 @@ export async function optInToMap(clubName, latitude, longitude) {
 	
 	try {
 		const records = await base('Clubs').select({
-			filterByFormula: `{club_name} = "${clubName}"`,
+			filterByFormula: `{club_name} = "${escapeAirtableString(clubName)}"`,
 			maxRecords: 1
 		}).firstPage();
 
@@ -103,7 +108,7 @@ export async function updateMapSettings(clubName, { optedOut, latitude, longitud
 	
 	try {
 		const records = await base('Clubs').select({
-			filterByFormula: `{club_name} = "${clubName}"`,
+			filterByFormula: `{club_name} = "${escapeAirtableString(clubName)}"`,
 			maxRecords: 1
 		}).firstPage();
 
@@ -167,7 +172,7 @@ export async function getClubSettings(clubName) {
 	
 	try {
 		const records = await base('Clubs').select({
-			filterByFormula: `{club_name} = "${clubName}"`,
+			filterByFormula: `{club_name} = "${escapeAirtableString(clubName)}"`,
 			maxRecords: 1
 		}).firstPage();
 
@@ -248,7 +253,7 @@ export async function updateClubSettings(clubName, updates, currentStatus) {
 
 	try {
 		const records = await base('Clubs').select({
-			filterByFormula: `{club_name} = "${clubName}"`,
+			filterByFormula: `{club_name} = "${escapeAirtableString(clubName)}"`,
 			maxRecords: 1
 		}).firstPage();
 

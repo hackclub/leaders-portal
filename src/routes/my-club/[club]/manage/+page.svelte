@@ -366,7 +366,7 @@
 						rel="noopener noreferrer"
 						class="view-map-link"
 					>
-						View Club on Map →
+						View Club on Map 
 					</a>
 				{/if}
 
@@ -675,6 +675,7 @@
 		font-weight: 600;
 		text-decoration: none;
 		margin-top: 8px;
+		margin-right: 8px;
 	}
 
 	.view-map-link:hover {

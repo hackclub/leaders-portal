@@ -182,44 +182,11 @@
 
 
 <style>
-	@font-face {
-		font-family: 'Phantom Sans';
-		src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff')
-			format('woff'),
-		url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff2')
-			format('woff2');
-		font-weight: normal;
-		font-style: normal;
-		font-display: swap;
-	}
-	@font-face {
-		font-family: 'Phantom Sans';
-		src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Italic.woff')
-			format('woff'),
-		url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Italic.woff2')
-			format('woff2');
-		font-weight: normal;
-		font-style: italic;
-		font-display: swap;
-	}
-	@font-face {
-		font-family: 'Phantom Sans';
-		src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Bold.woff')
-			format('woff'),
-		url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Bold.woff2')
-			format('woff2');
-		font-weight: bold;
-		font-style: normal;
-		font-display: swap;
-	}
-
 	:global(body) {
-		font-family: 'Phantom Sans', sans-serif;
-		background-color: #ffffff;
-		color: #1f2d3d;
+		background-color: var(--white);
+		color: var(--black);
 		margin: 0;
 		padding: 0;
-
 	}
 
 
@@ -292,26 +259,47 @@
 		text-decoration: none;
 		font-weight: 600;
 		font-size: 14px;
+		font-family: inherit;
 		transition: all 0.2s;
-		border: 2px solid #ec3750;
+		border: 2px solid var(--red);
 		cursor: pointer;
-		font-family: 'Phantom Sans', sans-serif;
-		background-color: #ec3750;
-		color: white;
+		background-color: var(--red);
+		color: var(--white);
+		box-shadow: none;
 	}
 
 	.nav-button:hover {
-		background-color: #d62c47;
-		border-color: #d62c47;
+		opacity: 0.9;
+		box-shadow: none;
+		transform: scale(1.0625);
 	}
 
 	.nav-button.secondary {
-		background-color: white;
-		color: #ec3750;
+		background-color: var(--white);
+		color: var(--red);
 	}
 
 	.nav-button.secondary:hover {
-		background-color: #f9fafc;
+		background-color: var(--snow);
+	}
+
+	.footer-button {
+		display: inline-block;
+		padding: 12px 28px;
+		border-radius: 8px;
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 14px;
+		transition: all 0.2s;
+		background-color: var(--red);
+		color: var(--white);
+		box-shadow: none;
+	}
+
+	.footer-button:hover {
+		opacity: 0.9;
+		box-shadow: none;
+		transform: scale(1.0625);
 	}
 
 	main {
@@ -405,27 +393,7 @@
 		gap: 12px;
 	}
 
-	.footer-button {
-		display: inline-block;
-		padding: 12px 28px;
-		border-radius: 8px;
-		text-decoration: none;
-		font-weight: 600;
-		font-size: 14px;
-		transition: all 0.3s ease;
-		border: none;
-		background-color: #ec3750;
-		color: white;
-		cursor: pointer;
-	}
-
-	.footer-button:hover {
-		background-color: #d62c47;
-	}
-
-	.footer-button:active {
-		transform: scale(0.98);
-	}
+	
 
 	@media (max-width: 768px) {
 		.container {

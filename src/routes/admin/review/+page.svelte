@@ -15,9 +15,9 @@
 	<header>
 		<h1 class="page-title">Review Projects</h1>
 		<div class="header-buttons">
-			<a href="/" class="nav-button">Home</a>
+			<a href="/" class="btn">Home</a>
 			<form method="POST" action="/logout" style="display: inline;">
-				<button type="submit" class="nav-button">Logout</button>
+				<button type="submit" class="btn">Logout</button>
 			</form>
 		</div>
 	</header>
@@ -62,8 +62,8 @@
 								</div>
 							</div>
 							<div class="action-buttons">
-								<button class="action-btn approve">Approve</button>
-								<button class="action-btn reject">Reject</button>
+								<button class="btn approve-btn">Approve</button>
+								<button class="btn reject-btn">Reject</button>
 							</div>
 						</div>
 
@@ -117,7 +117,7 @@
 								{#if selectedProject.ProjectFile && selectedProject.ProjectFile.length > 0}
 									<div class="asset-card file-card">
 										<div class="asset-preview">
-											<div class="file-icon">📦</div>
+											<img src="https://icons.hackclub.com/api/icons/0x8492a6/attachment" alt="File" width="48" height="48" class="file-icon" />
 										</div>
 										<div class="asset-info">
 											<span class="asset-type">STEP File</span>
@@ -144,20 +144,8 @@
 </div>
 
 <style>
-	@font-face {
-		font-family: 'Phantom Sans';
-		src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff')
-			format('woff'),
-		url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff2')
-			format('woff2');
-		font-weight: normal;
-		font-style: normal;
-		font-display: swap;
-	}
-
 	:global(body) {
-		font-family: 'Phantom Sans', sans-serif;
-		background-color: #f4f4f6;
+		background-color: var(--snow);
 		margin: 0;
 	}
 
@@ -191,23 +179,7 @@
 		gap: 12px;
 	}
 
-	.nav-button {
-		padding: 8px 16px;
-		border-radius: 6px;
-		text-decoration: none;
-		font-weight: 600;
-		font-size: 14px;
-		border: 2px solid #ec3750;
-		cursor: pointer;
-		background-color: #ec3750;
-		color: white;
-		transition: all 0.2s;
-	}
-
-	.nav-button:hover {
-		background-color: #d62c47;
-		border-color: #d62c47;
-	}
+	
 
 	.error-banner {
 		background-color: #fee2e2;
@@ -324,32 +296,14 @@
 		gap: 12px;
 	}
 
-	.action-btn {
-		padding: 8px 20px;
-		border-radius: 6px;
-		font-weight: 600;
-		cursor: pointer;
-		border: none;
-		font-size: 14px;
-		transition: all 0.2s;
+	.approve-btn {
+		background-color: var(--green) !important;
+		border-color: var(--green) !important;
 	}
 
-	.action-btn.approve {
-		background-color: #10b981;
-		color: white;
-	}
-
-	.action-btn.approve:hover {
-		background-color: #059669;
-	}
-
-	.action-btn.reject {
-		background-color: #ef4444;
-		color: white;
-	}
-
-	.action-btn.reject:hover {
-		background-color: #dc2626;
+	.reject-btn {
+		background-color: var(--red) !important;
+		border-color: var(--red) !important;
 	}
 
 	/* Info Grid */
