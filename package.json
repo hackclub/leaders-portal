@@ -20,6 +20,7 @@
 		"@sveltejs/kit": "^2.47.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@tailwindcss/vite": "^4.1.14",
+		"@vitest/coverage-v8": "^2.1.9",
 		"svelte": "^5.41.0",
 		"tailwindcss": "^4.1.14",
 		"vite": "^7.1.10",
