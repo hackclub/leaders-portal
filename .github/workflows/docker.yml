@@ -25,3 +25,14 @@ jobs:
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            AIRTABLE_API_KEY=trains
+            AIRTABLE_BASE_ID=trains
+            AIRTABLE_TABLE_NAME=trains
+            CLUB_API_KEY=trains
+            DATABASE_URL=postgresql://trains:trains@localhost:5432/trains
+            HACKCLUB_AUTH_CLIENT_ID=trains
+            HACKCLUB_AUTH_CLIENT_SECRET=trains
+            HACKCLUB_AUTH_REDIRECT_URI=http://localhost:5173/auth/callback
+            SESSION_SECRET=trainstrainstrainstrainstrainstr
+            TOKEN_ENC_KEY=trainstrainstrainstrainstrainstr
