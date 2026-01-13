@@ -137,10 +137,18 @@
 	{:else if helpModal.error}
 		<p class="error-text">{helpModal.error}</p>
 	{:else if helpModal.ambassador}
+		<div class="ambassador-profile">
+			{#if helpModal.ambassador.pfp}
+				<img src={helpModal.ambassador.pfp} alt="Ambassador" class="ambassador-pfp" />
+			{/if}
+			{#if helpModal.ambassador.desc}
+				<p class="ambassador-desc">{helpModal.ambassador.desc}</p>
+			{/if}
+		</div>
 		<p class="help-intro">How would you like to contact your ambassador?</p>
 		<div class="contact-options">
 			{#if helpModal.ambassador.email}
-				<a href="mailto:{helpModal.ambassador.email}" class="btn email-button">
+				<a href="mailto:{helpModal.ambassador.email}" class="btn cta">
 					Email
 				</a>
 			{/if}
@@ -449,14 +457,52 @@
 		justify-content: center;
 	}
 
-	.email-button,
-	.slack-button {
+	.contact-options .btn {
 		flex: 1;
 		text-align: center;
+		padding: 12px 24px;
+		border-radius: 8px;
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
+		text-decoration: none;
+		display: inline-block;
+		background-color: #ec3750;
+		transition: transform 0.2s, opacity 0.2s;
+		color: white;
+		border: none;
+	}
+
+	.contact-options .btn:hover {
+		opacity: 0.9;
+		transform: scale(1.05);
 	}
 
 	.slack-button {
-		background-color: var(--green) !important;
-		border-color: var(--green) !important;
+		background-color: #33d6a6 !important;
+	}
+
+	.ambassador-profile {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-bottom: 20px;
+	}
+
+	.ambassador-pfp {
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 3px solid #e0e6ed;
+		margin-bottom: 12px;
+	}
+
+	.ambassador-desc {
+		color: #1f2d3d;
+		text-align: center;
+		margin: 0;
+		font-size: 14px;
+		line-height: 1.5;
 	}
 </style>
