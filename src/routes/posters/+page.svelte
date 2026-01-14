@@ -1,13 +1,16 @@
 <script>
 	import { onMount } from 'svelte';
+	import QRCode from 'qrcode';
 
 	let customUrl = $state('hack.club/join/your-club');
 	let canvasRef = $state(null);
 	let posterImage = $state(null);
 	let isLoading = $state(true);
 	let downloadFormat = $state('png');
+	let showQrCode = $state(false);
+	let qrCodeImage = $state(null);
 
-	const interactivePosterUrl = 'https://hc-cdn.hel1.your-objectstorage.com/s/v3/75b7fd75d4ea1f7edf05dfd0c488c18e613f952a_1.png';
+	const interactivePosterUrl = '/poster-template.png';
 	
 	const staticPosters = [
 		{
@@ -44,6 +47,28 @@
 		img.src = interactivePosterUrl;
 	}
 
+	async function generateQrCode(url) {
+		try {
+			const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+			const dataUrl = await QRCode.toDataURL(fullUrl, {
+				width: 200,
+				margin: 1,
+				color: {
+					dark: '#000000',
+					light: '#FFFFFF'
+				}
+			});
+			const img = new Image();
+			img.onload = () => {
+				qrCodeImage = img;
+				renderPoster();
+			};
+			img.src = dataUrl;
+		} catch (err) {
+			console.error('Failed to generate QR code:', err);
+		}
+	}
+
 	function renderPoster() {
 		if (!canvasRef || !posterImage) return;
 		
@@ -56,10 +81,10 @@
 		
 		ctx.drawImage(posterImage, 0, 0, width, height);
 		
-		const boxX = width * 0.11;
-		const boxY = height * 0.89;
-		const boxWidth = width * 0.78;
-		const boxHeight = height * 0.06;
+		const boxX = width * 0.2327;
+		const boxY = height * 0.8813;
+		const boxWidth = width * 0.7091;
+		const boxHeight = height * 0.0419;
 		
 		ctx.fillStyle = '#FFFFFF';
 		ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
@@ -72,11 +97,28 @@
 		ctx.font = `bold ${fontSize}px "Phantom Sans", system-ui, sans-serif`;
 		
 		ctx.fillText(customUrl, boxX + boxWidth / 2, boxY + boxHeight / 2);
+
+		if (showQrCode && qrCodeImage) {
+			const qrSize = width * 0.12;
+			const qrX = width * 0.85 - qrSize / 2;
+			const qrY = height * 0.76 - qrSize / 2;
+			
+			ctx.fillStyle = '#FFFFFF';
+			const padding = qrSize * 0.08;
+			ctx.fillRect(qrX - padding, qrY - padding, qrSize + padding * 2, qrSize + padding * 2);
+			
+			ctx.drawImage(qrCodeImage, qrX, qrY, qrSize, qrSize);
+		}
 	}
 
 	$effect(() => {
 		if (posterImage && canvasRef) {
-			renderPoster();
+			if (showQrCode) {
+				generateQrCode(customUrl);
+			} else {
+				qrCodeImage = null;
+				renderPoster();
+			}
 		}
 	});
 
@@ -168,6 +210,17 @@
 						/>
 					</div>
 					
+					<div class="input-group checkbox-group">
+						<label class="checkbox-label">
+							<input 
+								type="checkbox" 
+								bind:checked={showQrCode}
+							/>
+							<span>Show QR Code</span>
+						</label>
+						<p class="input-hint">Adds a scannable QR code to the poster</p>
+					</div>
+
 					<div class="input-group">
 						<label for="format">Download Format</label>
 						<select id="format" bind:value={downloadFormat}>
@@ -333,6 +386,32 @@
 	.input-group select:focus {
 		outline: none;
 		border-color: #ec3750;
+	}
+
+	.checkbox-group {
+		gap: 4px;
+	}
+
+	.checkbox-label {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		cursor: pointer;
+		font-weight: 600;
+		color: #1f2d3d;
+	}
+
+	.checkbox-label input[type="checkbox"] {
+		width: 20px;
+		height: 20px;
+		accent-color: #ec3750;
+		cursor: pointer;
+	}
+
+	.input-hint {
+		margin: 0;
+		font-size: 13px;
+		color: #8492a6;
 	}
 
 	.download-button {

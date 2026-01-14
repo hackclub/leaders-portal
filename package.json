@@ -19,11 +19,12 @@
 	"devDependencies": {
 		"@sveltejs/adapter-node": "^5.4.0",
 		"@sveltejs/kit": "^2.47.1",
-		"svelte-check": "^4.0.0",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"@tailwindcss/vite": "^4.1.14",
 		"@vitest/coverage-v8": "^2.1.9",
+		"playwright": "^1.57.0",
 		"svelte": "^5.41.0",
+		"svelte-check": "^4.0.0",
 		"tailwindcss": "^4.1.14",
 		"vite": "^7.1.10",
 		"vitest": "^2.1.9"
@@ -35,6 +36,7 @@
 		"knex": "^3.1.0",
 		"marked": "^17.0.0",
 		"pg": "^8.16.3",
-		"prop-types": "^15.8.1"
+		"prop-types": "^15.8.1",
+		"qrcode": "^1.5.4"
 	}
 }
