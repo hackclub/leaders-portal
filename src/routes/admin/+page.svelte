@@ -4,6 +4,37 @@
     let userSearchQuery = $state('');
     let clubSearchQuery = $state('');
     let memberSearchQuery = $state('');
+    
+    let isClearingCache = $state(false);
+    let cacheMessage = $state(null);
+    let cacheError = $state(null);
+
+    async function clearAllCache() {
+        if (isClearingCache) return;
+        if (!confirm('Are you sure you want to clear all cached club data? This will force fresh API calls for all users.')) return;
+        
+        isClearingCache = true;
+        cacheMessage = null;
+        cacheError = null;
+
+        try {
+            const response = await fetch('/api/admin/cache/clear', {
+                method: 'POST'
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to clear cache');
+            }
+
+            cacheMessage = `Cache cleared: ${result.cleared.clubs} clubs, ${result.cleared.leaders} leader records`;
+        } catch (err) {
+            cacheError = err.message;
+        } finally {
+            isClearingCache = false;
+        }
+    }
 </script>
 
 <div class="admin-dashboard">
@@ -241,12 +272,23 @@
 
     <section class="quick-links">
         <h2>Management</h2>
+        {#if cacheMessage}
+            <p class="cache-success">{cacheMessage}</p>
+        {/if}
+        {#if cacheError}
+            <p class="cache-error">{cacheError}</p>
+        {/if}
         <div class="link-cards">
             <a href="/admin/users" class="link-card">
                 <span class="link-icon">👥</span>
                 <span class="link-title">All Users</span>
                 <span class="link-desc">View and manage portal users</span>
             </a>
+            <button class="link-card cache-button" onclick={clearAllCache} disabled={isClearingCache}>
+                <span class="link-icon">🗑️</span>
+                <span class="link-title">{isClearingCache ? 'Clearing...' : 'Clear Cache'}</span>
+                <span class="link-desc">Invalidate all cached club data</span>
+            </button>
             <a href="/admin/clubs" class="link-card">
                 <span class="link-icon">🏫</span>
                 <span class="link-title">All Clubs</span>
@@ -786,5 +828,32 @@
 
     .view-all:hover {
         text-decoration: underline;
+    }
+
+    .cache-button {
+        cursor: pointer;
+        border: 2px solid #e0e6ed;
+        background: #fff;
+    }
+
+    .cache-button:hover:not(:disabled) {
+        border-color: #ec3750;
+    }
+
+    .cache-button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    .cache-success {
+        color: #33d6a6;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .cache-error {
+        color: #ec3750;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
     }
 </style>
