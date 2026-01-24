@@ -4,32 +4,64 @@
 	export let onComplete;
 	export let isLoggedIn;
 
+	let showTooltip = false;
+
 	async function toggleComplete(e) {
 		e.stopPropagation();
+		showTooltip = false;
 		await onComplete(event.id, !event.completed);
+	}
+
+	function handleMouseEnter() {
+		showTooltip = true;
+	}
+
+	function handleMouseLeave() {
+		showTooltip = false;
 	}
 </script>
 
-<div class="event-card" style="background-color: {event.color}; {event.backgroundUrl ? `background-image: url('${event.backgroundUrl}'); background-size: cover; background-position: center;` : ''}" on:click={() => openEvent(event)} on:keydown={(e) => e.key === 'Enter' && openEvent(event)} role="button" tabindex="0">
+<div
+	class="event-card"
+	style="background-color: {event.color}; {event.backgroundUrl
+		? `background-image: url('${event.backgroundUrl}'); background-size: cover; background-position: center;`
+		: ''}"
+	on:click={() => openEvent(event)}
+	on:keydown={(e) => e.key === 'Enter' && openEvent(event)}
+	role="button"
+	tabindex="0"
+>
 	{#if event.backgroundUrl}
 		<div class="background-overlay"></div>
 	{/if}
 	{#if isLoggedIn}
-		<button 
-			class="complete-button" 
-			class:completed={event.completed}
-			on:click={toggleComplete}
-			aria-label={event.completed ? "Mark as incomplete" : "Mark as complete"}
-			title={event.completed ? "Mark as incomplete" : "Mark as complete"}
-		>
-			✓
-		</button>
+		<div class="complete-wrapper">
+			<button
+				class="complete-button"
+				class:completed={event.completed}
+				on:click={toggleComplete}
+				on:mouseenter={handleMouseEnter}
+				on:mouseleave={handleMouseLeave}
+				aria-label={event.completed ? 'Mark as incomplete' : 'Mark as complete'}
+			>
+				{#if event.completed}
+					<span class="checkmark">✓</span>
+				{:else}
+					<span class="circle"></span>
+				{/if}
+			</button>
+			{#if showTooltip}
+				<div class="tooltip">
+					{event.completed ? 'Mark incomplete' : 'Mark complete'}
+				</div>
+			{/if}
+		</div>
 	{/if}
 	<div class="event-compact">
-		{#if event.category == "Hardware"}
-		<img src={event.icon} alt="{event.title} icon" class="event-icon-hardware" />
+		{#if event.category == 'Hardware'}
+			<img src={event.icon} alt="{event.title} icon" class="event-icon-hardware" />
 		{:else}
-		<img src={event.icon} alt="{event.title} icon" class="event-icon" />
+			<img src={event.icon} alt="{event.title} icon" class="event-icon" />
 		{/if}
 		<h3 style="color: {event.textColor};">{event.title}</h3>
 		<span class="type-badge">{event.type}</span>
@@ -108,41 +140,88 @@
 		opacity: 0.9;
 	}
 
-	.complete-button {
+	.complete-wrapper {
 		position: absolute;
 		top: 8px;
 		right: 8px;
-		width: 28px;
-		height: 28px;
-		border: 2px solid rgba(255, 255, 255, 0.5);
+		z-index: 10;
+	}
+
+	.complete-button {
+		width: 32px;
+		height: 32px;
+		border: none;
 		border-radius: 50%;
-		background-color: rgba(255, 255, 255, 0.2);
-		color: transparent;
-		font-size: 16px;
-		font-weight: bold;
+		background-color: rgba(255, 255, 255, 0.95);
 		cursor: pointer;
 		transition: all 0.2s;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: 0;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	}
 
 	.complete-button:hover {
-		background-color: rgba(255, 255, 255, 0.4);
-		border-color: rgba(255, 255, 255, 0.8);
-		transform: scale(1.1);
+		transform: scale(1.15);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	}
+
+	.complete-button:active {
+		transform: scale(1.05);
+	}
+
+	.circle {
+		width: 18px;
+		height: 18px;
+		border: 2.5px solid #9ca3af;
+		border-radius: 50%;
+		transition: all 0.2s;
+	}
+
+	.complete-button:hover .circle {
+		border-color: #33d9b2;
+		background-color: rgba(51, 217, 178, 0.1);
+	}
+
+	.checkmark {
+		color: #ffffff;
+		font-size: 20px;
+		font-weight: bold;
+		line-height: 1;
 	}
 
 	.complete-button.completed {
 		background-color: #33d9b2;
-		border-color: #33d9b2;
-		color: white;
 	}
 
 	.complete-button.completed:hover {
 		background-color: #2ecc9d;
-		border-color: #2ecc9d;
+	}
+
+	.tooltip {
+		position: absolute;
+		top: 100%;
+		right: 0;
+		margin-top: 6px;
+		padding: 6px 10px;
+		background-color: rgba(0, 0, 0, 0.85);
+		color: white;
+		font-size: 12px;
+		font-weight: 600;
+		border-radius: 6px;
+		white-space: nowrap;
+		pointer-events: none;
+		z-index: 100;
+	}
+
+	.tooltip::before {
+		content: '';
+		position: absolute;
+		bottom: 100%;
+		right: 10px;
+		border: 5px solid transparent;
+		border-bottom-color: rgba(0, 0, 0, 0.85);
 	}
 
 	@media (max-width: 768px) {
@@ -174,9 +253,17 @@
 		}
 
 		.complete-button {
-			width: 24px;
-			height: 24px;
-			font-size: 14px;
+			width: 28px;
+			height: 28px;
+		}
+
+		.checkmark {
+			font-size: 18px;
+		}
+
+		.circle {
+			width: 16px;
+			height: 16px;
 		}
 	}
 
