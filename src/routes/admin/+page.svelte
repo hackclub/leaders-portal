@@ -1,4 +1,6 @@
 <script>
+    import AddLeaderModal from '$lib/AddLeaderModal.svelte';
+    
     let { data, form } = $props();
     
     let userSearchQuery = $state('');
@@ -8,6 +10,8 @@
     let isClearingCache = $state(false);
     let cacheMessage = $state(null);
     let cacheError = $state(null);
+    
+    let showAddLeaderModal = $state(false);
 
     async function clearAllCache() {
         if (isClearingCache) return;
@@ -299,8 +303,15 @@
                 <span class="link-title">Analytics</span>
                 <span class="link-desc">View stats</span>
             </a>
+            <button class="link-card" onclick={() => showAddLeaderModal = true}>
+                <span class="link-icon">➕</span>
+                <span class="link-title">Add Leader</span>
+                <span class="link-desc">Create new club leader</span>
+            </button>
         </div>
     </section>
+    
+    <AddLeaderModal bind:open={showAddLeaderModal} onClose={() => showAddLeaderModal = false} />
 
     <div class="data-panels">
         <section class="data-panel">
