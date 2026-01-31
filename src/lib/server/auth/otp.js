@@ -4,6 +4,19 @@ export function generateOTP() {
 	return crypto.randomInt(100000, 999999).toString();
 }
 
+function safeCompare(a, b) {
+	if (typeof a !== 'string' || typeof b !== 'string') {
+		return false;
+	}
+	const bufA = Buffer.from(a);
+	const bufB = Buffer.from(b);
+	if (bufA.length !== bufB.length) {
+		crypto.timingSafeEqual(bufA, Buffer.alloc(bufA.length));
+		return false;
+	}
+	return crypto.timingSafeEqual(bufA, bufB);
+}
+
 export async function createOTP(knex, email) {
 	const code = generateOTP();
 	const now = new Date();
@@ -27,11 +40,16 @@ export async function createOTP(knex, email) {
 
 export async function verifyOTP(knex, email, code) {
 	const otp = await knex('otp_codes')
-		.where({ email, code, used: false })
+		.where({ email, used: false })
 		.andWhere('expires_at', '>', knex.fn.now())
+		.orderBy('created_at', 'desc')
 		.first();
 
 	if (!otp) {
+		return false;
+	}
+
+	if (!safeCompare(otp.code, code)) {
 		return false;
 	}
 

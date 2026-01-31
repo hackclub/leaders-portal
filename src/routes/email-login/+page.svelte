@@ -1,6 +1,7 @@
 <script>
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { toasts } from '$lib/stores/toast.js';
 
 	const errorMessages = {
 		not_a_leader: 'You are not registered as a club leader. If this is a mistake, please contact us.',
@@ -39,8 +40,10 @@
 			}
 
 			step = 'otp';
+			toasts.success('Code sent! Check your email');
 		} catch (err) {
 			error = 'Network error. Please try again.';
+			toasts.error('Network error. Please try again.');
 		} finally {
 			loading = false;
 		}
@@ -66,6 +69,7 @@
 				return;
 			}
 
+			await invalidateAll();
 			goto('/my-club');
 		} catch (err) {
 			error = 'Network error. Please try again.';
@@ -86,15 +90,31 @@
 </svelte:head>
 
 
-<div class="container">
+<div class="login-page">
 	<div class="login-card">
-		<h1 class="title">Leader Portal Login</h1>
+		<div class="card-header">
+			<img src="https://assets.hackclub.com/icon-rounded.svg" alt="Hack Club" class="logo" />
+			<h1 class="title">Leader Portal</h1>
+			<p class="subtitle">Sign in to manage your club</p>
+		</div>
 
 		{#if urlError}
-			<div class="error">{errorMessages[urlError] || 'An error occurred. Please try again.'}</div>
+			<div class="alert alert-error">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<circle cx="12" cy="12" r="10"/>
+					<line x1="15" y1="9" x2="9" y2="15"/>
+					<line x1="9" y1="9" x2="15" y2="15"/>
+				</svg>
+				{errorMessages[urlError] || 'An error occurred. Please try again.'}
+			</div>
 		{/if}
 
-		<a href="/auth/login" class="btn cta hackclub-button">
+		<a href="/auth/login" class="btn btn-primary btn-lg oauth-button">
+			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+				<polyline points="10 17 15 12 10 7"/>
+				<line x1="15" y1="12" x2="3" y2="12"/>
+			</svg>
 			Sign in with Hack Club
 		</a>
 
@@ -103,9 +123,9 @@
 		</div>
 		
 		{#if step === 'email'}
-			<form onsubmit={requestOTP}>
+			<form onsubmit={requestOTP} class="login-form">
 				<div class="form-group">
-					<label for="email">Email Address</label>
+					<label for="email" class="form-label">Email Address</label>
 					<input
 						id="email"
 						type="email"
@@ -113,29 +133,39 @@
 						placeholder="your.email@example.com"
 						required
 						disabled={loading}
+						class="input"
 					/>
 				</div>
 
 				{#if error}
-					<div class="error">{error}</div>
+					<div class="alert alert-error">{error}</div>
 				{/if}
 
-				<button type="submit" class="btn submit-button" disabled={loading}>
-					{loading ? 'Sending...' : 'Send OTP Code'}
+				<button type="submit" class="btn btn-primary btn-lg" disabled={loading}>
+					{#if loading}
+						<span class="spinner-sm"></span>
+						Sending...
+					{:else}
+						Send OTP Code
+					{/if}
 				</button>
 
 				<div class="back-link">
-					<a href="/">Back to Home</a>
+					<a href="/" class="link">← Back to Home</a>
 				</div>
 			</form>
 		{:else if step === 'otp'}
-			<div class="otp-sent-message">
+			<div class="alert alert-info">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+					<polyline points="22,6 12,13 2,6"/>
+				</svg>
 				A 6-digit code has been sent to <strong>{email}</strong>
 			</div>
 
-			<form onsubmit={verifyOTP}>
+			<form onsubmit={verifyOTP} class="login-form">
 				<div class="form-group">
-					<label for="otp">Enter OTP Code</label>
+					<label for="otp" class="form-label">Enter OTP Code</label>
 					<input
 						id="otp"
 						type="text"
@@ -146,20 +176,26 @@
 						required
 						disabled={loading}
 						autofocus
+						class="input otp-input"
 					/>
 				</div>
 
 				{#if error}
-					<div class="error">{error}</div>
+					<div class="alert alert-error">{error}</div>
 				{/if}
 
-				<button type="submit" class="btn submit-button" disabled={loading}>
-					{loading ? 'Verifying...' : 'Verify & Login'}
+				<button type="submit" class="btn btn-primary btn-lg" disabled={loading}>
+					{#if loading}
+						<span class="spinner-sm"></span>
+						Verifying...
+					{:else}
+						Verify & Login
+					{/if}
 				</button>
 
 				<div class="back-link">
-					<button type="button" class="btn outline" onclick={goBack} disabled={loading}>
-						Use a different email
+					<button type="button" class="btn btn-outline" onclick={goBack} disabled={loading}>
+						← Use a different email
 					</button>
 				</div>
 			</form>
@@ -167,125 +203,69 @@
 	</div>
 </div>
 <style>
-	:global(body) {
-		color: var(--black);
-		margin: 0;
-		padding: 0;
-	}
-
-	.container {
+	.login-page {
 		min-height: 100vh;
-		min-width: 100%;
 		display: flex;
-		background: url("/orpheus.jpg") center/cover;
 		align-items: center;
 		justify-content: center;
-		padding: 16px;
-		box-sizing: border-box;
+		background: url('/orpheus.jpg');
+		background-size: cover;
+		background-position: center;
+		padding: 24px;
 	}
 
 	.login-card {
 		background: white;
-		border: 3px solid #ec3750;
-		border-radius: 16px;
+		border-radius: 24px;
 		padding: 48px;
-		max-width: 480px;
+		max-width: 440px;
 		width: 100%;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-		box-sizing: border-box;
+		box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+	}
+
+	.card-header {
+		text-align: center;
+		margin-bottom: 32px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.logo {
+		height: 60px;
+		width: auto;
+		margin-bottom: 20px;
 	}
 
 	.title {
-		font-size: 32px;
-		font-weight: bold;
-		color: #ec3750;
-		margin: 0 0 32px 0;
-		text-align: center;
-	}
-
-	.form-group {
-		margin-bottom: 24px;
-	}
-
-	label {
-		display: block;
-		font-weight: 600;
-		margin-bottom: 8px;
+		font-size: 2rem;
 		color: #1f2d3d;
-		font-size: 14px;
+		margin: 0 0 8px 0;
+		letter-spacing: -0.02em;
 	}
 
-	input {
-		width: 100%;
-		padding: 12px 16px;
-		border: 2px solid #ddd;
-		border-radius: 8px;
-		font-size: 16px;
-		font-family: 'Phantom Sans', sans-serif;
-		transition: border-color 0.2s;
-		box-sizing: border-box;
+	.subtitle {
+		color: #8492a6;
+		margin: 0;
+		font-size: 1rem;
 	}
 
-	input:focus {
-		outline: none;
-		border-color: #ec3750;
-	}
-
-	input:disabled {
-		background-color: #f5f5f5;
-		cursor: not-allowed;
-	}
-
-	.submit-button {
-		width: 100%;
-	}
-
-	.error {
-		background-color: #fee;
-		border: 1px solid #fcc;
-		color: #c33;
-		padding: 12px 16px;
-		border-radius: 8px;
-		margin-bottom: 16px;
-		font-size: 14px;
-	}
-
-	.otp-sent-message {
-		background-color: #e8f4fd;
-		border: 1px solid #3b82f6;
-		color: #1e40af;
-		padding: 16px;
-		border-radius: 8px;
-		margin-bottom: 24px;
-		text-align: center;
-		font-size: 14px;
-	}
-
-	.back-link {
-		margin-top: 16px;
-		text-align: center;
-	}
-
-	.back-link a {
-		color: var(--primary);
-		text-decoration: none;
-		font-size: 14px;
-		font-weight: 600;
-	}
-
-	.back-link a:hover {
-		text-decoration: underline;
-	}
-
-	.hackclub-button {
+	.oauth-button {
 		width: 100%;
 		justify-content: center;
+		background: linear-gradient(135deg, #ec3750 0%, #d12d42 100%);
+		box-shadow: 0 4px 16px rgba(236, 55, 80, 0.3);
+	}
+
+	.oauth-button:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 24px rgba(236, 55, 80, 0.4);
 	}
 
 	.divider {
 		display: flex;
 		align-items: center;
-		margin: 24px 0;
+		margin: 28px 0;
 	}
 
 	.divider::before,
@@ -293,12 +273,138 @@
 		content: '';
 		flex: 1;
 		height: 1px;
-		background-color: #ddd;
+		background: #e0e6ed;
 	}
 
 	.divider span {
 		padding: 0 16px;
 		color: #8492a6;
-		font-size: 14px;
+		font-size: 0.85rem;
+		font-weight: 500;
+	}
+
+	.login-form {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.form-group {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.form-label {
+		font-weight: 600;
+		color: #1f2d3d;
+		font-size: 0.9rem;
+	}
+
+	.otp-input {
+		text-align: center;
+		font-size: 1.75rem;
+		letter-spacing: 0.4em;
+		font-weight: 700;
+		padding: 16px 20px;
+	}
+
+	.login-form .btn {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.login-form .btn-primary {
+		background: linear-gradient(135deg, #ec3750 0%, #d12d42 100%);
+		box-shadow: 0 4px 16px rgba(236, 55, 80, 0.25);
+	}
+
+	.login-form .btn-primary:hover:not(:disabled) {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 24px rgba(236, 55, 80, 0.35);
+	}
+
+	.spinner-sm {
+		width: 18px;
+		height: 18px;
+		border: 2px solid rgba(255, 255, 255, 0.3);
+		border-top-color: white;
+		border-radius: 50%;
+		animation: spin 0.75s linear infinite;
+		margin-right: 8px;
+	}
+
+	@keyframes spin {
+		to { transform: rotate(360deg); }
+	}
+
+	.back-link {
+		text-align: center;
+		margin-top: 8px;
+	}
+
+	.link {
+		color: #338eda;
+		text-decoration: none;
+		font-size: 0.9rem;
+		font-weight: 600;
+		transition: color 0.2s;
+	}
+
+	.link:hover {
+		color: #ec3750;
+	}
+
+	.back-link .btn {
+		width: 100%;
+	}
+
+	.alert {
+		display: flex;
+		align-items: flex-start;
+		gap: 12px;
+		padding: 14px 18px;
+		border-radius: 12px;
+		font-size: 0.9rem;
+		line-height: 1.5;
+	}
+
+	.alert-info {
+		background: linear-gradient(135deg, #d6eaff 0%, #f0f7ff 100%);
+		color: #1e6bbf;
+	}
+
+	.alert-error {
+		background: linear-gradient(135deg, #fee2e6 0%, #fff0f2 100%);
+		color: #c41e3a;
+	}
+
+	.alert svg {
+		flex-shrink: 0;
+		margin-top: 2px;
+	}
+
+	@media (max-width: 480px) {
+		.login-page {
+			padding: 16px;
+		}
+
+		.login-card {
+			padding: 32px 24px;
+			border-radius: 20px;
+		}
+
+		.title {
+			font-size: 1.625rem;
+		}
+
+		.logo {
+			height: 48px;
+		}
+
+		.otp-input {
+			font-size: 1.5rem;
+			letter-spacing: 0.3em;
+		}
 	}
 </style>

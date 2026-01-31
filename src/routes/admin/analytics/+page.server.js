@@ -33,7 +33,6 @@ export async function load() {
         console.error('Error fetching events for analytics:', error);
     }
 
-    // Combine completions with event details
     const eventStats = completions.map(c => ({
         id: c.event_id,
         title: eventsMap.get(c.event_id)?.title || 'Unknown Event',
@@ -78,19 +77,16 @@ export async function load() {
         console.error('Error fetching ships from Airtable:', error);
     }
 
-    // Top YSWS programs
     const topYsws = Object.entries(shipsByYsws)
         .map(([name, count]) => ({ name, count }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 10);
 
-    // Top clubs by ships
     const topClubs = Object.entries(shipsByClub)
         .map(([name, count]) => ({ name, count }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 10);
 
-    // Sample of ships
     const sampleShips = allShips.slice(0, 20);
 
     return {

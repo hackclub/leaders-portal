@@ -1,4 +1,6 @@
 <script>
+	import { toasts } from '$lib/stores/toast.js';
+	
 	let { clubName, onRefresh } = $props();
 	let isRefreshing = $state(false);
 	let lastRefreshed = $state(null);
@@ -26,11 +28,13 @@
 			}
 
 			lastRefreshed = new Date();
+			toasts.success('Club data refreshed!');
 			if (onRefresh) {
 				onRefresh(data.club);
 			}
 		} catch (err) {
 			error = err.message;
+			toasts.error(err.message || 'Failed to refresh');
 			console.error('[RefreshButton] Error:', err);
 		} finally {
 			isRefreshing = false;

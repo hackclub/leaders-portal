@@ -206,7 +206,7 @@ export const GET = async ({ url, cookies, fetch, getClientAddress, request, loca
 	cookies.set('sid', sessionToken, {
 		httpOnly: true,
 		sameSite: 'lax',
-		secure: env.NODE_ENV === 'production',
+		secure: true,
 		path: '/',
 		maxAge: fourteenDays
 	});

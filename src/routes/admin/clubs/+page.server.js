@@ -1,13 +1,29 @@
 import { fail } from '@sveltejs/kit';
 import Airtable from 'airtable';
 import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '$env/static/private';
+import { getKnex } from '$lib/server/db/knex.js';
+import { randomUUID } from 'crypto';
 
 const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
+const CLUBS_PER_PAGE = 25;
 
-export async function load() {
+export async function load({ url }) {
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    
     let clubsData = {};
     let totalMembers = 0;
     let totalShips = 0;
+    
+    const knex = getKnex();
+    
+    let suspendedClubs = [];
+    try {
+        suspendedClubs = await knex('suspended_clubs').select('*').orderBy('suspended_at', 'desc');
+    } catch (err) {
+        console.log('Could not fetch suspended clubs:', err.message);
+    }
+    
+    const suspendedClubIds = new Set(suspendedClubs.map(c => c.provider_club_id));
 
     try {
         const memberRecords = await base('Members')
@@ -97,12 +113,25 @@ export async function load() {
         }))
         .sort((a, b) => b.memberCount - a.memberCount);
 
+    const totalClubs = clubs.length;
+    const totalPages = Math.ceil(totalClubs / CLUBS_PER_PAGE);
+    const offset = (page - 1) * CLUBS_PER_PAGE;
+    const paginatedClubs = clubs.slice(offset, offset + CLUBS_PER_PAGE);
+
     return {
-        clubs,
+        clubs: paginatedClubs,
+        suspendedClubs,
         stats: {
-            totalClubs: clubs.length,
+            totalClubs,
             totalMembers,
-            totalShips
+            totalShips,
+            totalSuspended: suspendedClubs.length
+        },
+        pagination: {
+            page,
+            totalPages,
+            totalClubs,
+            perPage: CLUBS_PER_PAGE
         }
     };
 }
@@ -161,5 +190,44 @@ export const actions = {
         }
         
         return { searchResults: clubResults, searchQuery: query };
+    },
+    
+    suspendClub: async ({ request, locals }) => {
+        const formData = await request.formData();
+        const clubName = formData.get('clubName')?.toString().trim();
+        const clubId = parseInt(formData.get('clubId')?.toString() || '0', 10);
+        const reason = formData.get('reason')?.toString().trim() || 'No reason provided';
+        
+        if (!clubName) {
+            return fail(400, { error: 'Club name is required' });
+        }
+        
+        const knex = getKnex();
+        
+        const existing = await knex('suspended_clubs').where({ provider_club_id: clubId }).first();
+        if (existing) {
+            return fail(400, { error: 'Club is already suspended' });
+        }
+        
+        await knex('suspended_clubs').insert({
+            id: randomUUID(),
+            provider_club_id: clubId,
+            club_name: clubName,
+            reason,
+            suspended_by: locals.userPublic?.id,
+            suspended_at: new Date()
+        });
+        
+        return { success: true, action: 'suspended', clubName };
+    },
+    
+    unsuspendClub: async ({ request, locals }) => {
+        const formData = await request.formData();
+        const clubId = parseInt(formData.get('clubId')?.toString() || '0', 10);
+        
+        const knex = getKnex();
+        await knex('suspended_clubs').where({ provider_club_id: clubId }).delete();
+        
+        return { success: true, action: 'unsuspended' };
     }
 };

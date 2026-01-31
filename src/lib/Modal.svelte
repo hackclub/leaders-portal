@@ -17,7 +17,7 @@
 		<div class="modal" role="dialog" aria-modal="true" tabindex="-1" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
 			<div class="modal-header">
 				<h2>{title}</h2>
-				<button class="modal-close" onclick={onClose}>&times;</button>
+				<button class="modal-close" onclick={onClose} aria-label="Close modal">&times;</button>
 			</div>
 			<div class="modal-body">
 				{@render children()}
@@ -29,23 +29,44 @@
 <style>
 	.modal-overlay {
 		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: rgba(0, 0, 0, 0.5);
+		inset: 0;
+		background: rgba(31, 45, 61, 0.5);
+		backdrop-filter: blur(8px);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		z-index: 1000;
+		padding: 20px;
+		animation: fadeIn 0.2s ease;
+	}
+
+	@keyframes fadeIn {
+		from { opacity: 0; }
+		to { opacity: 1; }
 	}
 
 	.modal {
 		background: white;
-		border-radius: 12px;
-		width: 90%;
-		max-width: 400px;
-		font-family: 'Phantom Sans', system-ui, sans-serif;
+		border-radius: 20px;
+		width: 100%;
+		max-width: 440px;
+		max-height: 85vh;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		box-shadow: 0 24px 60px rgba(31, 45, 61, 0.25);
+		animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	@keyframes slideUp {
+		from {
+			opacity: 0;
+			transform: translateY(24px) scale(0.96);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+		}
 	}
 
 	.modal-header {
@@ -54,29 +75,58 @@
 		align-items: center;
 		padding: 20px 24px;
 		border-bottom: 1px solid #e0e6ed;
+		flex-shrink: 0;
 	}
 
 	.modal-header h2 {
 		margin: 0;
-		font-size: 20px;
+		font-size: 1.25rem;
+		font-weight: 700;
 		color: #1f2d3d;
 	}
 
 	.modal-close {
-		background: none;
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: #f9fafc;
 		border: none;
-		font-size: 28px;
+		border-radius: 10px;
+		font-size: 1.5rem;
+		line-height: 1;
 		color: #8492a6;
 		cursor: pointer;
-		padding: 0;
-		line-height: 1;
+		transition: all 0.2s;
 	}
 
 	.modal-close:hover {
-		color: #1f2d3d;
+		background: #ec3750;
+		color: white;
+		transform: scale(1.05);
 	}
 
 	.modal-body {
 		padding: 24px;
+		overflow-y: auto;
+	}
+
+	@media (max-width: 480px) {
+		.modal-overlay {
+			padding: 16px;
+		}
+
+		.modal {
+			border-radius: 16px;
+		}
+
+		.modal-header {
+			padding: 16px 20px;
+		}
+
+		.modal-body {
+			padding: 20px;
+		}
 	}
 </style>

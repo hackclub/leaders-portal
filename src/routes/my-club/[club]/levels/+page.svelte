@@ -1,5 +1,6 @@
 <script>
 	import { marked } from 'marked';
+	import DOMPurify from 'dompurify';
 
 	let { data } = $props();
 	let club = $state(data.club);
@@ -86,7 +87,7 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 	}
 
 	function parseMarkdown(md) {
-		return marked.parse(md);
+		return DOMPurify.sanitize(marked.parse(md));
 	}
 </script>
 

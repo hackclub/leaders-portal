@@ -1,19 +1,20 @@
 import { redirect, fail } from '@sveltejs/kit';
 import { getKnex } from '$lib/server/db/knex.js';
-import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clubs.js';
+import { getClubsForEmail, getEffectiveEmailForUser, isClubSuspended } from '$lib/server/sync-clubs.js';
 import { deleteMember, sendAnnouncement } from '$lib/server/clubapi.js';
 import { getClubSettings } from '$lib/server/airtable.js';
+import { debugLog, redactEmail } from '$lib/server/debug.js';
 
 export async function load({ locals }) {
-	console.log('[MyClub] load called, userPublic:', !!locals.userPublic, 'userId:', locals.userId);
+	debugLog('[MyClub] load called, userPublic:', !!locals.userPublic);
 	if (!locals.userPublic) {
-		console.log('[MyClub] No userPublic, redirecting to login');
+		debugLog('[MyClub] No userPublic, redirecting to login');
 		throw redirect(302, '/auth/login');
 	}
 
 	const knex = getKnex();
 	const user = await knex('users').where({ id: locals.userId }).first();
-	console.log('[MyClub] User from DB:', user ? { id: user.id, email: user.email, provider: user.provider } : null);
+	debugLog('[MyClub] User loaded, provider:', user?.provider);
 
 	const effectiveEmail = getEffectiveEmailForUser(user);
 	const clubs = await getClubsForEmail(effectiveEmail);
@@ -21,9 +22,15 @@ export async function load({ locals }) {
 	const clubsWithWebsite = await Promise.all(
 		clubs.map(async (club) => {
 			const settings = await getClubSettings(club.name);
+			
+			const suspension = await isClubSuspended(club.id);
+			
 			return {
 				...club,
-				clubWebsite: settings?.clubWebsite || ''
+				clubWebsite: settings?.clubWebsite || '',
+				isSuspended: !!suspension,
+				suspensionReason: suspension?.reason || null,
+				suspendedAt: suspension?.suspended_at || null
 			};
 		})
 	);
@@ -63,8 +70,13 @@ export const actions = {
 			return fail(403, { error: 'Only club leaders can remove members' });
 		}
 
+		const isMemberOfClub = club.members?.includes(memberName);
+		if (!isMemberOfClub) {
+			return fail(400, { error: 'Member not found in this club' });
+		}
+
 		try {
-			await deleteMember(memberName);
+			await deleteMember(memberName, clubName);
 			return { success: true };
 		} catch (error) {
 			console.error('[MyClub] Error removing member:', error);

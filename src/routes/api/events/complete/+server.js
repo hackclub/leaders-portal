@@ -1,6 +1,11 @@
 import { json } from '@sveltejs/kit';
 import { getKnex } from '$lib/server/db/knex.js';
 
+function isValidAirtableId(id) {
+	if (!id || typeof id !== 'string') return false;
+	return /^rec[a-zA-Z0-9]{14}$/.test(id);
+}
+
 export async function POST({ request, locals }) {
 	try {
 		if (!locals.userId) {
@@ -11,6 +16,10 @@ export async function POST({ request, locals }) {
 
 		if (!eventId) {
 			return json({ error: 'Event ID is required' }, { status: 400 });
+		}
+
+		if (!isValidAirtableId(eventId)) {
+			return json({ error: 'Invalid event ID format' }, { status: 400 });
 		}
 
 		const knex = getKnex();
@@ -39,6 +48,10 @@ export async function DELETE({ request, locals }) {
 
 		if (!eventId) {
 			return json({ error: 'Event ID is required' }, { status: 400 });
+		}
+
+		if (!isValidAirtableId(eventId)) {
+			return json({ error: 'Invalid event ID format' }, { status: 400 });
 		}
 
 		const knex = getKnex();

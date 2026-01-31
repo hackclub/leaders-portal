@@ -1,191 +1,371 @@
 <script>
 	import { page } from '$app/stores';
+	
+	const errorData = {
+		400: {
+			title: 'Bad Request',
+			message: "Something's wrong with that request. Let's try again.",
+			icon: '🤔',
+			color: '#f59e0b'
+		},
+		401: {
+			title: 'Not Authenticated',
+			message: "You need to log in to access this page.",
+			icon: '🔐',
+			color: '#8b5cf6'
+		},
+		403: {
+			title: 'Access Denied',
+			message: "You don't have permission to view this page.",
+			icon: '🚫',
+			color: '#ef4444'
+		},
+		404: {
+			title: 'Page Not Found',
+			message: "We can't find the page you're looking for.",
+			icon: '🦕',
+			color: '#ec3750',
+			useDino: true
+		},
+		429: {
+			title: 'Slow Down!',
+			message: "You're making requests too quickly. Take a breather.",
+			icon: '⏳',
+			color: '#f59e0b'
+		},
+		500: {
+			title: 'Server Error',
+			message: "Something went wrong on our end. We're working on it!",
+			icon: '🔧',
+			color: '#ec3750'
+		},
+		502: {
+			title: 'Bad Gateway',
+			message: "We're having trouble connecting. Please try again.",
+			icon: '🌐',
+			color: '#6366f1'
+		},
+		503: {
+			title: 'Service Unavailable',
+			message: "We're temporarily down for maintenance. Check back soon!",
+			icon: '🛠️',
+			color: '#8b5cf6'
+		}
+	};
+	
+	$: status = $page.status || 500;
+	$: error = errorData[status] || {
+		title: 'Something Went Wrong',
+		message: $page.error?.message || "An unexpected error occurred.",
+		icon: '❌',
+		color: '#ec3750'
+	};
 </script>
 
 <svelte:head>
-	<title>404 – Page Not Found</title>
+	<title>{status} – {error.title} | Hack Club Leaders Portal</title>
 </svelte:head>
 
-<div class="container">
-	<img src="https://hackclub.com/404/dinobox.svg" alt="Hack Club Dino" class="dino" />
-	<h1 class="glitch" data-text="404!">404!</h1>
-	<span class="message">We can't find the page you're looking for.</span>
-	<a href="https://leaders.hackclub.com" class="button">
-		<svg fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="1.414" xmlns="http://www.w3.org/2000/svg" aria-label="home" viewBox="0 0 32 32" preserveAspectRatio="xMidYMid meet" fill="currentColor" width="32" height="32">
-			<path d="M16,5c-0.358,0 -0.736,0.149 -0.997,0.264c-0.297,0.13 -0.676,0.326 -1.077,0.555c-0.789,0.451 -1.798,1.102 -2.878,1.864c-2.149,1.518 -4.715,3.572 -6.755,5.61c-0.391,0.39 -0.391,1.024 0,1.414c0.39,0.391 1.024,0.391 1.414,0c1.96,-1.962 4.394,-3.908 6.495,-5.39c1.045,-0.738 1.974,-1.337 2.716,-1.761c0.365,-0.209 0.649,-0.357 0.887,-0.46c0.091,-0.04 0.154,-0.064 0.195,-0.078c0.041,0.014 0.104,0.038 0.194,0.078c0.239,0.103 0.523,0.251 0.888,0.46c0.742,0.424 1.671,1.023 2.716,1.761c2.101,1.482 4.535,3.428 6.495,5.39c0.39,0.391 1.024,0.391 1.414,0c0.391,-0.39 0.391,-1.024 0,-1.414c-2.04,-2.038 -4.606,-4.092 -6.755,-5.61c-1.08,-0.762 -2.089,-1.413 -2.878,-1.864c-0.401,-0.229 -0.78,-0.425 -1.077,-0.555c-0.262,-0.115 -0.639,-0.264 -0.997,-0.264Zm3.934,19.816c0.184,-0.028 0.358,-0.061 0.524,-0.098l0.014,-0.003c0.923,-0.2 1.291,-0.482 1.522,-0.79c0.292,-0.39 0.589,-1.123 0.774,-2.649l0.001,-0.003c0.165,-1.347 0.218,-3.047 0.229,-5.273c0.002,-0.552 0.45,-1 1.002,-1c0.552,0 1,0.448 0.998,1c-0.052,10.061 -1.005,11 -8.998,11c-7.993,0 -8.946,-0.939 -8.998,-11c-0.002,-0.552 0.446,-1 0.998,-1c0.552,0 1,0.448 1.002,1c0.011,2.226 0.064,3.926 0.229,5.273l0.001,0.003c0.185,1.526 0.482,2.259 0.774,2.649c0.231,0.308 0.599,0.59 1.523,0.79l0.013,0.003c0.166,0.037 0.34,0.07 0.524,0.098c-0.049,-0.788 -0.066,-1.718 -0.066,-2.816c0,-5.133 0.4,-6 4,-6c3.6,0 4,0.867 4,6c0,1.098 -0.017,2.028 -0.066,2.816Zm-2.015,0.16c0.062,-0.782 0.081,-1.74 0.081,-2.976c0,-1.258 -0.02,-2.159 -0.105,-2.87l0,-0.002c-0.081,-0.688 -0.196,-0.921 -0.228,-0.973c-0.001,-0.001 -0.001,-0.002 -0.001,-0.003c-0.002,-0.005 -0.007,-0.009 -0.012,-0.009c-0.019,-0.001 -0.042,-0.003 -0.073,-0.009c-0.004,-0.001 -0.009,-0.002 -0.012,-0.003c-0.338,-0.11 -0.751,-0.133 -1.568,-0.131l-0.002,0c-0.817,-0.002 -1.23,0.021 -1.568,0.131c-0.004,0.001 -0.008,0.002 -0.012,0.003c-0.031,0.006 -0.055,0.008 -0.073,0.009c-0.005,0 -0.01,0.004 -0.012,0.009c0,0.002 0,0.002 -0.001,0.003c-0.032,0.052 -0.147,0.285 -0.228,0.973l0,0.002c-0.085,0.711 -0.105,1.612 -0.105,2.87c0,1.236 0.019,2.194 0.08,2.976c0.569,0.018 1.204,0.024 1.92,0.024l0,0c0.715,0 1.35,-0.006 1.919,-0.024Z"></path>
-		</svg>
-		Go to leaders portal
-	</a>
+<div class="error-page">
+	<div class="error-container">
+		{#if error.useDino}
+			<img src="https://hackclub.com/404/dinobox.svg" alt="Hack Club Dino" class="dino" />
+		{:else}
+			<div class="error-icon" style="--icon-color: {error.color}">
+				{error.icon}
+			</div>
+		{/if}
+		
+		<h1 class="error-code" data-text="{status}!" style="--accent-color: {error.color}">
+			{status}!
+		</h1>
+		
+		<h2 class="error-title">{error.title}</h2>
+		<p class="error-message">{error.message}</p>
+		
+		{#if $page.error?.message && $page.error.message !== error.message}
+			<div class="error-details">
+				<p>{$page.error.message}</p>
+			</div>
+		{/if}
+		
+		<div class="error-actions">
+			<a href="/" class="btn primary">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+					<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+					<polyline points="9 22 9 12 15 12 15 22"></polyline>
+				</svg>
+				Go Home
+			</a>
+			<button class="btn secondary" onclick={() => history.back()}>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+					<line x1="19" y1="12" x2="5" y2="12"></line>
+					<polyline points="12 19 5 12 12 5"></polyline>
+				</svg>
+				Go Back
+			</button>
+		</div>
+		
+		{#if status === 401}
+			<a href="/auth/login" class="login-link">
+				Sign in to continue →
+			</a>
+		{/if}
+	</div>
+	
+	<!-- Decorative elements -->
+	<div class="decoration decoration-1" style="--deco-color: {error.color}"></div>
+	<div class="decoration decoration-2" style="--deco-color: {error.color}"></div>
+	<div class="decoration decoration-3"></div>
 </div>
 
 <style>
-	.container {
-		max-width: 512px;
-		width: 100%;
-		margin: 0 auto;
-		padding: 64px 16px;
-		text-align: center;
+	.error-page {
 		min-height: 100vh;
 		display: flex;
-		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		background: #ffffff;
+		padding: 24px;
+		background: linear-gradient(135deg, #f9fafc 0%, #eef1f6 100%);
+		font-family: 'Phantom Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		position: relative;
+		overflow: hidden;
 	}
-
-	@media (min-width: 32em) {
-		.container {
-			max-width: 600px;
-			padding: 128px 16px;
-		}
-	}
-
-	.dino {
-		font-size: 128px;
+	
+	.error-container {
+		max-width: 480px;
+		width: 100%;
 		text-align: center;
-		height: 128px;
-		max-width: 100%;
+		position: relative;
+		z-index: 1;
 	}
-
-	@media (min-width: 32em) {
+	
+	.dino {
+		height: 160px;
+		max-width: 100%;
+		margin: 0 auto 16px auto;
+		display: block;
+		animation: float 3s ease-in-out infinite;
+	}
+	
+	@media (min-width: 640px) {
 		.dino {
-			font-size: 256px;
-			height: 256px;
+			height: 200px;
 		}
 	}
-
-	.glitch {
-		font-family: "Phantom Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-		font-weight: 700;
+	
+	.error-icon {
+		font-size: 80px;
+		margin-bottom: 16px;
+		animation: float 3s ease-in-out infinite;
+		filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--icon-color) 30%, transparent));
+	}
+	
+	@media (min-width: 640px) {
+		.error-icon {
+			font-size: 100px;
+		}
+	}
+	
+	@keyframes float {
+		0%, 100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
+	}
+	
+	.error-code {
+		font-size: 72px;
+		font-weight: 900;
+		color: #1f2d3d;
+		margin: 0 0 8px 0;
 		line-height: 1;
-		font-size: 64px;
 		position: relative;
 		display: inline-block;
-		color: #1f2d3d;
-		margin: 16px 0;
 	}
-
-	@media (min-width: 32em) {
-		.glitch {
-			font-size: 128px;
+	
+	@media (min-width: 640px) {
+		.error-code {
+			font-size: 96px;
 		}
 	}
-
-	.glitch::before,
-	.glitch::after {
+	
+	.error-code::before,
+	.error-code::after {
 		content: attr(data-text);
 		position: absolute;
 		top: 0;
-		color: #e0e6ed;
-		background: #ffffff;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(135deg, #f9fafc 0%, #eef1f6 100%);
 		overflow: hidden;
-		clip: rect(0, 512px, 0, 0);
 	}
-
-	.glitch::after {
+	
+	.error-code::before {
 		left: 2px;
-		text-shadow: -2px 0 #ec3750;
-		animation: glitch-after 2s infinite steps(2, jump-end) alternate-reverse;
+		text-shadow: -2px 0 var(--accent-color, #ec3750);
+		animation: glitch-1 3s infinite linear alternate-reverse;
+		clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
 	}
-
-	.glitch::before {
+	
+	.error-code::after {
 		left: -2px;
-		text-shadow: -2px 0 #5bc0de;
-		animation: glitch-before 4s infinite steps(2, jump-end) alternate-reverse;
+		text-shadow: 2px 0 #338eda;
+		animation: glitch-2 2s infinite linear alternate-reverse;
+		clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
 	}
-
-	@keyframes glitch-before {
-		0% { clip: rect(57px, 9999px, 7px, 0); }
-		5% { clip: rect(61px, 9999px, 22px, 0); }
-		10% { clip: rect(34px, 9999px, 47px, 0); }
-		15% { clip: rect(92px, 9999px, 40px, 0); }
-		20% { clip: rect(6px, 9999px, 40px, 0); }
-		25% { clip: rect(39px, 9999px, 46px, 0); }
-		30% { clip: rect(33px, 9999px, 17px, 0); }
-		35% { clip: rect(5px, 9999px, 17px, 0); }
-		40% { clip: rect(40px, 9999px, 70px, 0); }
-		45% { clip: rect(14px, 9999px, 34px, 0); }
-		50% { clip: rect(26px, 9999px, 30px, 0); }
-		55% { clip: rect(15px, 9999px, 100px, 0); }
-		60% { clip: rect(10px, 9999px, 32px, 0); }
-		65% { clip: rect(49px, 9999px, 61px, 0); }
-		70% { clip: rect(61px, 9999px, 22px, 0); }
-		75% { clip: rect(85px, 9999px, 36px, 0); }
-		80% { clip: rect(38px, 9999px, 59px, 0); }
-		85% { clip: rect(21px, 9999px, 88px, 0); }
-		90% { clip: rect(46px, 9999px, 16px, 0); }
-		95% { clip: rect(13px, 9999px, 35px, 0); }
-		100% { clip: rect(75px, 9999px, 13px, 0); }
+	
+	@keyframes glitch-1 {
+		0%, 100% { clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%); }
+		25% { clip-path: polygon(0 10%, 100% 10%, 100% 45%, 0 45%); }
+		50% { clip-path: polygon(0 5%, 100% 5%, 100% 40%, 0 40%); }
+		75% { clip-path: polygon(0 15%, 100% 15%, 100% 50%, 0 50%); }
 	}
-
-	@keyframes glitch-after {
-		0% { clip: rect(62px, 9999px, 68px, 0); }
-		5% { clip: rect(45px, 9999px, 9px, 0); }
-		10% { clip: rect(9px, 9999px, 76px, 0); }
-		15% { clip: rect(89px, 9999px, 83px, 0); }
-		20% { clip: rect(44px, 9999px, 8px, 0); }
-		25% { clip: rect(59px, 9999px, 24px, 0); }
-		30% { clip: rect(96px, 9999px, 51px, 0); }
-		35% { clip: rect(38px, 9999px, 28px, 0); }
-		40% { clip: rect(92px, 9999px, 1px, 0); }
-		45% { clip: rect(63px, 9999px, 80px, 0); }
-		50% { clip: rect(1px, 9999px, 49px, 0); }
-		55% { clip: rect(7px, 9999px, 49px, 0); }
-		60% { clip: rect(35px, 9999px, 16px, 0); }
-		65% { clip: rect(93px, 9999px, 72px, 0); }
-		70% { clip: rect(55px, 9999px, 52px, 0); }
-		75% { clip: rect(58px, 9999px, 68px, 0); }
-		80% { clip: rect(94px, 9999px, 95px, 0); }
-		85% { clip: rect(81px, 9999px, 24px, 0); }
-		90% { clip: rect(98px, 9999px, 12px, 0); }
-		95% { clip: rect(2px, 9999px, 96px, 0); }
-		100% { clip: rect(95px, 9999px, 47px, 0); }
+	
+	@keyframes glitch-2 {
+		0%, 100% { clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); }
+		33% { clip-path: polygon(0 55%, 100% 55%, 100% 90%, 0 90%); }
+		66% { clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0 100%); }
 	}
-
-	.message {
-		font-size: 20px;
-		margin: 8px 0 32px;
-		display: block;
-		color: #8492a6;
+	
+	.error-title {
+		font-size: 24px;
+		font-weight: 700;
+		color: #1f2d3d;
+		margin: 0 0 8px 0;
 	}
-
-	@media (min-width: 32em) {
-		.message {
-			font-size: 24px;
-			margin-top: 16px;
+	
+	@media (min-width: 640px) {
+		.error-title {
+			font-size: 28px;
 		}
 	}
-
-	.button {
-		appearance: none;
+	
+	.error-message {
+		font-size: 16px;
+		color: #8492a6;
+		margin: 0 0 24px 0;
+		line-height: 1.5;
+	}
+	
+	@media (min-width: 640px) {
+		.error-message {
+			font-size: 18px;
+		}
+	}
+	
+	.error-details {
+		background: #fef2f2;
+		border: 1px solid #fecaca;
+		border-radius: 8px;
+		padding: 12px 16px;
+		margin-bottom: 24px;
+	}
+	
+	.error-details p {
+		margin: 0;
+		font-size: 14px;
+		color: #991b1b;
+		font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+	}
+	
+	.error-actions {
+		display: flex;
+		gap: 12px;
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+	
+	.btn {
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		text-align: center;
-		text-decoration: none;
-		padding: 8px 16px;
-		color: #ffffff;
-		background-image: radial-gradient(ellipse farthest-corner at top left, #ff8c37, #ec3750);
-		border: 0;
-		border-radius: 99999px;
-		cursor: pointer;
+		gap: 8px;
+		padding: 12px 24px;
+		font-size: 16px;
+		font-weight: 600;
 		font-family: inherit;
-		font-weight: 700;
-		font-size: 20px;
-		text-transform: uppercase;
-		letter-spacing: 0.009em;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.125);
-		transition: transform 0.125s ease-in-out, box-shadow 0.125s ease-in-out;
+		border-radius: 12px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		text-decoration: none;
+		border: none;
 	}
-
-	.button:hover,
-	.button:focus {
-		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.0625), 0 8px 12px rgba(0, 0, 0, 0.125);
-		transform: scale(1.0625);
+	
+	.btn.primary {
+		background: linear-gradient(135deg, #ff8c37 0%, #ec3750 100%);
+		color: white;
+		box-shadow: 0 4px 12px rgba(236, 55, 80, 0.3);
 	}
-
-	.button svg {
-		margin-left: -4px;
-		margin-right: 8px;
+	
+	.btn.primary:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(236, 55, 80, 0.4);
+	}
+	
+	.btn.secondary {
+		background: white;
+		color: #1f2d3d;
+		border: 2px solid #e0e6ed;
+	}
+	
+	.btn.secondary:hover {
+		border-color: #8492a6;
+		background: #f9fafc;
+	}
+	
+	.login-link {
+		display: inline-block;
+		margin-top: 24px;
+		color: #338eda;
+		font-weight: 600;
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+	
+	.login-link:hover {
+		color: #2563eb;
+		text-decoration: underline;
+	}
+	
+	/* Decorative elements */
+	.decoration {
+		position: absolute;
+		border-radius: 50%;
+		opacity: 0.1;
+		pointer-events: none;
+	}
+	
+	.decoration-1 {
+		width: 400px;
+		height: 400px;
+		background: var(--deco-color, #ec3750);
+		top: -200px;
+		right: -100px;
+	}
+	
+	.decoration-2 {
+		width: 300px;
+		height: 300px;
+		background: var(--deco-color, #ec3750);
+		bottom: -150px;
+		left: -100px;
+	}
+	
+	.decoration-3 {
+		width: 150px;
+		height: 150px;
+		background: #338eda;
+		bottom: 20%;
+		right: 10%;
+		opacity: 0.08;
+	}
+	
+	@media (max-width: 640px) {
+		.decoration {
+			display: none;
+		}
 	}
 </style>

@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import QRCode from 'qrcode';
+	import { toasts } from '$lib/stores/toast.js';
 
 	let customUrl = $state('hack.club/join/your-club');
 	let canvasRef = $state(null);
@@ -125,12 +126,14 @@
 	function downloadPoster() {
 		if (!canvasRef) return;
 		
-		if (downloadFormat === 'png') {
-			const link = document.createElement('a');
-			link.download = `hack-club-poster-${Date.now()}.png`;
-			link.href = canvasRef.toDataURL('image/png');
-			link.click();
-		} else if (downloadFormat === 'pdf') {
+		try {
+			if (downloadFormat === 'png') {
+				const link = document.createElement('a');
+				link.download = `hack-club-poster-${Date.now()}.png`;
+				link.href = canvasRef.toDataURL('image/png');
+				link.click();
+				toasts.success('Poster downloaded!');
+			} else if (downloadFormat === 'pdf') {
 			const imgData = canvasRef.toDataURL('image/png');
 			const width = canvasRef.width;
 			const height = canvasRef.height;
@@ -159,6 +162,10 @@
 			const printWindow = window.open('', '_blank');
 			printWindow.document.write(windowContent);
 			printWindow.document.close();
+			toasts.info('Opening PDF print dialog...');
+			}
+		} catch (err) {
+			toasts.error('Failed to download poster');
 		}
 	}
 
@@ -168,6 +175,7 @@
 		link.download = `${poster.name.toLowerCase().replace(/\s+/g, '-')}.png`;
 		link.target = '_blank';
 		link.click();
+		toasts.success(`${poster.name} downloaded!`);
 	}
 </script>
 
@@ -183,6 +191,28 @@
 	</header>
 
 	<main>
+		<!-- Custom Editor Banner -->
+		<section class="editor-banner">
+			<div class="editor-banner-content">
+				<div class="editor-icon">
+					<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M12 20h9"></path>
+						<path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+					</svg>
+				</div>
+				<div class="editor-text">
+				<h2>Custom Poster Editor <span class="beta-badge">BETA</span></h2>
+					<p>Design your own posters with templates, text, shapes, and more!</p>
+				</div>
+				<a href="/posters/editor" class="editor-btn">
+					Open Editor
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<polyline points="9 18 15 12 9 6"></polyline>
+					</svg>
+				</a>
+			</div>
+		</section>
+
 		<section class="interactive-section">
 			<h2>Custom Join Link Poster</h2>
 			<p class="section-description">Add your custom club URL and download a personalized poster</p>
@@ -301,6 +331,83 @@
 		display: flex;
 		flex-direction: column;
 		gap: 48px;
+	}
+
+	.editor-banner {
+		background: linear-gradient(135deg, #ec3750, #ff8c37);
+		border-radius: 16px;
+		padding: 4px;
+	}
+
+	.editor-banner-content {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+		background: white;
+		border-radius: 13px;
+		padding: 24px;
+	}
+
+	.editor-icon {
+		width: 64px;
+		height: 64px;
+		background: rgba(236, 55, 80, 0.1);
+		border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #ec3750;
+		flex-shrink: 0;
+	}
+
+	.editor-text {
+		flex: 1;
+	}
+
+	.editor-text h2 {
+		font-size: 22px;
+		color: #1f2d3d;
+		margin: 0 0 4px 0;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.beta-badge {
+		display: inline-block;
+		padding: 3px 8px;
+		background: linear-gradient(135deg, #ff8c37, #ec3750);
+		color: white;
+		font-size: 11px;
+		font-weight: 700;
+		border-radius: 4px;
+		letter-spacing: 0.5px;
+	}
+
+	.editor-text p {
+		color: #8492a6;
+		margin: 0;
+		font-size: 15px;
+	}
+
+	.editor-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 14px 24px;
+		background: #ec3750;
+		color: white;
+		border-radius: 10px;
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 15px;
+		transition: all 0.2s;
+		flex-shrink: 0;
+	}
+
+	.editor-btn:hover {
+		background: #d32f42;
+		transform: translateY(-2px);
 	}
 
 	section h2 {
@@ -493,6 +600,15 @@
 
 		section h2 {
 			font-size: 22px;
+		}
+
+		.editor-banner-content {
+			flex-direction: column;
+			text-align: center;
+		}
+
+		.editor-text h2 {
+			font-size: 20px;
 		}
 	}
 </style>

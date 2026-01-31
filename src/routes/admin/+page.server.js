@@ -8,34 +8,28 @@ const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
 export async function load() {
     const knex = getKnex();
     
-    // User stats
     const [userCount] = await knex('users').count('id as count');
     const [verifiedUserCount] = await knex('users').where('identity_verified', true).count('id as count');
     const [adminCount] = await knex('users').where('is_admin', true).count('id as count');
     
-    // Users joined in last 7 days
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const [recentUsersCount] = await knex('users').where('created_at', '>=', sevenDaysAgo).count('id as count');
     
-    // Event completion stats
     const [completedEventsCount] = await knex('user_completed_events').count('id as count');
     const [uniqueEventsCompleted] = await knex('user_completed_events').countDistinct('event_id as count');
     const [recentCompletions] = await knex('user_completed_events')
         .where('completed_at', '>=', sevenDaysAgo)
         .count('id as count');
     
-    // Active sessions
     const [activeSessionCount] = await knex('sessions')
         .where('expires_at', '>', new Date())
         .count('id as count');
     
-    // Recent users (last 10)
     const recentUsers = await knex('users')
         .orderBy('created_at', 'desc')
         .limit(10)
         .select('id', 'username', 'email', 'first_name', 'last_name', 'identity_verified', 'is_admin', 'created_at');
     
-    // Users with most event completions
     const topEventCompleters = await knex('user_completed_events')
         .select('user_id')
         .count('id as completions')
@@ -59,7 +53,6 @@ export async function load() {
         };
     });
 
-    // Fetch Members from Airtable
     let membersData = {
         total: 0,
         byClub: {},
@@ -84,7 +77,6 @@ export async function load() {
             }
         });
         
-        // Get top clubs by members
         membersData.topClubs = Object.entries(membersData.byClub)
             .map(([name, count]) => ({ name, count }))
             .sort((a, b) => b.count - a.count)
@@ -94,7 +86,6 @@ export async function load() {
         console.error('Error fetching members from Airtable:', err);
     }
 
-    // Fetch Ships from Airtable "Club Ships" table
     let shipsData = {
         total: 0,
         byClub: {},
@@ -131,16 +122,13 @@ export async function load() {
             });
         });
         
-        // Limit recent ships to 10
         shipsData.recentShips = shipsData.recentShips.slice(0, 10);
         
-        // Top clubs by ships
         shipsData.topClubs = Object.entries(shipsData.byClub)
             .map(([name, count]) => ({ name, count }))
             .sort((a, b) => b.count - a.count)
             .slice(0, 10);
             
-        // Top YSWS programs
         shipsData.topYsws = Object.entries(shipsData.byYsws)
             .map(([name, count]) => ({ name, count }))
             .sort((a, b) => b.count - a.count)
@@ -217,7 +205,6 @@ export const actions = {
             return fail(400, { clubSearchError: 'Search query must be at least 2 characters' });
         }
         
-        // Search in Airtable Members table by club_name
         let clubResults = [];
         try {
             const memberRecords = await base('Members')
@@ -239,7 +226,6 @@ export const actions = {
                 }
             });
             
-            // Get ship counts for matching clubs
             const shipRecords = await base('Ships')
                 .select({
                     fields: ['club']

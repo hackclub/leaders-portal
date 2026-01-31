@@ -4,13 +4,7 @@ import { AIRTABLE_API_KEY} from '$env/static/private';
 export async function load() {
     var AIRTABLE_BASE_ID = 'appLfgyztvTfaKGNc';
 
-
-    console.log('Loading review page...');
-    console.log('API Key present:', !!AIRTABLE_API_KEY);
-    console.log('Base ID:', AIRTABLE_BASE_ID);
-
     if (!AIRTABLE_API_KEY) {
-        console.error('AIRTABLE_API_KEY is not defined');
         return { projects: [] };
     }
 
@@ -24,7 +18,6 @@ export async function load() {
             filterByFormula: "AND({Status} = 'pending')"
         }).all();
         
-        console.log(`Found ${records.length} records`);
         return {
             projects: records.map(record => ({
                 id: record.id,
