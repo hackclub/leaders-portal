@@ -123,7 +123,7 @@
 		</div>
 		
 		{#if step === 'email'}
-			<form onsubmit={requestOTP} class="login-form">
+			<form onsubmit={(e) => { e.preventDefault(); requestOTP(e); }} class="login-form">
 				<div class="form-group">
 					<label for="email" class="form-label">Email Address</label>
 					<input
@@ -163,7 +163,7 @@
 				A 6-digit code has been sent to <strong>{email}</strong>
 			</div>
 
-			<form onsubmit={verifyOTP} class="login-form">
+			<form onsubmit={(e) => { e.preventDefault(); verifyOTP(e); }} class="login-form">
 				<div class="form-group">
 					<label for="otp" class="form-label">Enter OTP Code</label>
 					<input

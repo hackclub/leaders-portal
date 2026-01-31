@@ -31,26 +31,47 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch event - network first, fallback to cache
-self.addEventListener('fetch', (event) => {
+// Check if a request should be handled by the service worker
+function shouldHandleRequest(request) {
+  const url = new URL(request.url);
+  
+  // Only handle http/https requests
+  if (!url.protocol.startsWith('http')) return false;
+  
   // Skip non-GET requests
-  if (event.request.method !== 'GET') return;
+  if (request.method !== 'GET') return false;
   
   // Skip API requests - always go to network
-  if (event.request.url.includes('/api/')) return;
+  if (url.pathname.includes('/api/')) return false;
+  
+  // Skip browser extension requests
+  if (url.protocol === 'chrome-extension:' || url.protocol === 'moz-extension:') return false;
+  
+  // Skip external requests (not from our origin)
+  if (url.origin !== self.location.origin) return false;
+  
+  return true;
+}
+
+// Fetch event - network first, fallback to cache
+self.addEventListener('fetch', (event) => {
+  // Skip requests we shouldn't handle
+  if (!shouldHandleRequest(event.request)) return;
   
   event.respondWith(
     fetch(event.request)
       .then((response) => {
+        // Only cache valid responses
+        if (!response || response.status !== 200 || response.type !== 'basic') {
+          return response;
+        }
+        
         // Clone the response before caching
         const responseClone = response.clone();
         
-        // Cache successful responses
-        if (response.status === 200) {
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-        }
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseClone);
+        });
         
         return response;
       })
@@ -64,6 +85,7 @@ self.addEventListener('fetch', (event) => {
           if (event.request.mode === 'navigate') {
             return caches.match('/');
           }
+          return new Response('Network error', { status: 503, statusText: 'Service Unavailable' });
         });
       })
   );

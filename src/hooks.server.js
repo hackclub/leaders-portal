@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { redirect } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 import { getKnex } from '$lib/server/db/knex.js';
 import { findSessionByTokenHash, touchSession, deleteSessionById } from '$lib/server/auth/sessions.js';
 import { getUserPublicById } from '$lib/server/auth/users.js';
@@ -12,7 +13,12 @@ const SUSPENSION_ALLOWED_ROUTES = ['/suspended', '/logout', '/auth', '/api'];
 
 startCacheScheduler();
 
-const securityHeaders = {
+// In development, use a more permissive CSP
+const securityHeaders = dev ? {
+	'X-Frame-Options': 'SAMEORIGIN',
+	'X-Content-Type-Options': 'nosniff',
+	'Referrer-Policy': 'strict-origin-when-cross-origin'
+} : {
 	'X-Frame-Options': 'SAMEORIGIN',
 	'X-Content-Type-Options': 'nosniff',
 	'X-XSS-Protection': '1; mode=block',
