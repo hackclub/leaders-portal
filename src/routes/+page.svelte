@@ -266,12 +266,14 @@
 
 	header {
 		position: relative;
+		width: 100vw;
+		margin-left: calc(-50vw + 50%);
+		margin-top: -32px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		margin-bottom: 32px;
 		min-height: 500px;
-		border-radius: 16px;
 		overflow: hidden;
 	}
 
