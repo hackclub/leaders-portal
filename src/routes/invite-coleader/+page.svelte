@@ -61,7 +61,7 @@
 <style>
 	.page-container {
 		min-height: 100vh;
-		background: linear-gradient(135deg, #f9fafc 0%, #eef2f7 100%);
+		background: #f9fafc;
 		padding: 24px;
 	}
 	
@@ -100,7 +100,7 @@
 	.card-icon {
 		width: 80px;
 		height: 80px;
-		background: linear-gradient(135deg, #33d6a6 0%, #2bc095 100%);
+		background: #33d6a6;
 		border-radius: 50%;
 		display: flex;
 		align-items: center;

@@ -51,7 +51,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #1f2d3d 0%, #3c4858 100%);
+        background: #1f2d3d;
         padding: 20px;
     }
 
@@ -68,7 +68,7 @@
     .icon-container {
         width: 100px;
         height: 100px;
-        background: linear-gradient(135deg, #ff8c37 0%, #ffb366 100%);
+        background: #ff8c37;
         border-radius: 50%;
         display: flex;
         align-items: center;

@@ -284,59 +284,17 @@
 
 		<!-- Hero Section -->
 		<section class="hero">
-			<div class="hero-bg">
-				<div class="hero-shapes">
-					<div class="shape shape-1"></div>
-					<div class="shape shape-2"></div>
-					<div class="shape shape-3"></div>
-					<div class="shape shape-4"></div>
-				</div>
-			</div>
-			
-			<!-- Decorative Elements -->
-			<div class="hero-decorations">
-				<div class="deco-circle deco-circle-1"></div>
-				<div class="deco-circle deco-circle-2"></div>
-				<div class="deco-circle deco-circle-3"></div>
-				<div class="deco-circle deco-circle-4"></div>
-				<div class="deco-square deco-square-1"></div>
-				<div class="deco-square deco-square-2"></div>
-				<div class="deco-square deco-square-3"></div>
-				<div class="deco-dots"></div>
-				<div class="deco-dots deco-dots-2"></div>
-				<svg class="deco-squiggle deco-squiggle-1" viewBox="0 0 100 20" fill="none">
-					<path d="M0 10 Q 25 0, 50 10 T 100 10" stroke="rgba(236, 55, 80, 0.2)" stroke-width="2" fill="none"/>
-				</svg>
-				<svg class="deco-squiggle deco-squiggle-2" viewBox="0 0 100 20" fill="none">
-					<path d="M0 10 Q 25 0, 50 10 T 100 10" stroke="rgba(51, 142, 218, 0.2)" stroke-width="2" fill="none"/>
-				</svg>
-				<svg class="deco-squiggle deco-squiggle-3" viewBox="0 0 80 30" fill="none">
-					<path d="M0 15 Q 20 5, 40 15 T 80 15" stroke="rgba(51, 214, 166, 0.25)" stroke-width="2" fill="none"/>
-				</svg>
-				<div class="deco-ring deco-ring-1"></div>
-				<div class="deco-ring deco-ring-2"></div>
-				<div class="deco-cross deco-cross-1">+</div>
-				<div class="deco-cross deco-cross-2">+</div>
-				<div class="deco-cross deco-cross-3">+</div>
-			</div>
-			
 			<div class="hero-content">
-				<div class="hero-badge">
-					<span class="badge-dot"></span>
-					<span>For Hack Club Leaders</span>
-				</div>
+				<span class="hero-tag">For Hack Club Leaders</span>
 				
-				<h1>
-					Run your club like a 
-					<span class="gradient-text">pro</span>
-				</h1>
+				<h1>Run your club like a pro</h1>
 				
 				<p class="hero-description">
 					Everything you need in one place—track ships, manage members, and find resources to make your club awesome.
 				</p>
 				
 				<div class="hero-actions">
-					<a href="/auth/login" class="btn btn-primary btn-glow">
+					<a href="/auth/login" class="btn btn-primary">
 						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
 							<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
 							<polyline points="10 17 15 12 10 7"/>
@@ -344,7 +302,7 @@
 						</svg>
 						Sign In
 					</a>
-					<a href="/email-login" class="btn btn-ghost">
+					<a href="/email-login" class="btn btn-secondary">
 						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
 							<polyline points="22,6 12,13 2,6"/>
@@ -626,23 +584,20 @@
 		<section class="cta-section">
 			<div class="container">
 				<div class="cta-card">
-					<div class="cta-bg"></div>
-					<div class="cta-content">
-						<h2>Ready to lead?</h2>
-						<p>Join thousands of teen hackers running clubs around the world</p>
-						<div class="cta-actions">
-							<a href="/auth/login" class="btn btn-white">
-								<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-									<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-									<polyline points="10 17 15 12 10 7"/>
-									<line x1="15" y1="12" x2="3" y2="12"/>
-								</svg>
-								Sign in to get started
-							</a>
-							<a href="https://hackclub.com/clubs/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-white">
-								Start a new club
-							</a>
-						</div>
+					<h2>Ready to lead?</h2>
+					<p>Join thousands of teen hackers running clubs around the world</p>
+					<div class="cta-actions">
+						<a href="/auth/login" class="btn btn-white">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+								<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+								<polyline points="10 17 15 12 10 7"/>
+								<line x1="15" y1="12" x2="3" y2="12"/>
+							</svg>
+							Sign in to get started
+						</a>
+						<a href="https://hackclub.com/clubs/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-white">
+							Start a new club
+						</a>
 					</div>
 				</div>
 			</div>
@@ -1167,156 +1122,64 @@
 	/* Hero */
 	.hero {
 		position: relative;
-		padding: 160px 24px 120px;
-		min-height: 100vh;
+		padding: 140px 24px 100px;
+		min-height: 90vh;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		text-align: center;
-		background: linear-gradient(180deg, #fff 0%, #f9fafc 100%);
-	}
-
-	.hero-bg {
-		position: absolute;
-		inset: 0;
-		background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(236, 55, 80, 0.12) 0%, transparent 50%),
-					radial-gradient(ellipse 60% 40% at 80% 60%, rgba(51, 142, 218, 0.08) 0%, transparent 50%),
-					radial-gradient(ellipse 60% 40% at 20% 80%, rgba(51, 214, 166, 0.06) 0%, transparent 50%);
-		overflow: hidden;
-	}
-
-	.hero-shapes {
-		position: absolute;
-		inset: 0;
-	}
-
-	.shape {
-		position: absolute;
-		border-radius: 50%;
-		filter: blur(80px);
-		animation: float 20s ease-in-out infinite;
-	}
-
-	.shape-1 {
-		width: 500px;
-		height: 500px;
-		background: rgba(236, 55, 80, 0.08);
-		top: 10%;
-		left: 20%;
-		animation-delay: 0s;
-	}
-
-	.shape-2 {
-		width: 400px;
-		height: 400px;
-		background: rgba(51, 142, 218, 0.06);
-		top: 50%;
-		right: 10%;
-		animation-delay: -5s;
-	}
-
-	.shape-3 {
-		width: 450px;
-		height: 450px;
-		background: rgba(51, 214, 166, 0.05);
-		bottom: 10%;
-		left: 30%;
-		animation-delay: -10s;
-	}
-
-	.shape-4 {
-		width: 350px;
-		height: 350px;
-		background: rgba(245, 158, 11, 0.05);
-		top: 30%;
-		right: 30%;
-		animation-delay: -15s;
-	}
-
-	@keyframes float {
-		0%, 100% { transform: translate(0, 0) scale(1); }
-		25% { transform: translate(20px, -30px) scale(1.05); }
-		50% { transform: translate(-20px, 20px) scale(0.95); }
-		75% { transform: translate(30px, 10px) scale(1.02); }
+		background: #f9fafc;
 	}
 
 	.hero-content {
 		position: relative;
-		z-index: 2;
-		max-width: 720px;
+		max-width: 640px;
 	}
 
-	.hero-badge {
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
-		padding: 8px 20px;
-		background: rgba(236, 55, 80, 0.08);
-		border: 1px solid rgba(236, 55, 80, 0.2);
+	.hero-tag {
+		display: inline-block;
+		padding: 8px 16px;
+		background: rgba(236, 55, 80, 0.1);
 		border-radius: 100px;
-		margin-bottom: 28px;
-		font-size: 0.9rem;
+		margin-bottom: 24px;
+		font-size: 0.875rem;
 		font-weight: 600;
 		color: #ec3750;
-		animation: fadeInUp 0.6s ease-out both;
-	}
-
-	.badge-dot {
-		width: 8px;
-		height: 8px;
-		background: #ec3750;
-		border-radius: 50%;
-		animation: pulse-dot 2s ease-in-out infinite;
-	}
-
-	@keyframes pulse-dot {
-		0%, 100% { opacity: 1; transform: scale(1); }
-		50% { opacity: 0.5; transform: scale(1.2); }
 	}
 
 	.hero h1 {
-		margin: 0 0 24px;
-		font-size: 3.5rem;
+		margin: 0 0 20px;
+		font-size: 3rem;
 		font-weight: 800;
-		line-height: 1.1;
+		line-height: 1.15;
 		letter-spacing: -0.02em;
 		color: #1f2d3d;
-		animation: fadeInUp 0.6s ease-out 0.1s both;
-	}
-
-	.gradient-text {
-		background: linear-gradient(135deg, #ec3750 0%, #ff6b7a 50%, #f59e0b 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
 	}
 
 	.hero-description {
-		margin: 0 0 36px;
-		font-size: 1.25rem;
+		margin: 0 0 32px;
+		font-size: 1.125rem;
 		line-height: 1.6;
 		color: #8492a6;
-		animation: fadeInUp 0.6s ease-out 0.2s both;
 	}
 
 	.hero-actions {
 		display: flex;
 		justify-content: center;
-		gap: 16px;
+		gap: 12px;
 		flex-wrap: wrap;
-		margin-bottom: 64px;
-		animation: fadeInUp 0.6s ease-out 0.3s both;
+		margin-bottom: 48px;
 	}
 
 	.btn {
 		display: inline-flex;
 		align-items: center;
-		gap: 10px;
-		padding: 16px 28px;
-		border-radius: 14px;
+		gap: 8px;
+		padding: 14px 24px;
+		border-radius: 12px;
 		font-family: inherit;
-		font-size: 1rem;
+		font-size: 0.95rem;
 		font-weight: 600;
 		text-decoration: none;
 		cursor: pointer;
@@ -1332,23 +1195,16 @@
 	.btn-primary:hover {
 		background: #d32f44;
 		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(236, 55, 80, 0.3);
 	}
 
-	.btn-glow {
-		box-shadow: 0 4px 20px rgba(236, 55, 80, 0.3);
-	}
-
-	.btn-glow:hover {
-		box-shadow: 0 8px 30px rgba(236, 55, 80, 0.4);
-	}
-
-	.btn-ghost {
+	.btn-secondary {
 		background: white;
 		color: #1f2d3d;
 		border: 1px solid #e0e6ed;
 	}
 
-	.btn-ghost:hover {
+	.btn-secondary:hover {
 		background: #f9fafc;
 		border-color: #d0d6dd;
 	}
@@ -1358,7 +1214,6 @@
 		justify-content: center;
 		align-items: center;
 		gap: 32px;
-		animation: fadeInUp 0.6s ease-out 0.4s both;
 	}
 
 	.hero-stat {
@@ -1367,7 +1222,7 @@
 
 	.stat-number {
 		display: block;
-		font-size: 2rem;
+		font-size: 1.75rem;
 		font-weight: 800;
 		color: #1f2d3d;
 		letter-spacing: -0.02em;
@@ -1386,231 +1241,16 @@
 		background: #e0e6ed;
 	}
 
-	/* Hero Decorations */
-	.hero-decorations {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		z-index: 1;
-		overflow: hidden;
-	}
-
-	.deco-circle {
-		position: absolute;
-		border-radius: 50%;
-		border: 2px solid;
-		animation: float-shape 8s ease-in-out infinite;
-	}
-
-	.deco-circle-1 {
-		width: 120px;
-		height: 120px;
-		border-color: rgba(236, 55, 80, 0.2);
-		top: 20%;
-		left: 10%;
-		animation-delay: 0s;
-	}
-
-	.deco-circle-2 {
-		width: 80px;
-		height: 80px;
-		border-color: rgba(51, 142, 218, 0.2);
-		top: 60%;
-		right: 15%;
-		animation-delay: -2s;
-	}
-
-	.deco-circle-3 {
-		width: 60px;
-		height: 60px;
-		border-color: rgba(51, 214, 166, 0.25);
-		bottom: 30%;
-		left: 8%;
-		animation-delay: -4s;
-	}
-
-	.deco-circle-4 {
-		width: 45px;
-		height: 45px;
-		border-color: rgba(168, 85, 247, 0.2);
-		top: 45%;
-		left: 20%;
-		animation-delay: -6s;
-	}
-
-	.deco-square {
-		position: absolute;
-		border: 2px solid;
-		border-radius: 12px;
-		animation: float-shape 10s ease-in-out infinite;
-	}
-
-	.deco-square-1 {
-		width: 50px;
-		height: 50px;
-		border-color: rgba(245, 158, 11, 0.2);
-		top: 35%;
-		right: 8%;
-		transform: rotate(15deg);
-		animation-delay: -1s;
-	}
-
-	.deco-square-2 {
-		width: 40px;
-		height: 40px;
-		border-color: rgba(168, 85, 247, 0.2);
-		bottom: 25%;
-		right: 20%;
-		transform: rotate(-10deg);
-		animation-delay: -3s;
-	}
-
-	.deco-square-3 {
-		width: 35px;
-		height: 35px;
-		border-color: rgba(51, 214, 166, 0.2);
-		top: 15%;
-		right: 30%;
-		transform: rotate(25deg);
-		animation-delay: -5s;
-	}
-
-	.deco-dots {
-		position: absolute;
-		width: 100px;
-		height: 100px;
-		top: 25%;
-		right: 25%;
-		background-image: radial-gradient(rgba(236, 55, 80, 0.15) 2px, transparent 2px);
-		background-size: 16px 16px;
-		animation: float-shape 12s ease-in-out infinite reverse;
-	}
-
-	.deco-dots-2 {
-		top: auto;
-		bottom: 20%;
-		left: 15%;
-		right: auto;
-		width: 80px;
-		height: 80px;
-		background-image: radial-gradient(rgba(51, 142, 218, 0.12) 2px, transparent 2px);
-		animation-delay: -4s;
-	}
-
-	.deco-squiggle {
-		position: absolute;
-		animation: squiggle-float 8s ease-in-out infinite;
-	}
-
-	.deco-squiggle-1 {
-		width: 120px;
-		height: 24px;
-		top: 18%;
-		right: 12%;
-		transform: rotate(-5deg);
-	}
-
-	.deco-squiggle-2 {
-		width: 100px;
-		height: 20px;
-		bottom: 35%;
-		left: 5%;
-		transform: rotate(8deg);
-		animation-delay: -3s;
-	}
-
-	.deco-squiggle-3 {
-		width: 80px;
-		height: 30px;
-		top: 55%;
-		right: 5%;
-		transform: rotate(-12deg);
-		animation-delay: -6s;
-	}
-
-	.deco-ring {
-		position: absolute;
-		border-radius: 50%;
-		border: 3px solid;
-		animation: ring-pulse 6s ease-in-out infinite;
-	}
-
-	.deco-ring-1 {
-		width: 30px;
-		height: 30px;
-		border-color: rgba(236, 55, 80, 0.15);
-		top: 70%;
-		right: 10%;
-	}
-
-	.deco-ring-2 {
-		width: 20px;
-		height: 20px;
-		border-color: rgba(51, 142, 218, 0.15);
-		top: 30%;
-		left: 5%;
-		animation-delay: -2s;
-	}
-
-	.deco-cross {
-		position: absolute;
-		font-size: 24px;
-		font-weight: 300;
-		color: rgba(236, 55, 80, 0.2);
-		animation: cross-spin 12s linear infinite;
-	}
-
-	.deco-cross-1 {
-		top: 22%;
-		left: 15%;
-	}
-
-	.deco-cross-2 {
-		bottom: 40%;
-		right: 12%;
-		color: rgba(51, 214, 166, 0.2);
-		animation-delay: -4s;
-	}
-
-	.deco-cross-3 {
-		top: 65%;
-		left: 25%;
-		font-size: 18px;
-		color: rgba(51, 142, 218, 0.2);
-		animation-delay: -8s;
-	}
-
-	@keyframes float-shape {
-		0%, 100% { transform: translateY(0) rotate(0deg); }
-		50% { transform: translateY(-15px) rotate(5deg); }
-	}
-
-	@keyframes squiggle-float {
-		0%, 100% { transform: translateY(0) rotate(var(--rotate, 0deg)); opacity: 0.8; }
-		50% { transform: translateY(-10px) rotate(calc(var(--rotate, 0deg) + 3deg)); opacity: 1; }
-	}
-
-	@keyframes ring-pulse {
-		0%, 100% { transform: scale(1); opacity: 0.5; }
-		50% { transform: scale(1.15); opacity: 0.8; }
-	}
-
-	@keyframes cross-spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
-	}
-
 	/* Section Header */
 	.section-header {
 		text-align: center;
-		margin-bottom: 48px;
+		margin-bottom: 40px;
 	}
 
 	.section-tag {
 		display: inline-block;
 		padding: 6px 14px;
 		background: rgba(236, 55, 80, 0.1);
-		border: 1px solid rgba(236, 55, 80, 0.2);
 		border-radius: 100px;
 		font-size: 0.8rem;
 		font-weight: 600;
@@ -1622,90 +1262,78 @@
 
 	.section-header h2 {
 		margin: 0 0 12px;
-		font-size: 2.25rem;
+		font-size: 2rem;
 		font-weight: 700;
 		letter-spacing: -0.02em;
 	}
 
 	.section-header p {
 		margin: 0;
-		font-size: 1.1rem;
+		font-size: 1rem;
 		color: #8492a6;
 	}
 
 	/* Bento Grid */
 	.bento-section {
-		padding: 100px 0;
-		background: #f9fafc;
+		padding: 80px 0;
+		background: white;
 	}
 
 	.bento-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		grid-template-rows: repeat(2, auto);
-		gap: 20px;
+		gap: 16px;
 	}
 
 	.bento-card {
 		position: relative;
-		background: white;
+		background: #f9fafc;
 		border: 1px solid #e0e6ed;
-		border-radius: 24px;
-		padding: 28px;
+		border-radius: 16px;
+		padding: 24px;
 		text-decoration: none;
 		color: #1f2d3d;
 		overflow: hidden;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		transition: all 0.2s;
 	}
 
 	.bento-card:hover {
 		border-color: #ec3750;
-		box-shadow: 0 12px 40px rgba(236, 55, 80, 0.12);
-		transform: translateY(-4px);
+		box-shadow: 0 4px 16px rgba(236, 55, 80, 0.1);
+		transform: translateY(-2px);
 	}
 
 	.bento-large {
 		grid-column: span 2;
 		grid-row: span 2;
-		padding: 40px;
+		padding: 32px;
 	}
 
 	.bento-bg {
-		position: absolute;
-		inset: 0;
-		opacity: 0;
-		transition: opacity 0.3s;
-	}
-
-	.bento-card:hover .bento-bg {
-		opacity: 1;
-	}
-
-	.bento-ysws .bento-bg {
-		background: radial-gradient(ellipse at bottom right, rgba(236, 55, 80, 0.06) 0%, transparent 60%);
+		display: none;
 	}
 
 	.bento-content {
 		position: relative;
-		z-index: 1;
 		height: 100%;
 		display: flex;
 		flex-direction: column;
 	}
 
 	.bento-icon {
-		width: 56px;
-		height: 56px;
-		border-radius: 16px;
+		width: 48px;
+		height: 48px;
+		border-radius: 12px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		margin-bottom: 20px;
-		transition: all 0.3s;
+		margin-bottom: 16px;
+		transition: all 0.2s;
 	}
 
 	.bento-card:hover .bento-icon {
-		transform: scale(1.1);
+		transform: scale(1.05);
 	}
 
 	.bento-ysws .bento-icon { color: #ec3750; background: rgba(236, 55, 80, 0.1); }
@@ -1716,38 +1344,38 @@
 	.bento-tools .bento-icon { color: #06b6d4; background: rgba(6, 182, 212, 0.1); }
 
 	.bento-card h3 {
-		margin: 0 0 10px;
-		font-size: 1.25rem;
+		margin: 0 0 8px;
+		font-size: 1.125rem;
 		font-weight: 700;
 	}
 
 	.bento-large h3 {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 	}
 
 	.bento-card p {
 		margin: 0;
-		font-size: 0.95rem;
+		font-size: 0.9rem;
 		color: #8492a6;
 		line-height: 1.5;
 		flex: 1;
 	}
 
 	.bento-large p {
-		font-size: 1.05rem;
+		font-size: 0.95rem;
 		max-width: 400px;
 	}
 
 	.bento-cta {
 		display: inline-flex;
 		align-items: center;
-		gap: 8px;
-		margin-top: 20px;
-		font-size: 0.9rem;
+		gap: 6px;
+		margin-top: 16px;
+		font-size: 0.875rem;
 		font-weight: 600;
 		color: #ec3750;
 		opacity: 0;
-		transform: translateX(-10px);
+		transform: translateX(-8px);
 		transition: all 0.3s;
 	}
 
@@ -1758,7 +1386,7 @@
 
 	/* Resources Section */
 	.resources-section {
-		padding: 100px 0;
+		padding: 80px 0;
 		background: #f9fafc;
 	}
 
@@ -1771,11 +1399,11 @@
 	.resource-card {
 		display: flex;
 		align-items: center;
-		gap: 16px;
-		padding: 20px 24px;
+		gap: 14px;
+		padding: 16px 20px;
 		background: white;
 		border: 1px solid #e0e6ed;
-		border-radius: 16px;
+		border-radius: 12px;
 		text-decoration: none;
 		color: #1f2d3d;
 		transition: all 0.2s;
@@ -1783,14 +1411,14 @@
 
 	.resource-card:hover {
 		border-color: #ec3750;
-		box-shadow: 0 8px 24px rgba(236, 55, 80, 0.1);
+		box-shadow: 0 4px 12px rgba(236, 55, 80, 0.08);
 		transform: translateY(-2px);
 	}
 
 	.resource-icon {
-		width: 48px;
-		height: 48px;
-		border-radius: 12px;
+		width: 44px;
+		height: 44px;
+		border-radius: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -1799,7 +1427,7 @@
 	}
 
 	.resource-card:hover .resource-icon {
-		transform: scale(1.1);
+		transform: scale(1.05);
 	}
 
 	.slack-icon { background: rgba(236, 55, 80, 0.1); color: #ec3750; }
@@ -1844,44 +1472,30 @@
 	}
 
 	.cta-card {
-		position: relative;
-		padding: 80px 40px;
-		background: linear-gradient(135deg, #ec3750 0%, #d32f44 100%);
-		border-radius: 32px;
+		padding: 64px 40px;
+		background: #ec3750;
+		border-radius: 24px;
 		text-align: center;
-		overflow: hidden;
 		color: white;
 	}
 
-	.cta-bg {
-		position: absolute;
-		inset: 0;
-		background: radial-gradient(ellipse at top left, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
-					radial-gradient(ellipse at bottom right, rgba(0, 0, 0, 0.2) 0%, transparent 50%);
-	}
-
-	.cta-content {
-		position: relative;
-		z-index: 1;
-	}
-
-	.cta-content h2 {
+	.cta-card h2 {
 		margin: 0 0 12px;
-		font-size: 2.5rem;
+		font-size: 2rem;
 		font-weight: 800;
 		color: white;
 	}
 
-	.cta-content p {
-		margin: 0 0 32px;
-		font-size: 1.15rem;
+	.cta-card p {
+		margin: 0 0 28px;
+		font-size: 1.05rem;
 		color: rgba(255, 255, 255, 0.85);
 	}
 
 	.cta-actions {
 		display: flex;
 		justify-content: center;
-		gap: 16px;
+		gap: 12px;
 		flex-wrap: wrap;
 	}
 

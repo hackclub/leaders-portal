@@ -253,13 +253,14 @@
 	.oauth-button {
 		width: 100%;
 		justify-content: center;
-		background: linear-gradient(135deg, #ec3750 0%, #d12d42 100%);
-		box-shadow: 0 4px 16px rgba(236, 55, 80, 0.3);
+		background: #ec3750;
+		box-shadow: 0 2px 8px rgba(236, 55, 80, 0.25);
 	}
 
 	.oauth-button:hover {
+		background: #d12d42;
 		transform: translateY(-2px);
-		box-shadow: 0 6px 24px rgba(236, 55, 80, 0.4);
+		box-shadow: 0 4px 12px rgba(236, 55, 80, 0.3);
 	}
 
 	.divider {
@@ -315,13 +316,14 @@
 	}
 
 	.login-form .btn-primary {
-		background: linear-gradient(135deg, #ec3750 0%, #d12d42 100%);
-		box-shadow: 0 4px 16px rgba(236, 55, 80, 0.25);
+		background: #ec3750;
+		box-shadow: 0 2px 8px rgba(236, 55, 80, 0.2);
 	}
 
 	.login-form .btn-primary:hover:not(:disabled) {
+		background: #d12d42;
 		transform: translateY(-2px);
-		box-shadow: 0 6px 24px rgba(236, 55, 80, 0.35);
+		box-shadow: 0 4px 12px rgba(236, 55, 80, 0.3);
 	}
 
 	.spinner-sm {
@@ -370,12 +372,12 @@
 	}
 
 	.alert-info {
-		background: linear-gradient(135deg, #d6eaff 0%, #f0f7ff 100%);
+		background: #d6eaff;
 		color: #1e6bbf;
 	}
 
 	.alert-error {
-		background: linear-gradient(135deg, #fee2e6 0%, #fff0f2 100%);
+		background: #fee2e6;
 		color: #c41e3a;
 	}
 

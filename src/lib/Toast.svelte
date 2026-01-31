@@ -107,22 +107,22 @@
 	
 	.toast-success {
 		border-color: #33d6a6;
-		background: linear-gradient(135deg, #f0fdf9 0%, white 100%);
+		background: #f0fdf9;
 	}
 	
 	.toast-error {
 		border-color: #ec3750;
-		background: linear-gradient(135deg, #fef2f4 0%, white 100%);
+		background: #fef2f4;
 	}
 	
 	.toast-warning {
 		border-color: #f59e0b;
-		background: linear-gradient(135deg, #fffbeb 0%, white 100%);
+		background: #fffbeb;
 	}
 	
 	.toast-info {
 		border-color: #338eda;
-		background: linear-gradient(135deg, #eff6ff 0%, white 100%);
+		background: #eff6ff;
 	}
 	
 	.toast-icon {

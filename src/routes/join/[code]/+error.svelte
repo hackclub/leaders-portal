@@ -165,7 +165,7 @@
 		text-decoration: none;
 		padding: 8px 16px;
 		color: #ffffff;
-		background-image: radial-gradient(ellipse farthest-corner at top left, #ff8c37, #ec3750);
+		background: #ec3750;
 		border: 0;
 		border-radius: 99999px;
 		cursor: pointer;
@@ -174,8 +174,7 @@
 		font-size: 20px;
 		text-transform: uppercase;
 		letter-spacing: 0.009em;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.125);
-		transition: transform 0.125s ease-in-out, box-shadow 0.125s ease-in-out;
+		transition: transform 0.125s ease-in-out, background 0.125s ease-in-out;
 	}
 
 	.button:hover,

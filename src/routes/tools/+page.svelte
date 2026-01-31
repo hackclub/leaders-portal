@@ -314,11 +314,11 @@
 <style>
 	.page {
 		min-height: 100vh;
-		background: linear-gradient(180deg, #f9fafc 0%, white 100%);
+		background: #f9fafc;
 	}
 
 	.page-header {
-		background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+		background: #f59e0b;
 		padding: 48px 32px;
 	}
 
@@ -471,7 +471,7 @@
 	}
 
 	.github-pack-card {
-		background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+		background: #0d1117;
 		border-radius: 20px;
 		overflow: hidden;
 		color: white;
@@ -614,7 +614,7 @@
 		align-items: center;
 		gap: 10px;
 		padding: 14px 24px;
-		background: linear-gradient(135deg, #2ea44f 0%, #22863a 100%);
+		background: #2ea44f;
 		border: none;
 		border-radius: 12px;
 		color: white;
@@ -626,8 +626,9 @@
 	}
 
 	.github-pack-btn:hover {
+		background: #22863a;
 		transform: translateY(-2px);
-		box-shadow: 0 8px 24px rgba(46, 164, 79, 0.4);
+		box-shadow: 0 4px 12px rgba(46, 164, 79, 0.3);
 	}
 
 	.github-pack-btn svg:last-child {

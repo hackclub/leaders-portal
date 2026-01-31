@@ -126,7 +126,7 @@
 		align-items: center;
 		justify-content: center;
 		padding: 24px;
-		background: linear-gradient(135deg, #f9fafc 0%, #eef1f6 100%);
+		background: #f9fafc;
 		font-family: 'Phantom Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 		position: relative;
 		overflow: hidden;
@@ -200,7 +200,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: linear-gradient(135deg, #f9fafc 0%, #eef1f6 100%);
+		background: #f9fafc;
 		overflow: hidden;
 	}
 	
@@ -295,14 +295,12 @@
 	}
 	
 	.btn.primary {
-		background: linear-gradient(135deg, #ff8c37 0%, #ec3750 100%);
+		background: #ec3750;
 		color: white;
-		box-shadow: 0 4px 12px rgba(236, 55, 80, 0.3);
 	}
 	
 	.btn.primary:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 6px 20px rgba(236, 55, 80, 0.4);
+		background: #d62c47;
 	}
 	
 	.btn.secondary {

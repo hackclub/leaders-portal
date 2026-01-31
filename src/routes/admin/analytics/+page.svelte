@@ -258,17 +258,17 @@
     }
 
     .panel-icon.events {
-        background: linear-gradient(135deg, #fef3f2 0%, #fee2e2 100%);
+        background: #fee2e6;
         color: #ec3750;
     }
 
     .panel-icon.ships {
-        background: linear-gradient(135deg, #f0f4ff 0%, #e0e8ff 100%);
+        background: #e8f0fe;
         color: #338eda;
     }
 
     .panel-icon.recent {
-        background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+        background: #d1fae5;
         color: #33d6a6;
     }
 

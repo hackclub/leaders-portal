@@ -614,7 +614,7 @@
 		gap: var(--space-3, 12px);
 		margin-bottom: var(--space-5, 20px);
 		padding: var(--space-4, 16px);
-		background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+		background: #dcfce7;
 		border-radius: var(--radius-md, 8px);
 		border: 2px solid var(--hc-green, #33d6a6);
 	}

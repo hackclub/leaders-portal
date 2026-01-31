@@ -192,11 +192,11 @@
 <style>
 	.page {
 		min-height: 100vh;
-		background: linear-gradient(180deg, #f9fafc 0%, white 100%);
+		background: #f9fafc;
 	}
 
 	.page-header {
-		background: linear-gradient(135deg, #338eda 0%, #2678c4 100%);
+		background: #338eda;
 		padding: 48px 32px;
 	}
 
@@ -265,10 +265,9 @@
 	}
 
 	.filter-btn.active {
-		background: linear-gradient(135deg, #338eda 0%, #2678c4 100%);
+		background: #338eda;
 		border-color: transparent;
 		color: white;
-		box-shadow: 0 4px 12px rgba(51, 142, 218, 0.3);
 	}
 
 	.events-grid {
@@ -307,7 +306,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf0 100%);
+		background: #f0f4f8;
 		color: #8492a6;
 	}
 

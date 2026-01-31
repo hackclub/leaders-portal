@@ -192,7 +192,7 @@
     .member-avatar {
         width: 36px;
         height: 36px;
-        background: linear-gradient(135deg, #f0f4ff 0%, #e0e8ff 100%);
+        background: #f0f4ff;
         border-radius: 50%;
         display: flex;
         align-items: center;

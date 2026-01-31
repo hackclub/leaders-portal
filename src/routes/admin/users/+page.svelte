@@ -774,7 +774,7 @@
     .user-avatar {
         width: 36px;
         height: 36px;
-        background: linear-gradient(135deg, #f0f4ff 0%, #e0e8ff 100%);
+        background: #e8f0fe;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -1106,7 +1106,7 @@
     .club-icon {
         width: 40px;
         height: 40px;
-        background: linear-gradient(135deg, #f0f4ff 0%, #e0e8ff 100%);
+        background: #e8f0fe;
         border-radius: 8px;
         display: flex;
         align-items: center;

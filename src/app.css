@@ -102,8 +102,7 @@ html {
 body {
   font-family: 'Phantom Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--hc-dark);
-  background: linear-gradient(180deg, var(--hc-snow) 0%, var(--hc-white) 100%);
-  background-attachment: fixed;
+  background: var(--hc-snow);
   line-height: 1.6;
   min-height: 100vh;
 }
@@ -171,15 +170,16 @@ a:hover { color: var(--hc-red); }
 /* Primary Button - Signature Hack Club Red */
 .btn-primary,
 .btn.cta {
-  background: linear-gradient(135deg, var(--hc-red) 0%, var(--hc-red-dark) 100%);
+  background: var(--hc-red);
   color: var(--hc-white);
-  box-shadow: 0 4px 12px rgba(236, 55, 80, 0.25);
+  box-shadow: 0 2px 8px rgba(236, 55, 80, 0.2);
 }
 
 .btn-primary:hover:not(:disabled),
 .btn.cta:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-glow-red);
+  background: var(--hc-red-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(236, 55, 80, 0.25);
 }
 
 .btn-primary:active:not(:disabled),
@@ -215,14 +215,15 @@ a:hover { color: var(--hc-red); }
 
 /* Success Button */
 .btn-success {
-  background: linear-gradient(135deg, var(--hc-green) 0%, var(--hc-green-dark) 100%);
+  background: var(--hc-green);
   color: var(--hc-white);
-  box-shadow: 0 4px 12px rgba(51, 214, 166, 0.25);
+  box-shadow: 0 2px 8px rgba(51, 214, 166, 0.2);
 }
 
 .btn-success:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-glow-green);
+  background: var(--hc-green-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(51, 214, 166, 0.25);
 }
 
 /* Button Sizes */
@@ -348,22 +349,22 @@ textarea::placeholder {
 }
 
 .alert-success {
-  background: linear-gradient(135deg, #d4f7e8 0%, #e8fdf5 100%);
+  background: #d4f7e8;
   color: #0f7b4e;
 }
 
 .alert-error {
-  background: linear-gradient(135deg, #fee2e6 0%, #fff0f2 100%);
+  background: #fee2e6;
   color: #c41e3a;
 }
 
 .alert-warning {
-  background: linear-gradient(135deg, #fff4d4 0%, #fffbeb 100%);
+  background: #fff4d4;
   color: #9a7100;
 }
 
 .alert-info {
-  background: linear-gradient(135deg, #d6eaff 0%, #f0f7ff 100%);
+  background: #d6eaff;
   color: #1e6bbf;
 }
 

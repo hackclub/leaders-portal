@@ -754,7 +754,7 @@
 	.header-icon {
 		width: 56px;
 		height: 56px;
-		background: linear-gradient(135deg, #ec3750 0%, #d62c47 100%);
+		background: #ec3750;
 		border-radius: 14px;
 		display: flex;
 		align-items: center;
@@ -1217,7 +1217,7 @@
 		align-items: center;
 		gap: 20px;
 		padding: 24px;
-		background: linear-gradient(135deg, #f0fdf9 0%, #e6f4ff 100%);
+		background: #f0fdf9;
 		border: 2px dashed #33d6a6;
 		border-radius: 14px;
 	}
@@ -1298,7 +1298,7 @@
 	.member-avatar {
 		width: 44px;
 		height: 44px;
-		background: linear-gradient(135deg, #ec3750 0%, #d62c47 100%);
+		background: #ec3750;
 		border-radius: 50%;
 		display: flex;
 		align-items: center;

@@ -523,7 +523,7 @@
 	.club-avatar {
 		width: 56px;
 		height: 56px;
-		background: linear-gradient(135deg, #ec3750 0%, #d32f44 100%);
+		background: #ec3750;
 		color: white;
 		font-size: 1.5rem;
 		font-weight: 700;
@@ -532,7 +532,7 @@
 		justify-content: center;
 		border-radius: 14px;
 		flex-shrink: 0;
-		transition: transform 0.3s ease;
+		transition: transform 0.2s ease;
 	}
 
 	.club-section:hover .club-avatar {
@@ -579,7 +579,7 @@
 		align-items: center;
 		gap: 6px;
 		padding: 8px 14px;
-		background: linear-gradient(135deg, #33d6a6 0%, #2ab890 100%);
+		background: #33d6a6;
 		color: white;
 		font-size: 0.8rem;
 		font-weight: 700;
@@ -683,7 +683,7 @@
 	}
 
 	.action-btn.highlight {
-		background: linear-gradient(135deg, rgba(51, 214, 166, 0.08) 0%, rgba(51, 214, 166, 0.04) 100%);
+		background: rgba(51, 214, 166, 0.08);
 		border-color: rgba(51, 214, 166, 0.3);
 	}
 
@@ -995,7 +995,7 @@
 		align-items: flex-start;
 		gap: 20px;
 		padding: 24px;
-		background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+		background: #fef2f2;
 		border: 2px solid #fed7d7;
 		border-radius: 16px;
 		margin-top: 16px;

@@ -334,9 +334,9 @@
 	}
 
 	.editor-banner {
-		background: linear-gradient(135deg, #ec3750, #ff8c37);
+		background: #ec3750;
 		border-radius: 16px;
-		padding: 4px;
+		padding: 3px;
 	}
 
 	.editor-banner-content {
@@ -376,7 +376,7 @@
 	.beta-badge {
 		display: inline-block;
 		padding: 3px 8px;
-		background: linear-gradient(135deg, #ff8c37, #ec3750);
+		background: #ff8c37;
 		color: white;
 		font-size: 11px;
 		font-weight: 700;

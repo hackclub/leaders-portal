@@ -35,7 +35,7 @@
 		align-items: center;
 		justify-content: center;
 		padding: 24px;
-		background: linear-gradient(135deg, #f9fafc 0%, #e8ecf1 100%);
+		background: #f9fafc;
 	}
 
 	.logout-card {

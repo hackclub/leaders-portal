@@ -840,27 +840,27 @@
     }
 
     .stat-icon.users {
-        background: linear-gradient(135deg, #f0f4ff 0%, #e0e8ff 100%);
+        background: #e8f0fe;
         color: #338eda;
     }
 
     .stat-icon.members {
-        background: linear-gradient(135deg, #fef3f2 0%, #fee2e2 100%);
+        background: #fee2e6;
         color: #ec3750;
     }
 
     .stat-icon.ships {
-        background: linear-gradient(135deg, #fefce8 0%, #fef08a 100%);
+        background: #fef3cd;
         color: #ca8a04;
     }
 
     .stat-icon.events {
-        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        background: #d1fae5;
         color: #059669;
     }
 
     .stat-icon.sessions {
-        background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+        background: #ede9fe;
         color: #7c3aed;
     }
 
@@ -941,7 +941,7 @@
     .action-icon {
         width: 40px;
         height: 40px;
-        background: linear-gradient(135deg, #fef3f2 0%, #fee2e2 100%);
+        background: #fee2e6;
         border-radius: 10px;
         display: flex;
         align-items: center;

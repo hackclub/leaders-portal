@@ -308,7 +308,7 @@
 			<h2>How it works</h2>
 			<div class="info-grid">
 				<div class="info-card">
-					<div class="info-icon" style="background: linear-gradient(135deg, #338eda, #5ba3e6)">
+					<div class="info-icon" style="background: #338eda">
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
 						</svg>
@@ -317,7 +317,7 @@
 					<p>Choose from web dev, hardware, design, game dev, and more</p>
 				</div>
 				<div class="info-card">
-					<div class="info-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24)">
+					<div class="info-icon" style="background: #f59e0b">
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
 						</svg>
@@ -326,7 +326,7 @@
 					<p>Create your project and submit it to the program</p>
 				</div>
 				<div class="info-card">
-					<div class="info-icon" style="background: linear-gradient(135deg, #33d6a6, #5de0b8)">
+					<div class="info-icon" style="background: #33d6a6">
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
 							<polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/>
@@ -352,7 +352,7 @@
 
 	/* Hero Section */
 	.hero {
-		background: linear-gradient(135deg, #ec3750 0%, #d12d42 100%);
+		background: #ec3750;
 		padding: 48px 32px 56px;
 		position: relative;
 		overflow: hidden;
@@ -594,7 +594,7 @@
 	.card-overlay {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%);
+		background: rgba(0, 0, 0, 0.15);
 		pointer-events: none;
 	}
 

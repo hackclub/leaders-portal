@@ -903,7 +903,7 @@
 	.beta-badge {
 		display: inline-block;
 		padding: 2px 6px;
-		background: linear-gradient(135deg, #ff8c37, #ec3750);
+		background: #ec3750;
 		color: white;
 		font-size: 10px;
 		font-weight: 700;

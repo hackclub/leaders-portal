@@ -296,7 +296,7 @@
 	.club-avatar {
 		width: 56px;
 		height: 56px;
-		background: linear-gradient(135deg, #ec3750, #ff8c37);
+		background: #ec3750;
 		border-radius: 12px;
 		display: flex;
 		align-items: center;
@@ -619,7 +619,7 @@
 	.ambassador-avatar {
 		width: 48px;
 		height: 48px;
-		background: linear-gradient(135deg, #338eda, #5c4dd6);
+		background: #338eda;
 		border-radius: 50%;
 		display: flex;
 		align-items: center;

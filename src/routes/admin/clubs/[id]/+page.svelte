@@ -256,17 +256,17 @@
     }
 
     .stat-icon.members {
-        background: linear-gradient(135deg, #fef3f2 0%, #fee2e2 100%);
+        background: #fef3f2;
         color: #ec3750;
     }
 
     .stat-icon.ships {
-        background: linear-gradient(135deg, #fefce8 0%, #fef08a 100%);
+        background: #fefce8;
         color: #ca8a04;
     }
 
     .stat-icon.programs {
-        background: linear-gradient(135deg, #f0f4ff 0%, #e0e8ff 100%);
+        background: #f0f4ff;
         color: #338eda;
     }
 
