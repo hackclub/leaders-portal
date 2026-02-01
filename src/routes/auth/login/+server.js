@@ -12,7 +12,7 @@ export const GET = async ({ cookies, url }) => {
 	cookies.set('oauth_state', stateData, {
 		path: '/',
 		httpOnly: true,
-		secure: env.NODE_ENV === 'production',
+		secure: true,
 		sameSite: 'lax',
 		maxAge: 600
 	});

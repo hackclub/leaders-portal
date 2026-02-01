@@ -2,14 +2,61 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="https://css.hackclub.com/theme.css" />
-		<link rel="stylesheet" href="https://css.hackclub.com/fonts.css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+		<meta name="theme-color" content="#ec3750" />
+		<meta name="description" content="Club Leaders Portal - Manage your Hack Club, track events, and connect with your community." />
+		
+		<!-- PWA Meta Tags -->
+		<link rel="manifest" href="/manifest.json" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="Leaders Portal" />
+		<link rel="apple-touch-icon" href="https://assets.hackclub.com/icon-rounded.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="https://assets.hackclub.com/icon-rounded.png" />
+		<link rel="apple-touch-icon" sizes="152x152" href="https://assets.hackclub.com/icon-rounded.png" />
+		<link rel="apple-touch-icon" sizes="120x120" href="https://assets.hackclub.com/icon-rounded.png" />
+		
+		<!-- Splash screens for iOS -->
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		
+		<!-- Preconnect to external resources -->
+		<link rel="preconnect" href="https://assets.hackclub.com" crossorigin />
+		<link rel="preconnect" href="https://icons.hackclub.com" crossorigin />
+		
+		<!-- Hack Club Fonts -->
+		<link rel="preload" href="https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff2" as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href="https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Bold.woff2" as="font" type="font/woff2" crossorigin />
+		
 		<style>
-			:root {
-				--shadow-card: none;
-				--shadow-elevated: none;
-				--shadow-small: none;
+			/* Phantom Sans Font Face */
+			@font-face {
+				font-family: 'Phantom Sans';
+				src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff2') format('woff2'),
+					 url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff') format('woff');
+				font-weight: 400;
+				font-style: normal;
+				font-display: swap;
+			}
+			@font-face {
+				font-family: 'Phantom Sans';
+				src: url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Bold.woff2') format('woff2'),
+					 url('https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Bold.woff') format('woff');
+				font-weight: 700;
+				font-style: normal;
+				font-display: swap;
+			}
+			
+			/* Critical CSS - Prevent FOUC */
+			html {
+				background-color: #ffffff;
+			}
+			body {
+				font-family: 'Phantom Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+				margin: 0;
+				padding: 0;
+				background-color: #ffffff;
+				color: #1f2d3d;
 			}
 		</style>
 		%sveltekit.head%

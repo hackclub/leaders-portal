@@ -1,0 +1,53 @@
+{
+  "name": "Hack Club Leaders Portal",
+  "short_name": "Leaders Portal",
+  "description": "Manage your Hack Club, track events, and connect with your community",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ec3750",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "https://assets.hackclub.com/icon-rounded.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "https://assets.hackclub.com/icon-progress-square.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://assets.hackclub.com/icon-rounded.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["education", "productivity", "social"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "My Club",
+      "short_name": "Club",
+      "url": "/my-club",
+      "icons": [{ "src": "https://assets.hackclub.com/icon-rounded.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Events",
+      "short_name": "Events",
+      "url": "/events",
+      "icons": [{ "src": "https://assets.hackclub.com/icon-rounded.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Tools",
+      "short_name": "Tools",
+      "url": "/tools",
+      "icons": [{ "src": "https://assets.hackclub.com/icon-rounded.svg", "sizes": "any" }]
+    }
+  ]
+}

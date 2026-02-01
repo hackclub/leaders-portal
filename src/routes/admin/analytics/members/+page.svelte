@@ -29,8 +29,15 @@
 
 <div class="analytics-page">
     <div class="header">
-        <a href="/admin/analytics" class="back-link">← Back to Analytics</a>
+        <a href="/admin/analytics" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5"></path>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Analytics
+        </a>
         <h1>Member Analytics</h1>
+        <p class="header-subtitle">View member statistics and distribution across clubs</p>
     </div>
 
     <div class="stats-row">
@@ -116,17 +123,22 @@
     .analytics-page {
         max-width: 1400px;
         margin: 0 auto;
-        padding: 2rem;
+        padding: 32px;
     }
 
     .header {
-        margin-bottom: 2rem;
+        margin-bottom: 24px;
     }
 
     .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         color: #338eda;
         text-decoration: none;
         font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 8px;
     }
 
     .back-link:hover {
@@ -134,44 +146,53 @@
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 1.75rem;
         font-weight: 700;
         color: #1f2d3d;
-        margin-top: 0.5rem;
+        margin: 0 0 4px 0;
+    }
+
+    .header-subtitle {
+        font-size: 0.9rem;
+        color: #8492a6;
+        margin: 0;
     }
 
     h2 {
-        font-size: 1.25rem;
-        font-weight: 600;
+        font-size: 1rem;
+        font-weight: 700;
         color: #1f2d3d;
-        margin-bottom: 1rem;
+        margin: 0 0 16px 0;
     }
 
     .stats-row {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
+        gap: 16px;
+        margin-bottom: 24px;
     }
 
     .stat-card {
         background: #fff;
-        border: 2px solid #e0e6ed;
+        border: 1px solid #e0e6ed;
         border-radius: 12px;
-        padding: 1.5rem;
+        padding: 20px;
         text-align: center;
     }
 
     .stat-label {
         display: block;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
+        font-weight: 500;
         color: #8492a6;
-        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-bottom: 4px;
     }
 
     .stat-value {
         display: block;
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 700;
         color: #1f2d3d;
     }
@@ -179,10 +200,14 @@
     .grid-layout {
         display: grid;
         grid-template-columns: 1fr 2fr;
-        gap: 1.5rem;
+        gap: 20px;
     }
 
     @media (max-width: 900px) {
+        .analytics-page {
+            padding: 20px;
+        }
+
         .grid-layout {
             grid-template-columns: 1fr;
         }
@@ -190,9 +215,9 @@
 
     .panel {
         background: #fff;
-        border: 2px solid #e0e6ed;
+        border: 1px solid #e0e6ed;
         border-radius: 12px;
-        padding: 1.5rem;
+        padding: 20px;
     }
 
     .list-container {
@@ -204,8 +229,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #e0e6ed;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f4f8;
     }
 
     .list-item:last-child {
@@ -213,15 +238,20 @@
     }
 
     .item-title {
-        font-weight: 500;
+        font-weight: 600;
         color: #1f2d3d;
+        font-size: 0.875rem;
     }
 
     .badge {
-        padding: 0.25rem 0.5rem;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 100px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
     }
 
     .badge.blue {
@@ -231,29 +261,34 @@
 
     .filters {
         display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
+        gap: 12px;
+        margin-bottom: 16px;
     }
 
     .search-input {
         flex: 1;
-        padding: 0.5rem 0.75rem;
-        border: 2px solid #e0e6ed;
+        padding: 10px 14px;
+        border: 1px solid #e0e6ed;
         border-radius: 8px;
         font-size: 0.875rem;
+        font-family: inherit;
+        transition: all 150ms ease;
     }
 
     .search-input:focus {
         outline: none;
         border-color: #338eda;
+        box-shadow: 0 0 0 3px rgba(51, 142, 218, 0.1);
     }
 
     .filter-select {
-        padding: 0.5rem 0.75rem;
-        border: 2px solid #e0e6ed;
+        padding: 10px 14px;
+        border: 1px solid #e0e6ed;
         border-radius: 8px;
         font-size: 0.875rem;
+        font-family: inherit;
         background: white;
+        cursor: pointer;
     }
 
     .table-container {
@@ -268,37 +303,43 @@
 
     th {
         text-align: left;
-        padding: 0.75rem;
-        font-size: 0.75rem;
-        font-weight: 500;
+        padding: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
         color: #8492a6;
         text-transform: uppercase;
-        border-bottom: 2px solid #e0e6ed;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid #e0e6ed;
         position: sticky;
         top: 0;
         background: white;
     }
 
     td {
-        padding: 0.75rem;
-        border-bottom: 1px solid #e0e6ed;
+        padding: 12px;
+        border-bottom: 1px solid #f0f4f8;
         color: #1f2d3d;
+        font-size: 0.875rem;
+    }
+
+    tr:hover td {
+        background: #f9fafc;
     }
 
     td.font-medium {
-        font-weight: 500;
+        font-weight: 600;
     }
 
     .empty-state {
         text-align: center;
         color: #8492a6;
-        padding: 1rem;
+        padding: 24px;
         font-style: italic;
     }
 
     .count-label {
-        margin-top: 1rem;
-        font-size: 0.875rem;
+        margin-top: 16px;
+        font-size: 0.8rem;
         color: #8492a6;
     }
 </style>

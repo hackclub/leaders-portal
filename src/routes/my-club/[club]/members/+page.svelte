@@ -1,6 +1,7 @@
 <script>
 	import RefreshButton from '$lib/RefreshButton.svelte';
 	import { mergeClubData } from '$lib/club-utils.js';
+	import { toasts } from '$lib/stores/toast.js';
 	
 	let { data, form } = $props();
 	let club = $state(data.club);
@@ -87,6 +88,25 @@
 		newMemberEmail = '';
 		isAdding = false;
 	}
+
+	$effect(() => {
+		if (form?.addSuccess) {
+			toasts.success('Member added successfully!');
+		}
+		if (form?.editSuccess) {
+			toasts.success('Member updated successfully!');
+		}
+		if (form?.removeSuccess) {
+			toasts.success('Member removed from club');
+		}
+		if (form?.announcementSuccess) {
+			toasts.success(`Announcement sent to ${form.recipientCount || 'all'} members!`);
+			showAnnouncementModal = false;
+		}
+		if (form?.error) {
+			toasts.error(form.error);
+		}
+	});
 </script>
 
 <svelte:head>

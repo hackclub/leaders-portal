@@ -32,9 +32,11 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/migrations ./migrations
 COPY --from=builder /app/knexfile.js ./knexfile.js
+COPY --from=builder /app/static ./static
 
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV ORIGIN=https://leaders.hackclub.com
 
 EXPOSE 3000
 

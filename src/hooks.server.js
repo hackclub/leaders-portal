@@ -1,4 +1,6 @@
 import crypto from 'node:crypto';
+import { redirect } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 import { getKnex } from '$lib/server/db/knex.js';
 import { findSessionByTokenHash, touchSession, deleteSessionById } from '$lib/server/auth/sessions.js';
 import { getUserPublicById } from '$lib/server/auth/users.js';
@@ -7,7 +9,34 @@ import { startCacheScheduler } from '$lib/server/cache-scheduler.js';
 
 const SESSION_COOKIE = 'sid';
 
+const SUSPENSION_ALLOWED_ROUTES = ['/suspended', '/logout', '/auth', '/api'];
+
 startCacheScheduler();
+
+// In development, use a more permissive CSP
+const securityHeaders = dev ? {
+	'X-Frame-Options': 'SAMEORIGIN',
+	'X-Content-Type-Options': 'nosniff',
+	'Referrer-Policy': 'strict-origin-when-cross-origin'
+} : {
+	'X-Frame-Options': 'SAMEORIGIN',
+	'X-Content-Type-Options': 'nosniff',
+	'X-XSS-Protection': '1; mode=block',
+	'Referrer-Policy': 'strict-origin-when-cross-origin',
+	'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+	'Content-Security-Policy': [
+		"default-src 'self'",
+		"script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+		"style-src 'self' 'unsafe-inline' https://assets.hackclub.com",
+		"img-src 'self' data: https: blob:",
+		"font-src 'self' https://assets.hackclub.com",
+		"connect-src 'self' https://auth.hackclub.com https://hackclub.com",
+		"frame-src 'self' https://hackclub.com",
+		"frame-ancestors 'self'",
+		"base-uri 'self'",
+		"form-action 'self'"
+	].join('; ')
+};
 
 export async function handle({ event, resolve }) {
 	const knex = getKnex();
@@ -33,11 +62,26 @@ export async function handle({ event, resolve }) {
 				const { token } = await refreshIfNeeded(knex, session.user_id, event.fetch);
 				return token;
 			};
+			
+			if (userPublic?.isSuspended) {
+				const pathname = event.url.pathname;
+				const isAllowedRoute = SUSPENSION_ALLOWED_ROUTES.some(route => pathname.startsWith(route));
+				
+				if (!isAllowedRoute) {
+					throw redirect(302, '/suspended');
+				}
+			}
 		} else if (session) {
 			await deleteSessionById(knex, session.id);
 			event.cookies.delete(SESSION_COOKIE, { path: '/' });
 		}
 	}
 
-	return resolve(event);
+	const response = await resolve(event);
+
+	Object.entries(securityHeaders).forEach(([header, value]) => {
+		response.headers.set(header, value);
+	});
+
+	return response;
 }

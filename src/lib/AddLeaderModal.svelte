@@ -1,5 +1,6 @@
 <script>
     import Modal from './Modal.svelte';
+    import { toasts } from '$lib/stores/toast.js';
     
     let { open = false, onClose } = $props();
     
@@ -30,6 +31,7 @@
             clubs = await response.json();
         } catch (err) {
             error = err.message;
+            toasts.error('Failed to load clubs');
         } finally {
             isLoading = false;
         }
@@ -55,8 +57,10 @@
             
             const data = await response.json();
             result = data.updateLeaderInfoForm;
+            toasts.success('Leader created successfully!');
         } catch (err) {
             error = err.message;
+            toasts.error(err.message);
         } finally {
             isSubmitting = false;
         }
