@@ -902,31 +902,11 @@
 		text-transform: capitalize;
 	}
 
-	.club-role.leader {
-		background: rgba(236, 55, 80, 0.1);
-		color: #ec3750;
-	}
-
-	.club-role.member {
-		background: rgba(51, 142, 218, 0.1);
-		color: #338eda;
-	}
-
-	.club-stats {
-		display: flex;
-		gap: 16px;
-		margin-bottom: 8px;
-	}
-
-	.club-stat {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		font-size: 0.875rem;
-		color: #8492a6;
-	}
-
-	.club-location {
+	header {
+		position: relative;
+		width: 100vw;
+		margin-left: calc(-50vw + 50%);
+		margin-top: -32px;
 		display: flex;
 		align-items: center;
 		gap: 6px;
@@ -937,119 +917,8 @@
 	/* Empty State */
 	.empty-section {
 		margin-bottom: 32px;
-	}
-
-	.empty-card {
-		background: white;
-		border: 2px dashed #e0e6ed;
-		border-radius: 16px;
-		padding: 48px 24px;
-		text-align: center;
-	}
-
-	.empty-icon {
-		width: 80px;
-		height: 80px;
-		margin: 0 auto 16px;
-		background: #f9fafc;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: #8492a6;
-	}
-
-	.empty-card h3 {
-		margin: 0 0 8px;
-		color: #1f2d3d;
-	}
-
-	.empty-card p {
-		margin: 0 0 24px;
-		color: #8492a6;
-		max-width: 400px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	.btn-primary {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 12px 24px;
-		background: #ec3750;
-		color: white;
-		border-radius: 10px;
-		font-weight: 600;
-		text-decoration: none;
-		transition: all 0.2s;
-	}
-
-	.btn-primary:hover {
-		background: #d32f44;
-	}
-
-	/* Resources */
-	.resources-section {
-		margin-bottom: 32px;
-	}
-
-	.resources-grid {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 10px;
-	}
-
-	.resource-card {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 10px 16px;
-		background: white;
-		border: 1px solid #e0e6ed;
-		border-radius: 100px;
-		text-decoration: none;
-		font-weight: 500;
-		font-size: 0.9rem;
-		color: #3c4858;
-		transition: all 0.2s;
-	}
-
-	.resource-card:hover {
-		border-color: #ec3750;
-		color: #ec3750;
-	}
-
-	.resource-card svg {
-		opacity: 0.6;
-	}
-
-	.resource-card:hover svg {
-		opacity: 1;
-	}
-
-	/* Dashboard responsive */
-	@media (max-width: 768px) {
-		.dashboard {
-			padding: 24px 16px;
-		}
-	}
-
-	/* ==================== LANDING PAGE STYLES ==================== */
-	.landing-page {
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-		background: #f9fafc;
-		color: #1f2d3d;
-		overflow-x: hidden;
-	}
-
-	.container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 24px;
-		width: 100%;
+		min-height: 500px;
+		overflow: hidden;
 	}
 
 	/* Landing Nav */

@@ -1,11 +1,15 @@
 import { getKnex } from '$lib/server/db/knex.js';
-import { error, fail } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import Airtable from 'airtable';
 import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '$env/static/private';
 
 const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
 
-export async function load() {
+export async function load({ locals }) {
+    if (!locals.userPublic?.isAdmin) {
+        throw redirect(302, '/');
+    }
+    
     const knex = getKnex();
     
     const [userCount] = await knex('users').count('id as count');
@@ -177,7 +181,11 @@ export async function load() {
 }
 
 export const actions = {
-    searchUser: async ({ request }) => {
+    searchUser: async ({ request, locals }) => {
+        if (!locals.userPublic?.isAdmin) {
+            throw error(403, 'Forbidden');
+        }
+        
         const formData = await request.formData();
         const query = formData.get('query')?.toString().trim();
         
@@ -197,7 +205,11 @@ export const actions = {
         return { searchResults: users, searchQuery: query };
     },
     
-    searchClub: async ({ request }) => {
+    searchClub: async ({ request, locals }) => {
+        if (!locals.userPublic?.isAdmin) {
+            throw error(403, 'Forbidden');
+        }
+        
         const formData = await request.formData();
         const query = formData.get('query')?.toString().trim().toLowerCase();
         
@@ -247,7 +259,11 @@ export const actions = {
         return { clubSearchResults: clubResults, clubSearchQuery: query };
     },
     
-    searchMember: async ({ request }) => {
+    searchMember: async ({ request, locals }) => {
+        if (!locals.userPublic?.isAdmin) {
+            throw error(403, 'Forbidden');
+        }
+        
         const formData = await request.formData();
         const query = formData.get('query')?.toString().trim().toLowerCase();
         
