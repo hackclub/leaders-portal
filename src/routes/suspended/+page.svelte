@@ -14,7 +14,7 @@
         <h1>Account Suspended</h1>
         
         <p class="message">
-            Your account has been suspended and you cannot access the Leaders Portal at this time.
+            Your account has been suspended and you cannot access the Club Portal at this time.
         </p>
         
         {#if data.reason}

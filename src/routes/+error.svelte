@@ -63,7 +63,7 @@
 </script>
 
 <svelte:head>
-	<title>{status} – {error.title} | Hack Club Leaders Portal</title>
+	<title>{status} – {error.title} | Hack Club</title>
 </svelte:head>
 
 <div class="error-page">

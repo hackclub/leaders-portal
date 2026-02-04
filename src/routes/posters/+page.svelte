@@ -180,7 +180,7 @@
 </script>
 
 <svelte:head>
-	<title>Club Posters - Club Leaders Portal</title>
+	<title>Club Posters - Hack Club</title>
 </svelte:head>
 
 <div class="container">

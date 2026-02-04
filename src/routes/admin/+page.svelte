@@ -1,5 +1,6 @@
 <script>
     import AddLeaderModal from '$lib/AddLeaderModal.svelte';
+    import ConfirmModal from '$lib/ConfirmModal.svelte';
     import { toasts } from '$lib/stores/toast.js';
     
     let { data, form } = $props();
@@ -12,10 +13,23 @@
     let showAddLeaderModal = $state(false);
     let activeSearchTab = $state('users');
 
-    async function clearAllCache() {
+    // Confirm modals
+    let showClearCacheConfirm = $state(false);
+    let showDeleteUserConfirm = $state(false);
+    let deleteUserId = $state(null);
+    let deleteUserFormElement = $state(null);
+
+    function openClearCacheConfirm() {
         if (isClearingCache) return;
-        if (!confirm('Are you sure you want to clear all cached club data? This will force fresh API calls for all users.')) return;
-        
+        showClearCacheConfirm = true;
+    }
+
+    function closeClearCacheConfirm() {
+        showClearCacheConfirm = false;
+    }
+
+    async function handleClearCacheConfirm() {
+        closeClearCacheConfirm();
         isClearingCache = true;
 
         try {
@@ -35,6 +49,23 @@
         } finally {
             isClearingCache = false;
         }
+    }
+
+    function openDeleteUserConfirm(userId) {
+        deleteUserId = userId;
+        showDeleteUserConfirm = true;
+    }
+
+    function closeDeleteUserConfirm() {
+        showDeleteUserConfirm = false;
+        deleteUserId = null;
+    }
+
+    function handleDeleteUserConfirm() {
+        if (deleteUserFormElement) {
+            deleteUserFormElement.submit();
+        }
+        closeDeleteUserConfirm();
     }
 
     $effect(() => {
@@ -70,7 +101,7 @@
                 </svg>
                 Add Leader
             </button>
-            <button class="btn btn-danger-outline" onclick={clearAllCache} disabled={isClearingCache}>
+            <button class="btn btn-danger-outline" onclick={openClearCacheConfirm} disabled={isClearingCache}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="23 4 23 10 17 10"/>
                     <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
@@ -356,16 +387,13 @@
                                                                 End Sessions
                                                             </button>
                                                         </form>
-                                                        <form method="POST" action="?/deleteUser" class="inline-form" onsubmit={(e) => { if (!confirm('Delete this user permanently?')) e.preventDefault(); }}>
-                                                            <input type="hidden" name="userId" value={user.id} />
-                                                            <button type="submit" class="btn-action btn-action-danger">
-                                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <polyline points="3 6 5 6 21 6"/>
-                                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                                                </svg>
-                                                                Delete
-                                                            </button>
-                                                        </form>
+                                                        <button type="button" class="btn-action btn-action-danger" onclick={() => openDeleteUserConfirm(user.id)}>
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <polyline points="3 6 5 6 21 6"/>
+                                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                                            </svg>
+                                                            Delete
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -706,6 +734,33 @@
 </div>
 
 <AddLeaderModal bind:open={showAddLeaderModal} onClose={() => showAddLeaderModal = false} />
+
+<!-- Hidden form for delete user -->
+<form bind:this={deleteUserFormElement} method="POST" action="?/deleteUser" style="display: none;">
+    <input type="hidden" name="userId" value={deleteUserId} />
+</form>
+
+<ConfirmModal
+    open={showClearCacheConfirm}
+    title="Clear All Cache"
+    message="Are you sure you want to clear all cached data? This includes club information and leader records."
+    confirmText="Clear Cache"
+    cancelText="Cancel"
+    variant="warning"
+    onConfirm={handleClearCacheConfirm}
+    onCancel={closeClearCacheConfirm}
+/>
+
+<ConfirmModal
+    open={showDeleteUserConfirm}
+    title="Delete User"
+    message="Are you sure you want to permanently delete this user? This action cannot be undone."
+    confirmText="Delete"
+    cancelText="Cancel"
+    variant="danger"
+    onConfirm={handleDeleteUserConfirm}
+    onCancel={closeDeleteUserConfirm}
+/>
 
 <style>
     .admin-dashboard {

@@ -135,7 +135,7 @@
 </script>
 
 <svelte:head>
-	<title>Settings - Club Leaders Portal</title>
+	<title>Settings - Hack Club</title>
 </svelte:head>
 
 <div class="settings-page">

@@ -51,7 +51,7 @@
 </script>
 
 <svelte:head>
-	<title>Tools | Hack Club Leaders Portal</title>
+	<title>Tools | Hack Club</title>
 </svelte:head>
 
 <div class="page">

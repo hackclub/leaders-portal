@@ -3,6 +3,7 @@ import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clu
 
 export async function load({ locals }) {
 	let clubs = [];
+	let memberClubs = [];
 	
 	if (locals.userPublic && locals.userId) {
 		try {
@@ -11,6 +12,15 @@ export async function load({ locals }) {
 			if (user) {
 				const effectiveEmail = getEffectiveEmailForUser(user);
 				clubs = await getClubsForEmail(effectiveEmail);
+				
+				// Get clubs the user is a member of (not leader)
+				try {
+					memberClubs = await knex('club_members')
+						.where({ user_id: locals.userId, status: 'active' })
+						.select('club_slug', 'club_name', 'joined_at');
+				} catch (e) {
+					// Table might not exist yet
+				}
 			}
 		} catch (e) {
 			console.error('[Layout] Error loading clubs for sidebar:', e.message);
@@ -19,6 +29,7 @@ export async function load({ locals }) {
 	
 	return {
 		user: locals.userPublic || null,
-		clubs
+		clubs,
+		memberClubs
 	};
 }

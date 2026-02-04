@@ -60,7 +60,7 @@
 </script>
 
 <svelte:head>
-	<title>Events | Hack Club Leaders Portal</title>
+	<title>Sponsored Events | Hack Club</title>
 </svelte:head>
 
 <div class="page">
@@ -75,8 +75,8 @@
 				</svg>
 			</div>
 			<div>
-				<h1>Hack Club Events</h1>
-				<p>Hackathons, workshops, and community gatherings</p>
+				<h1>Sponsored Events</h1>
+				<p>Hackathons, workshops, and community gatherings sponsored by Hack Club</p>
 			</div>
 		</div>
 	</header>

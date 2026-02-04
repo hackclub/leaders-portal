@@ -37,7 +37,7 @@
 </script>
 
 <svelte:head>
-	<title>My Clubs - Hack Club Leaders Portal</title>
+	<title>My Clubs - Hack Club</title>
 </svelte:head>
 
 <div class="page-wrapper">
@@ -257,14 +257,25 @@
 									</div>
 									<span>Manage Club</span>
 								</a>
-								<a href="/my-club/{encodeURIComponent(club.name)}/announce" class="action-btn">
+								<a href="/my-club/{encodeURIComponent(club.name)}/announcements" class="action-btn">
 									<div class="action-icon orange">
 										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 											<path d="m3 11 18-5v12L3 13v-2z"/>
 											<path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
 										</svg>
 									</div>
-									<span>Send Announcement</span>
+									<span>Announcements</span>
+								</a>
+								<a href="/my-club/{encodeURIComponent(club.name)}/events" class="action-btn">
+									<div class="action-icon cyan">
+										<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+											<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+											<line x1="16" y1="2" x2="16" y2="6"/>
+											<line x1="8" y1="2" x2="8" y2="6"/>
+											<line x1="3" y1="10" x2="21" y2="10"/>
+										</svg>
+									</div>
+									<span>Club Events</span>
 								</a>
 							{/if}
 						</div>
@@ -710,6 +721,7 @@
 	.action-icon.pink { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
 	.action-icon.teal { background: rgba(20, 184, 166, 0.1); color: #14b8a6; }
 	.action-icon.orange { background: rgba(249, 115, 22, 0.1); color: #f97316; }
+	.action-icon.cyan { background: rgba(6, 182, 212, 0.1); color: #06b6d4; }
 
 	/* Links Section */
 	.links-section {

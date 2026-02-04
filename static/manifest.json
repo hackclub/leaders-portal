@@ -1,6 +1,6 @@
 {
-  "name": "Hack Club Leaders Portal",
-  "short_name": "Leaders Portal",
+  "name": "Hack Club Portal",
+  "short_name": "Club Portal",
   "description": "Manage your Hack Club, track events, and connect with your community",
   "start_url": "/",
   "display": "standalone",

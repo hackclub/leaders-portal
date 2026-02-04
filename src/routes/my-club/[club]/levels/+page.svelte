@@ -92,7 +92,7 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 </script>
 
 <svelte:head>
-	<title>Club Levels - {club.name} - Clubs Event Portal</title>
+	<title>Club Levels - {club.name} - Hack Club</title>
 </svelte:head>
 
 <div class="container">

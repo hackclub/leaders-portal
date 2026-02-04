@@ -141,11 +141,16 @@ export const GET = async ({ url, cookies, fetch, getClientAddress, request, loca
 	}
 
 	if (!user) {
+		// Check if this is a member joining via a join link
+		const isJoinFlow = returnTo && returnTo.startsWith('/join/');
+		
 		const { isLeader, isDormant } = await checkLeaderClubStatus(primaryEmail);
-		if (!isLeader) {
+		
+		// Allow account creation for leaders OR for users coming from a join link
+		if (!isLeader && !isJoinFlow) {
 			throw redirect(302, '/email-login?error=not_a_leader');
 		}
-		if (isDormant) {
+		if (isLeader && isDormant) {
 			throw redirect(302, '/email-login?error=club_dormant');
 		}
 

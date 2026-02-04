@@ -1,4 +1,4 @@
-# Club Leaders Portal
+# Club Portal
 
 Portal for [@hackclub](https://github.com/hackclub/) club leaders to manage their clubs
 

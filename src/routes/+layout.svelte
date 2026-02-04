@@ -42,7 +42,7 @@
 
 {#if showSidebar}
 	<div class="app-layout">
-		<Sidebar user={data.user} clubs={data.clubs || []} currentPath={$page.url.pathname} bind:sidebarOpen />
+		<Sidebar user={data.user} clubs={data.clubs || []} memberClubs={data.memberClubs || []} currentPath={$page.url.pathname} bind:sidebarOpen />
 		
 		<div class="app-main">
 			<!-- Mobile header -->
@@ -56,7 +56,7 @@
 				</button>
 				<a href="/" class="mobile-logo">
 					<img src="https://assets.hackclub.com/icon-rounded.svg" alt="" />
-					<span>Leaders Portal</span>
+					<span>Club Portal</span>
 				</a>
 				<div class="mobile-spacer"></div>
 			</header>

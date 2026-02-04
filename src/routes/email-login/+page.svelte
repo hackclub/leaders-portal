@@ -86,7 +86,7 @@
 </script>
 
 <svelte:head>
-	<title>Email Login - Club Leaders Portal</title>
+	<title>Email Login - Hack Club</title>
 </svelte:head>
 
 
@@ -94,7 +94,7 @@
 	<div class="login-card">
 		<div class="card-header">
 			<img src="https://assets.hackclub.com/icon-rounded.svg" alt="Hack Club" class="logo" />
-			<h1 class="title">Leader Portal</h1>
+			<h1 class="title">Club Portal</h1>
 			<p class="subtitle">Sign in to manage your club</p>
 		</div>
 

@@ -12,7 +12,7 @@
 </script>
 
 <svelte:head>
-	<title>Invite Co-Leader - Club Leaders Portal</title>
+	<title>Invite Co-Leader - Hack Club</title>
 </svelte:head>
 
 <div class="page-container">

@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Log Out - Club Leaders Portal</title>
+	<title>Log Out - Hack Club</title>
 </svelte:head>
 
 <div class="logout-page">
@@ -17,7 +17,7 @@
 		</div>
 		
 		<h1>Log Out</h1>
-		<p>Are you sure you want to log out of the Club Leaders Portal?</p>
+		<p>Are you sure you want to log out of the Club Portal?</p>
 		
 		<div class="actions">
 			<form method="POST" use:enhance>

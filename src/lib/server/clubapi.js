@@ -351,3 +351,35 @@ export async function getClubsForLeaderEmail(email) {
 		return [];
 	}
 }
+
+export async function addLeaderToClub(email, clubId) {
+	const url = new URL('/leader', CLUB_API_BASE);
+	
+	const headers = {
+		'Content-Type': 'application/json'
+	};
+	if (env.CLUB_API_KEY) {
+		headers['Authorization'] = env.CLUB_API_KEY;
+	}
+
+	console.log('[ClubAPI] Adding leader:', email, 'to club:', clubId);
+
+	const response = await fetch(url.toString(), {
+		method: 'POST',
+		headers,
+		body: JSON.stringify({
+			email: email.toLowerCase().trim(),
+			club_id: clubId
+		})
+	});
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		console.error('[ClubAPI] Add leader error:', errorText);
+		throw new Error(`Failed to add leader: ${response.status} - ${errorText}`);
+	}
+
+	const data = await response.json();
+	console.log('[ClubAPI] Add leader result:', data);
+	return data;
+}

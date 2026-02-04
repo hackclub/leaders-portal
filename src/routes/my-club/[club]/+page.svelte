@@ -38,7 +38,7 @@
 </script>
 
 <svelte:head>
-	<title>{club.name} - Hack Club Leaders Portal</title>
+	<title>{club.name} - Hack Club</title>
 </svelte:head>
 
 <div class="page-wrapper">

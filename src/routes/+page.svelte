@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>Club Leaders Portal | Hack Club</title>
+	<title>Club Portal | Hack Club</title>
 </svelte:head>
 
 {#if data.user}
@@ -114,7 +114,7 @@
 						</svg>
 					</div>
 					<div class="action-text">
-						<span class="action-title">Browse Events</span>
+						<span class="action-title">Sponsored Events</span>
 						<span class="action-desc">Find hackathons & workshops</span>
 					</div>
 					<svg class="action-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -271,7 +271,7 @@
 			<div class="nav-container">
 				<a href="/" class="nav-logo">
 					<img src="https://assets.hackclub.com/icon-rounded.svg" alt="Hack Club" />
-					<span>Leaders Portal</span>
+					<span>Club Portal</span>
 				</a>
 				<div class="nav-links">
 					<a href="/ysws">YSWS</a>
@@ -402,7 +402,7 @@
 						</div>
 					</a>
 
-					<div class="bento-card bento-announcements">
+					<a href="/my-club" class="bento-card bento-announcements">
 						<div class="bento-content">
 							<div class="bento-icon">
 								<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -410,10 +410,37 @@
 									<path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
 								</svg>
 							</div>
-							<h3>Send Announcements</h3>
-							<p>Keep members informed with one click</p>
+							<h3>Announcements</h3>
+							<p>Keep members informed with updates</p>
+							<div class="bento-cta">
+								Send Announcement
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+									<polyline points="9,18 15,12 9,6"/>
+								</svg>
+							</div>
 						</div>
-					</div>
+					</a>
+
+					<a href="/my-club" class="bento-card bento-events">
+						<div class="bento-content">
+							<div class="bento-icon">
+								<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+									<line x1="16" y1="2" x2="16" y2="6"/>
+									<line x1="8" y1="2" x2="8" y2="6"/>
+									<line x1="3" y1="10" x2="21" y2="10"/>
+								</svg>
+							</div>
+							<h3>Club Events</h3>
+							<p>Schedule and manage club meetings</p>
+							<div class="bento-cta">
+								View Calendar
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+									<polyline points="9,18 15,12 9,6"/>
+								</svg>
+							</div>
+						</div>
+					</a>
 
 					<a href="/posters" class="bento-card bento-posters">
 						<div class="bento-content">
@@ -1206,11 +1233,12 @@
 	}
 
 	.bento-ysws .bento-icon { color: #ec3750; background: rgba(236, 55, 80, 0.1); }
-	.bento-events .bento-icon { color: #338eda; background: rgba(51, 142, 218, 0.1); }
+	.bento-sponsored-events .bento-icon { color: #338eda; background: rgba(51, 142, 218, 0.1); }
 	.bento-members .bento-icon { color: #33d6a6; background: rgba(51, 214, 166, 0.1); }
 	.bento-announcements .bento-icon { color: #a855f7; background: rgba(168, 85, 247, 0.1); }
+	.bento-events .bento-icon { color: #06b6d4; background: rgba(6, 182, 212, 0.1); }
 	.bento-posters .bento-icon { color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
-	.bento-tools .bento-icon { color: #06b6d4; background: rgba(6, 182, 212, 0.1); }
+	.bento-tools .bento-icon { color: #14b8a6; background: rgba(20, 184, 166, 0.1); }
 
 	.bento-card h3 {
 		margin: 0 0 8px;

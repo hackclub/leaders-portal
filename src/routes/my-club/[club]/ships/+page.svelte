@@ -12,7 +12,7 @@
 </script>
 
 <svelte:head>
-	<title>Ships - {club.name} - Clubs Event Portal</title>
+	<title>Ships - {club.name} - Hack Club</title>
 </svelte:head>
 
 <div class="container">

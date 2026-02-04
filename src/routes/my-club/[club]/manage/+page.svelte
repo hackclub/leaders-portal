@@ -108,7 +108,7 @@
 </script>
 
 <svelte:head>
-	<title>Manage Club - {club.name} - Club Leaders Portal</title>
+	<title>Manage Club - {club.name} - Hack Club</title>
 </svelte:head>
 
 <div class="manage-page">

@@ -620,7 +620,7 @@
 </script>
 
 <svelte:head>
-	<title>Poster Editor - Club Leaders Portal</title>
+	<title>Poster Editor - Hack Club</title>
 </svelte:head>
 
 <div class="editor-container">

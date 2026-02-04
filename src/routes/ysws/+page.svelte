@@ -109,7 +109,7 @@
 </script>
 
 <svelte:head>
-	<title>YSWS Programs | Leaders Portal</title>
+	<title>YSWS Programs | Hack Club</title>
 </svelte:head>
 
 <div class="page">

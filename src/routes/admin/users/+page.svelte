@@ -1,4 +1,6 @@
 <script>
+    import ConfirmModal from '$lib/ConfirmModal.svelte';
+    
     let { data, form } = $props();
     
     let searchQuery = $state('');
@@ -6,6 +8,15 @@
     let suspendUserId = $state(null);
     let suspendReason = $state('');
     let showClubsModal = $state(false);
+    
+    // Confirm modal states
+    let showLoginAsConfirm = $state(false);
+    let loginAsUser = $state(null);
+    let loginAsFormElement = $state(null);
+    
+    let showDeleteConfirm = $state(false);
+    let deleteUserId = $state(null);
+    let deleteFormElement = $state(null);
     
     function getUserDisplayName(user) {
         const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
@@ -53,6 +64,44 @@
     
     function closeClubsModal() {
         showClubsModal = false;
+    }
+    
+    // Login As modal functions
+    function openLoginAsConfirm(user) {
+        loginAsUser = user;
+        showLoginAsConfirm = true;
+        closeMenu();
+    }
+    
+    function closeLoginAsConfirm() {
+        showLoginAsConfirm = false;
+        loginAsUser = null;
+    }
+    
+    function handleLoginAsConfirm() {
+        if (loginAsFormElement) {
+            loginAsFormElement.submit();
+        }
+        closeLoginAsConfirm();
+    }
+    
+    // Delete User modal functions
+    function openDeleteConfirm(userId) {
+        deleteUserId = userId;
+        showDeleteConfirm = true;
+        closeMenu();
+    }
+    
+    function closeDeleteConfirm() {
+        showDeleteConfirm = false;
+        deleteUserId = null;
+    }
+    
+    function handleDeleteConfirm() {
+        if (deleteFormElement) {
+            deleteFormElement.submit();
+        }
+        closeDeleteConfirm();
     }
 </script>
 
@@ -187,17 +236,14 @@
                                                             {user.is_admin ? 'Demote from Admin' : 'Promote to Admin'}
                                                         </button>
                                                     </form>
-                                                    <form method="POST" action="?/loginAs" class="menu-form" onsubmit={(e) => { if (!confirm(`Login as ${user.email}? You will be logged out of your current session.`)) e.preventDefault(); }}>
-                                                        <input type="hidden" name="userId" value={user.id} />
-                                                        <button type="submit" class="menu-item">
-                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                                                                <polyline points="10 17 15 12 10 7"></polyline>
-                                                                <line x1="15" y1="12" x2="3" y2="12"></line>
-                                                            </svg>
-                                                            Login as User
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="menu-item" onclick={() => openLoginAsConfirm(user)}>
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                                                            <polyline points="10 17 15 12 10 7"></polyline>
+                                                            <line x1="15" y1="12" x2="3" y2="12"></line>
+                                                        </svg>
+                                                        Login as User
+                                                    </button>
                                                     <div class="menu-divider"></div>
                                                     <form method="POST" action="?/clearSessions" class="menu-form">
                                                         <input type="hidden" name="userId" value={user.id} />
@@ -229,16 +275,13 @@
                                                             Suspend User
                                                         </button>
                                                     {/if}
-                                                    <form method="POST" action="?/delete" class="menu-form" onsubmit={(e) => { if (!confirm('Delete this user permanently?')) e.preventDefault(); }}>
-                                                        <input type="hidden" name="userId" value={user.id} />
-                                                        <button type="submit" class="menu-item danger">
-                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                            </svg>
-                                                            Delete User
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="menu-item danger" onclick={() => openDeleteConfirm(user.id)}>
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        </svg>
+                                                        Delete User
+                                                    </button>
                                                 </div>
                                             {/if}
                                         </div>
@@ -352,17 +395,14 @@
                                                     {user.is_admin ? 'Demote from Admin' : 'Promote to Admin'}
                                                 </button>
                                             </form>
-                                            <form method="POST" action="?/loginAs" class="menu-form" onsubmit={(e) => { if (!confirm(`Login as ${user.email}? You will be logged out of your current session.`)) e.preventDefault(); }}>
-                                                <input type="hidden" name="userId" value={user.id} />
-                                                <button type="submit" class="menu-item">
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                                                        <polyline points="10 17 15 12 10 7"></polyline>
-                                                        <line x1="15" y1="12" x2="3" y2="12"></line>
-                                                    </svg>
-                                                    Login as User
-                                                </button>
-                                            </form>
+                                            <button type="button" class="menu-item" onclick={() => openLoginAsConfirm(user)}>
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                                                    <polyline points="10 17 15 12 10 7"></polyline>
+                                                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                                                </svg>
+                                                Login as User
+                                            </button>
                                             <div class="menu-divider"></div>
                                             <form method="POST" action="?/clearSessions" class="menu-form">
                                                 <input type="hidden" name="userId" value={user.id} />
@@ -394,16 +434,13 @@
                                                     Suspend User
                                                 </button>
                                             {/if}
-                                            <form method="POST" action="?/delete" class="menu-form" onsubmit={(e) => { if (!confirm('Delete this user permanently?')) e.preventDefault(); }}>
-                                                <input type="hidden" name="userId" value={user.id} />
-                                                <button type="submit" class="menu-item danger">
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                    </svg>
-                                                    Delete User
-                                                </button>
-                                            </form>
+                                            <button type="button" class="menu-item danger" onclick={() => openDeleteConfirm(user.id)}>
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                                Delete User
+                                            </button>
                                         </div>
                                     {/if}
                                 </div>
@@ -552,6 +589,37 @@
         </div>
     </div>
 {/if}
+
+<!-- Hidden forms for modal actions -->
+<form bind:this={loginAsFormElement} method="POST" action="?/loginAs" style="display: none;">
+    <input type="hidden" name="userId" value={loginAsUser?.id} />
+</form>
+
+<form bind:this={deleteFormElement} method="POST" action="?/delete" style="display: none;">
+    <input type="hidden" name="userId" value={deleteUserId} />
+</form>
+
+<ConfirmModal
+    open={showLoginAsConfirm}
+    title="Login as User"
+    message={`Are you sure you want to login as ${loginAsUser?.email}? You will be logged out of your current session.`}
+    confirmText="Login as User"
+    cancelText="Cancel"
+    variant="warning"
+    onConfirm={handleLoginAsConfirm}
+    onCancel={closeLoginAsConfirm}
+/>
+
+<ConfirmModal
+    open={showDeleteConfirm}
+    title="Delete User"
+    message="Are you sure you want to permanently delete this user? This action cannot be undone."
+    confirmText="Delete"
+    cancelText="Cancel"
+    variant="danger"
+    onConfirm={handleDeleteConfirm}
+    onCancel={closeDeleteConfirm}
+/>
 
 <style>
     .admin-page {
