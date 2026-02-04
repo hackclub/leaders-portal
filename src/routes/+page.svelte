@@ -657,8 +657,7 @@
 	.dashboard {
 		padding: 32px;
 		width: 100%;
-		max-width: 1400px;
-		margin: 0 auto;
+		max-width: 1200px;
 	}
 
 	.dashboard-header {
@@ -669,11 +668,16 @@
 	.dashboard-header h1 {
 		margin: 0 0 8px;
 		font-size: 1.75rem;
+		font-weight: 700;
+		line-height: 1.2;
+		letter-spacing: -0.02em;
 		color: #1f2d3d;
 	}
 
 	.dashboard-header p {
 		margin: 0;
+		font-size: 1rem;
+		line-height: 1.5;
 		color: #8492a6;
 	}
 
@@ -697,6 +701,10 @@
 	@media (max-width: 600px) {
 		.stats-grid {
 			grid-template-columns: 1fr;
+		}
+		
+		.dashboard {
+			padding: 20px 16px;
 		}
 	}
 
@@ -775,9 +783,10 @@
 	}
 
 	.quick-actions h2,
-	.clubs-section h2,
 	.resources-section h2 {
 		font-size: 1.25rem;
+		font-weight: 700;
+		line-height: 1.2;
 		color: #1f2d3d;
 		margin: 0 0 16px;
 	}
@@ -867,6 +876,14 @@
 		margin-bottom: 32px;
 	}
 
+	.clubs-section h2 {
+		font-size: 1.25rem;
+		font-weight: 700;
+		line-height: 1.2;
+		color: #1f2d3d;
+		margin: 0 0 16px;
+	}
+
 	.clubs-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
@@ -918,6 +935,8 @@
 	.club-header h3 {
 		margin: 0;
 		font-size: 1.1rem;
+		font-weight: 700;
+		line-height: 1.3;
 		color: #1f2d3d;
 	}
 
@@ -929,11 +948,31 @@
 		text-transform: capitalize;
 	}
 
-	header {
-		position: relative;
-		width: 100vw;
-		margin-left: calc(-50vw + 50%);
-		margin-top: -32px;
+	.club-role.leader {
+		background: rgba(236, 55, 80, 0.1);
+		color: #ec3750;
+	}
+
+	.club-role.coleader {
+		background: rgba(51, 142, 218, 0.1);
+		color: #338eda;
+	}
+
+	.club-stats {
+		display: flex;
+		gap: 16px;
+		margin-bottom: 8px;
+	}
+
+	.club-stat {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 0.85rem;
+		color: #8492a6;
+	}
+
+	.club-location {
 		display: flex;
 		align-items: center;
 		gap: 6px;
