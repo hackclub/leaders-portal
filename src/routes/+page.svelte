@@ -89,6 +89,7 @@
 		<div class="header-content">
 			<h1 class="title">Club Leaders Portal</h1>
 			<div class="header-buttons">
+				<a href="/leaderboard" class="nav-button secondary">Leaderboard</a>
 				{#if data.user}
 					<a href="/my-club" class="nav-button">My Club</a>
 					<a href="/settings" class="nav-button secondary">Settings</a>
