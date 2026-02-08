@@ -38,4 +38,4 @@ ENV PORT=3000
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx knex migrate:latest && node build"]
+CMD ["sh", "-c", "node build"]
