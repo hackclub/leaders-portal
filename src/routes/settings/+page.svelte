@@ -185,6 +185,14 @@
 			</div>
 		</section>
 
+		<section class="section">
+			<h2 class="section-title">OAuth Tools</h2>
+			<p class="developer-copy">
+				You can manage your OAuth2 applications here
+			</p>
+			<a href="/oauth/applications" class="btn">Manage OAuth Applications</a>
+		</section>
+
 		{#if data.leaderProfile}
 			<section class="section">
 				<div class="section-header">
@@ -605,6 +613,14 @@
 	.unlinked-status p {
 		margin: 0 0 16px 0;
 		color: #8492a6;
+		font-size: 14px;
+		line-height: 1.5;
+	}
+
+	.developer-copy {
+		margin-top: 0;
+		margin-bottom: 14px;
+		color: #5b6878;
 		font-size: 14px;
 		line-height: 1.5;
 	}

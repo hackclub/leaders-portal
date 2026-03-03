@@ -303,6 +303,11 @@
                 <span class="link-title">Analytics</span>
                 <span class="link-desc">View stats</span>
             </a>
+            <a href="/admin/oauth-apps" class="link-card">
+                <span class="link-icon">OAuth</span>
+                <span class="link-title">OAuth Apps</span>
+                <span class="link-desc">Review and verify app access</span>
+            </a>
             <button class="link-card" onclick={() => showAddLeaderModal = true}>
                 <span class="link-icon">➕</span>
                 <span class="link-title">Add Leader</span>
