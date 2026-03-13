@@ -50,8 +50,7 @@
 					<div class="ship-card">
 						<div class="ship-icon">🚀</div>
 						<div class="ship-info">
-							<span class="ship-name">{ship.name}</span>
-							<span class="ship-author">by {ship.memberName}</span>
+							<span class="ship-name">{ship.ysws}</span>
 						</div>
 						{#if ship.codeUrl}
 							<a href={ship.codeUrl} target="_blank" rel="noopener noreferrer" class="ship-link">
@@ -219,11 +218,6 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-	}
-
-	.ship-author {
-		font-size: 14px;
-		color: #8492a6;
 	}
 
 	.ship-link {

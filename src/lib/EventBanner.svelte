@@ -31,7 +31,7 @@
 		overflow: hidden;
 		margin-bottom: 24px;
 		text-decoration: none;
-		min-height: 200px;
+		height: 250px;
 	}
 
 	.event-banner:hover {
@@ -56,10 +56,16 @@
 		position: relative;
 		z-index: 1;
 		text-align: center;
+		height: 100%;
+		overflow: hidden;
 	}
 
 	.banner-icon {
 		max-width: 500px;
+		max-height: 60%;
+		object-fit: contain;
+		flex-shrink: 1;
+		min-height: 0;
 	}
 
 	.banner-description {
@@ -67,12 +73,13 @@
 		margin: 0;
 		max-width: 600px;
 		line-height: 1.5;
+		flex-shrink: 0;
 	}
 
 	@media (max-width: 640px) {
 		.event-banner {
 			padding: 32px 16px;
-			min-height: 150px;
+			height: 180px;
 		}
 
 		.banner-icon {

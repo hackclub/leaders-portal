@@ -69,12 +69,14 @@ export async function cacheLeaderClubs(email, clubNames) {
 export async function refreshClubFromApi(clubName) {
 	console.log('[ClubCache] Refreshing club from API:', clubName);
 
-	const [clubInfo, level, ships, members] = await Promise.all([
+	const [clubInfo, level, members] = await Promise.all([
 		getClubByName(clubName),
 		getClubLevel(clubName),
-		getClubShips(clubName),
 		getClubMembers(clubName)
 	]);
+
+	const clubId = clubInfo?.id || clubInfo?.fields?.id || null;
+	const ships = clubId ? await getClubShips(clubId) : [];
 
 	const data = {
 		clubId: clubInfo?.id || clubInfo?.fields?.id || null,
@@ -99,7 +101,7 @@ export async function refreshLeaderClubsFromApi(email) {
 
 	for (const club of apiClubs) {
 		const [ships, members] = await Promise.all([
-			getClubShips(club.name),
+			club.id ? getClubShips(club.id) : Promise.resolve([]),
 			getClubMembers(club.name)
 		]);
 

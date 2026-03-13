@@ -127,24 +127,28 @@ function sanitizeUrl(url) {
 	}
 }
 
-export async function getClubShips(clubName) {
+export async function getClubShips(clubId) {
 	try {
-		const data = await fetchClubApi('/ships', { club_name: clubName });
-		console.log('[ClubAPI] getClubShips raw data:', JSON.stringify(data, null, 2));
-		if (!Array.isArray(data)) {
-			return [];
-		}
-		return data.map((ship) => {
-			const fields = ship.fields || ship;
-			console.log('[ClubAPI] Ship fields:', JSON.stringify(fields, null, 2));
-			return {
-				name: fields['YSWS–Name (from Unified YSWS Database)']?.[0] || fields.name || 'Unnamed Ship',
-				codeUrl: sanitizeUrl(fields.code_url),
-				memberName: fields.member_name || null
-			};
-		});
+		const Airtable = (await import('airtable')).default;
+		const { env } = await import('$env/dynamic/private');
+		const base = new Airtable({ apiKey: env.AIRTABLE_API_KEY }).base(env.AIRTABLE_BASE_ID);
+
+		const clubIdStr = String(clubId);
+		const records = await base('Ships')
+			.select({
+				filterByFormula: `{club} = "${clubIdStr}"`,
+				fields: ['code_url', 'ysws', 'club', 'link_clubs']
+			})
+			.all();
+
+		console.log('[ClubAPI] getClubShips fetched', records.length, 'ships for club ID:', clubIdStr);
+
+		return records.map((record) => ({
+			ysws: record.get('ysws') || 'Unknown',
+			codeUrl: sanitizeUrl(record.get('code_url'))
+		}));
 	} catch (error) {
-		console.error(`Error fetching ships for club ${clubName}:`, error);
+		console.error(`Error fetching ships for club ID ${clubId}:`, error);
 		return [];
 	}
 }
