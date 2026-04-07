@@ -61,7 +61,7 @@
 	{#if events.length > 0}
 		<EventGrid {events} category={null} {openEvent} onComplete={handleComplete} isLoggedIn={!!user} />
 	{:else}
-		<p class="placeholder-text">No tools available yet.</p>
+		<p class="placeholder-text"></p>
 	{/if}
 	<p class="description">Useful tools and resources for running your club.</p>
 
