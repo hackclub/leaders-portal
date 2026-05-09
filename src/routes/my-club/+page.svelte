@@ -3,9 +3,10 @@
 	import Modal from '$lib/Modal.svelte';
 	import { mergeClubData } from '$lib/club-utils.js';
 	
-	let { data } = $props();
+	let { data, form } = $props();
 	let clubs = $state(data.clubs);
 	let helpModal = $state({ open: false, clubName: null, loading: false, ambassador: null, error: null });
+	let transferModal = $state({ open: false, clubName: null });
 
 	function handleRefresh(clubName, refreshedClub) {
 		clubs = clubs.map(c => c.name === clubName ? mergeClubData(c, refreshedClub) : c);
@@ -34,6 +35,14 @@
 	function getClubSlug(name) {
 		return name.toLowerCase().replace(/\s+/g, '-');
 	}
+
+	function openTransferModal(clubName) {
+		transferModal = { open: true, clubName };
+	}
+
+	function closeTransferModal() {
+		transferModal = { open: false, clubName: null };
+	}
 </script>
 
 <svelte:head>
@@ -50,6 +59,10 @@
 			</form>
 		</div>
 	</header>
+
+	{#if form?.error}
+		<div class="error-banner">{form.error}</div>
+	{/if}
 
 	<section class="clubs-info">
 		{#if clubs.length > 0}
@@ -99,6 +112,15 @@
 									/>
 									<span class="stat-label">Manage Club</span>
 								</a>
+								<button class="stat-card manage-card button-card" onclick={() => openTransferModal(club.name)}>
+									<img 
+										src="https://icons.hackclub.com/api/icons/black/external" 
+										alt="Transfer icon"
+										width="32"
+										height="32"
+									/>
+									<span class="stat-label">Transfer Leadership</span>
+								</button>
 							{/if}
 						</div>
 
@@ -161,6 +183,25 @@
 	{:else}
 		<p class="error-text">No ambassador assigned to this club.</p>
 	{/if}
+</Modal>
+
+<Modal open={transferModal.open} title="Transfer Leadership" onClose={closeTransferModal}>
+	<div class="transfer-modal-content">
+		<p class="help-intro">Enter the email address of the new leader for <strong>{transferModal.clubName}</strong>.</p>
+		<p class="warning-text">Warning: This action will transfer your leadership to the new user, and you will be signed out.</p>
+		
+		<form method="POST" action="?/changeLeader">
+			<input type="hidden" name="clubName" value={transferModal.clubName} />
+			<div class="form-group">
+				<label for="newEmail">New Leader Email</label>
+				<input type="email" id="newEmail" name="newEmail" required placeholder="leader@example.com" />
+			</div>
+			<div class="modal-actions">
+				<button type="button" class="btn cancel-btn" onclick={closeTransferModal}>Cancel</button>
+				<button type="submit" class="btn submit-btn">Transfer Leadership</button>
+			</div>
+		</form>
+	</div>
 </Modal>
 
 
@@ -457,8 +498,7 @@
 		justify-content: center;
 	}
 
-	.contact-options .btn {
-		flex: 1;
+	.btn {
 		text-align: center;
 		padding: 12px 24px;
 		border-radius: 8px;
@@ -473,7 +513,11 @@
 		border: none;
 	}
 
-	.contact-options .btn:hover {
+	.contact-options .btn {
+		flex: 1;
+	}
+
+	.btn:hover {
 		opacity: 0.9;
 		transform: scale(1.05);
 	}
@@ -504,5 +548,78 @@
 		margin: 0;
 		font-size: 14px;
 		line-height: 1.5;
+	}
+
+	.button-card {
+		background: #f9fafc;
+		border: 2px solid #e0e6ed;
+		cursor: pointer;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+		width: 100%;
+	}
+
+	.error-banner {
+		background: #fff5f7;
+		color: #ec3750;
+		padding: 16px;
+		border-radius: 8px;
+		margin-bottom: 24px;
+		font-weight: 600;
+		border: 2px solid #ec3750;
+	}
+
+	.warning-text {
+		color: #ec3750;
+		font-size: 14px;
+		margin-bottom: 16px;
+		font-weight: 500;
+	}
+
+	.form-group {
+		margin-bottom: 20px;
+	}
+
+	.form-group label {
+		display: block;
+		font-size: 14px;
+		font-weight: 600;
+		color: #1f2d3d;
+		margin-bottom: 6px;
+	}
+
+	.form-group input {
+		width: 100%;
+		padding: 10px 12px;
+		border: 2px solid #e0e6ed;
+		border-radius: 6px;
+		font-size: 14px;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+		box-sizing: border-box;
+	}
+
+	.form-group input:focus {
+		outline: none;
+		border-color: #338eda;
+	}
+
+	.modal-actions {
+		display: flex;
+		gap: 12px;
+		justify-content: flex-end;
+		margin-top: 24px;
+	}
+
+	.cancel-btn {
+		background-color: white !important;
+		color: #1f2d3d !important;
+		border: 2px solid #e0e6ed !important;
+	}
+
+	.cancel-btn:hover {
+		border-color: #8492a6 !important;
+	}
+
+	.submit-btn {
+		background-color: #ec3750 !important;
 	}
 </style>

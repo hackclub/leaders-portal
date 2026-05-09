@@ -110,5 +110,58 @@ export const actions = {
 			console.error('[MyClub] Error sending announcement:', error);
 			return fail(500, { error: 'Failed to send announcement' });
 		}
+	},
+
+	changeLeader: async ({ request, locals, cookies }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/auth/login');
+		}
+
+		const formData = await request.formData();
+		const clubName = formData.get('clubName');
+		const newEmail = formData.get('newEmail');
+
+		if (!clubName || !newEmail) {
+			return fail(400, { error: 'Missing club name or new email' });
+		}
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club) {
+			return fail(403, { error: 'You do not have access to this club' });
+		}
+
+		if (club.role !== 'leader') {
+			return fail(403, { error: 'Only club leaders can change the leader' });
+		}
+
+		try {
+			const { changeLeader } = await import('$lib/server/clubapi.js');
+			await changeLeader(clubName, newEmail, effectiveEmail);
+			
+			const { refreshClubFromApi, invalidateLeaderCache } = await import('$lib/server/club-cache.js');
+			await refreshClubFromApi(clubName);
+			await invalidateLeaderCache(effectiveEmail);
+			await invalidateLeaderCache(newEmail);
+
+			const sessionToken = cookies.get('sid');
+			if (sessionToken) {
+				const crypto = await import('node:crypto');
+				const { deleteSessionByTokenHash } = await import('$lib/server/auth/sessions.js');
+				const tokenHash = crypto.createHash('sha256').update(sessionToken).digest('hex');
+				await deleteSessionByTokenHash(knex, tokenHash);
+			}
+			cookies.delete('sid', { path: '/' });
+			
+			throw redirect(302, '/?message=Leader changed successfully. Please log in again.');
+		} catch (error) {
+			if (error.status === 302) throw error;
+			console.error('[MyClub] Error changing leader:', error);
+			return fail(500, { error: 'Failed to change leader' });
+		}
 	}
 };

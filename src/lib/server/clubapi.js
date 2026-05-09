@@ -232,6 +232,35 @@ export async function getMember(memberName) {
 	}
 }
 
+export async function changeLeader(clubName, newEmail, oldEmail) {
+	const url = new URL('/leader/change', CLUB_API_BASE);
+	url.searchParams.append('club', clubName);
+	url.searchParams.append('new_email', newEmail);
+	url.searchParams.append('old_email', oldEmail);
+
+	const headers = {};
+	if (env.CLUB_API_KEY) {
+		headers['Authorization'] = env.CLUB_API_KEY;
+	}
+
+	console.log('[ClubAPI] Changing leader:', clubName, 'newEmail:', newEmail, 'oldEmail:', oldEmail);
+
+	const response = await fetch(url.toString(), {
+		method: 'POST',
+		headers
+	});
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		console.error('[ClubAPI] Change leader error:', errorText);
+		throw new Error(`Failed to change leader: ${response.status}`);
+	}
+
+	const data = await response.json();
+	console.log('[ClubAPI] Change leader result:', data);
+	return data;
+}
+
 export async function updateMember(memberName, newName, newEmail) {
 	const url = new URL('/member', CLUB_API_BASE);
 	url.searchParams.append('name', memberName);
