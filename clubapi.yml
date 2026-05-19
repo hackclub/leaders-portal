@@ -439,20 +439,26 @@ paths:
                 items:
                   type: object
                   properties:
-                    workshop:
-                      type: string
-                    Rating:
-                      type: number
                     code_url:
                       type: string
-                    'club_name (from Clubs)':
+                    ysws:
+                      type: boolean
+                    email:
+                      type: string
+                    'club_name (from link_clubs)':
                       type: array
                       items:
                         type: string
-                    'YSWS–Name (from Unified YSWS Database)':
-                      type: array
-                      items:
-                        type: string
+        '400':
+          description: Missing club_name parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing club_name parameter"
 
   ###################
   # MEMBER MANAGEMENT

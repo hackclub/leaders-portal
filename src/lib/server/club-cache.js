@@ -76,7 +76,7 @@ export async function refreshClubFromApi(clubName) {
 	]);
 
 	const clubId = clubInfo?.id || clubInfo?.fields?.id || null;
-	const ships = clubId ? await getClubShips(clubId) : [];
+	const ships = await getClubShips(clubName);
 
 	const data = {
 		clubId: clubInfo?.id || clubInfo?.fields?.id || null,
@@ -101,7 +101,7 @@ export async function refreshLeaderClubsFromApi(email) {
 
 	for (const club of apiClubs) {
 		const [ships, members] = await Promise.all([
-			club.id ? getClubShips(club.id) : Promise.resolve([]),
+			getClubShips(club.name),
 			getClubMembers(club.name)
 		]);
 
