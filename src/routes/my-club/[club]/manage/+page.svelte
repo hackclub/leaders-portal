@@ -310,7 +310,7 @@
 		<section class="settings-section">
 			<h2>Map Settings</h2>
 			<p class="section-intro">
-				Control how your club appears on the <a href="https://hackclub.com/map" target="_blank" rel="noopener noreferrer">Hack Club Map</a>.
+				Control how your club appears on the <a href="https://hackclub.github.io/map" target="_blank" rel="noopener noreferrer">Hack Club Map</a>.
 			</p>
 
 			{#if form?.mapSuccess}
@@ -386,7 +386,7 @@
 
 				{#if latitude && longitude && !optedOut}
 					<a 
-						href="https://hackclub.com/map#lat={latitude}&lng={longitude}&z=10"
+						href="https://hackclub.github.io/map#lat={latitude}&lng={longitude}&z=10"
 						target="_blank"
 						rel="noopener noreferrer"
 						class="view-map-link"

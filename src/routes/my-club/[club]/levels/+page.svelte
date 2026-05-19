@@ -10,7 +10,7 @@
 
 This is the base level for clubs. At this level, your club receives:
 
-- **Map Listing**: Your club is added to the official [Hack Club Map](https://hackclub.com/map)
+- **Map Listing**: Your club is added to the official [Hack Club Map](https://hackclub.github.io/map)
 - **Program Eligibility**: Participate in Hack Club programs and initiatives
 - **Branding Rights**: Use Hack Club branding for your club
 - **Team Support**: Receive support from the Hack Club team

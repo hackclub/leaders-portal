@@ -81,7 +81,7 @@
 <div class="container">
 	<header>
 		<iframe 
-			src="https://hackclub.com/map?mode={data.user ? 'manage' : 'signin'}" 
+			src="https://hackclub.github.io/map?mode={data.user ? 'manage' : 'signin'}" 
 			class="header-map"
 			title="Hack Club Map"
 			loading="lazy"
@@ -199,7 +199,7 @@
 		<a href="https://guide.leaders.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-button">
 			Club Leaders Guide
 		</a>
-		<a href="https://hackclub.com/map" target="_blank" rel="noopener noreferrer" class="footer-button">
+		<a href="https://hackclub.github.io/map" target="_blank" rel="noopener noreferrer" class="footer-button">
 			Club Map
 		</a>
 		<a href="/posters" class="footer-button">
