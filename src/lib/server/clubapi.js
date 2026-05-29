@@ -2,6 +2,19 @@ import { env } from '$env/dynamic/private';
 
 const CLUB_API_BASE = 'https://clubapi.hackclub.com';
 
+async function safeParseJson(response) {
+	const text = await response.text();
+	if (!text.trim()) {
+		return null;
+	}
+	try {
+		return JSON.parse(text);
+	} catch (error) {
+		console.error('[ClubAPI] JSON parse error on content:', text);
+		throw error;
+	}
+}
+
 async function fetchClubApi(endpoint, params = {}) {
 	const url = new URL(endpoint, CLUB_API_BASE);
 	Object.entries(params).forEach(([key, value]) => {
@@ -28,8 +41,8 @@ async function fetchClubApi(endpoint, params = {}) {
 			throw new Error(`Club API error: ${response.status} ${response.statusText}`);
 		}
 		
-		const data = await response.json();
-		console.log('[ClubAPI] Response data:', JSON.stringify(data).slice(0, 500));
+		const data = await safeParseJson(response);
+		console.log('[ClubAPI] Response data:', data ? JSON.stringify(data).slice(0, 500) : 'null');
 		return data;
 	} catch (error) {
 		console.error('[ClubAPI] Fetch error:', error.message);
@@ -53,7 +66,7 @@ export async function checkLeaderEmail(email) {
 	console.log('[ClubAPI] checkLeaderEmail called with:', email);
 	try {
 		const data = await fetchClubApi('/leader', { email });
-		const isLeader = data.leader === true || !!data.club_name;
+		const isLeader = data && (data.leader === true || !!data.club_name);
 		console.log('[ClubAPI] checkLeaderEmail result:', isLeader, 'data:', data);
 		return isLeader;
 	} catch (error) {
@@ -107,7 +120,7 @@ export async function getClubByCode(code) {
 export async function getClubLevel(clubName) {
 	try {
 		const data = await fetchClubApi('/level', { club_name: clubName });
-		return data.fields?.level || data.level || null;
+		return data?.fields?.level || data?.level || null;
 	} catch (error) {
 		console.error(`Error fetching level for club ${clubName}:`, error);
 		return null;
@@ -130,6 +143,10 @@ function sanitizeUrl(url) {
 export async function getClubShips(clubName) {
 	try {
 		const data = await fetchClubApi('/ships', { club_name: clubName });
+		if (!data || !Array.isArray(data)) {
+			console.log('[ClubAPI] getClubShips got empty or invalid response, returning empty array');
+			return [];
+		}
 		console.log('[ClubAPI] getClubShips fetched', data.length, 'ships for club:', clubName);
 
 		return data.map((ship) => ({
@@ -179,7 +196,7 @@ export async function deleteMember(memberName, clubName) {
 		throw new Error(`Failed to delete member: ${response.status}`);
 	}
 
-	const data = await response.json();
+	const data = await safeParseJson(response);
 	console.log('[ClubAPI] Delete member result:', data);
 	return data;
 }
@@ -207,7 +224,7 @@ export async function sendAnnouncement(clubName, message) {
 		throw new Error(`Failed to send announcement: ${response.status}`);
 	}
 
-	const data = await response.json();
+	const data = await safeParseJson(response);
 	console.log('[ClubAPI] Send announcement result:', data);
 	return data;
 }
@@ -246,7 +263,7 @@ export async function changeLeader(clubName, newEmail, oldEmail) {
 		throw new Error(`Failed to change leader: ${response.status}`);
 	}
 
-	const data = await response.json();
+	const data = await safeParseJson(response);
 	console.log('[ClubAPI] Change leader result:', data);
 	return data;
 }
@@ -279,7 +296,7 @@ export async function updateMember(memberName, newName, newEmail) {
 		throw new Error(`Failed to update member: ${response.status}`);
 	}
 
-	const data = await response.json();
+	const data = await safeParseJson(response);
 	console.log('[ClubAPI] Update member result:', data);
 	return data;
 }
@@ -308,7 +325,7 @@ export async function createMember(name, email, joinCode) {
 		throw new Error(`Failed to create member: ${response.status}`);
 	}
 
-	const data = await response.json();
+	const data = await safeParseJson(response);
 	console.log('[ClubAPI] Create member result:', data);
 	return data;
 }
