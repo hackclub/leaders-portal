@@ -1,7 +1,10 @@
 import { getKnex } from '$lib/server/db/knex.js';
 import { error, fail } from '@sveltejs/kit';
 
-export async function load() {
+export async function load({ locals }) {
+    if (!locals.userPublic?.isAdmin) {
+        throw error(403, 'Forbidden');
+    }
     const knex = getKnex();
     const users = await knex('users')
         .orderBy('created_at', 'desc')
@@ -19,7 +22,10 @@ export async function load() {
 }
 
 export const actions = {
-    search: async ({ request }) => {
+    search: async ({ request, locals }) => {
+        if (!locals.userPublic?.isAdmin) {
+            throw error(403, 'Forbidden');
+        }
         const formData = await request.formData();
         const query = formData.get('query')?.toString().trim();
         

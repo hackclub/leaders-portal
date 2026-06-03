@@ -1,7 +1,11 @@
 import Airtable from 'airtable';
 import { AIRTABLE_API_KEY} from '$env/static/private';
+import { error } from '@sveltejs/kit';
 
-export async function load() {
+export async function load({ locals }) {
+    if (!locals.userPublic?.isAdmin) {
+        throw error(403, 'Forbidden');
+    }
     var AIRTABLE_BASE_ID = 'appLfgyztvTfaKGNc';
 
 

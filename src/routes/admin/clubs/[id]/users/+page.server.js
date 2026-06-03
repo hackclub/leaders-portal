@@ -1,7 +1,10 @@
 import { getKnex } from '$lib/server/db/knex.js';
 import { error } from '@sveltejs/kit';
 
-export async function load({ params }) {
+export async function load({ params, locals }) {
+    if (!locals.userPublic?.isAdmin) {
+        throw error(403, 'Forbidden');
+    }
     const knex = getKnex();
     const { id } = params;
 
