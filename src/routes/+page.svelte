@@ -205,6 +205,9 @@
 		<a href="/posters" class="footer-button">
 			Club Posters
 		</a>
+		<a href="https://workshops.hackclub.com/leader-newsletters/" target="_blank" rel="noopener noreferrer" class="footer-button">
+			Leader Newsletters
+		</a>
 	</footer>
 </div>
 
@@ -354,11 +357,11 @@
 
 	.footer-button {
 		display: inline-block;
-		padding: 12px 28px;
+		padding: 10px 18px;
 		border-radius: 8px;
 		text-decoration: none;
 		font-weight: 600;
-		font-size: 14px;
+		font-size: 13px;
 		transition: all 0.2s;
 		background-color: var(--red);
 		color: var(--white);
@@ -459,7 +462,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
-		gap: 12px;
+		gap: 8px;
 	}
 
 	
