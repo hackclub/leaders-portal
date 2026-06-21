@@ -477,3 +477,27 @@ export async function updateLeaderProfile(email, updates) {
 		throw new Error("Failed to update leader profile");
 	}
 }
+
+// New function to get club leaders
+export async function getClubLeaders(clubName) {
+	const base = getAirtableBase();
+	
+	try {
+		const records = await base('Leaders').select({
+			filterByFormula: `SEARCH("${escapeAirtableString(clubName)}", ARRAYJOIN({club_name})) > 0`
+		}).all();
+
+		return records.map(record => {
+			const firstName = record.get('first_name') || '';
+			const lastName = record.get('last_name') || '';
+			return {
+				name: `${firstName} ${lastName}`.trim(),
+				email: record.get('email') || '',
+				isPrimary: record.get('leader') === true
+			};
+		});
+	} catch (error) {
+		console.error('Error getting club leaders from Airtable:', error);
+		return [];
+	}
+}

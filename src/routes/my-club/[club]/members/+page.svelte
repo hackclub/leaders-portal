@@ -4,6 +4,7 @@
 	
 	let { data, form } = $props();
 	let club = $state(data.club);
+	let leaders = $state(data.leaders || []);
 
 	function handleRefresh(refreshedClub) {
 		club = mergeClubData(club, refreshedClub);
@@ -131,23 +132,40 @@
 	{/if}
 
 	<section class="members-section">
-		{#if club.members && club.members.length > 0}
+		{#if (club.members && club.members.length > 0) || (leaders && leaders.length > 0)}
 			<div class="members-grid">
-				{#each club.members as member}
-					<div class="member-card">
-						<div class="member-avatar">{member.charAt(0).toUpperCase()}</div>
+				{#each leaders as leader}
+					<div class="member-card leadership-card">
+						<div class="member-avatar leadership-avatar">{leader.name.charAt(0).toUpperCase()}</div>
 						<div class="member-info">
-							<span class="member-name">{member}</span>
+							<span class="member-name">
+								{leader.name}
+								<span class="badge {leader.isPrimary ? 'badge-leader' : 'badge-coleader'}">
+									{leader.isPrimary ? 'Leader' : 'Co-Leader'}
+								</span>
+							</span>
 						</div>
-						{#if club.role === 'leader'}
-							<button type="button" class="edit-btn" title="Edit member" onclick={() => openEditModal(member)}>✎</button>
-							<form method="POST" action="?/removeMember" class="remove-form" onsubmit={(e) => confirmRemove(e, member)}>
-								<input type="hidden" name="memberName" value={member} />
-								<button type="submit" class="remove-btn" title="Remove member">×</button>
-							</form>
-						{/if}
 					</div>
 				{/each}
+				{#if club.members}
+					{#each club.members as member}
+						{#if !leaders.some(l => l.name.toLowerCase() === member.toLowerCase())}
+							<div class="member-card">
+								<div class="member-avatar">{member.charAt(0).toUpperCase()}</div>
+								<div class="member-info">
+									<span class="member-name">{member}</span>
+								</div>
+								{#if club.role === 'leader'}
+									<button type="button" class="edit-btn" title="Edit member" onclick={() => openEditModal(member)}>✎</button>
+									<form method="POST" action="?/removeMember" class="remove-form" onsubmit={(e) => confirmRemove(e, member)}>
+										<input type="hidden" name="memberName" value={member} />
+										<button type="submit" class="remove-btn" title="Remove member">×</button>
+									</form>
+								{/if}
+							</div>
+						{/if}
+					{/each}
+				{/if}
 			</div>
 		{:else}
 			<div class="empty-state">
@@ -701,5 +719,36 @@
 		margin-bottom: 16px;
 		font-size: 14px;
 		border: 2px solid #33d6a6;
+	}
+
+	.leadership-card {
+		border-color: #ec3750;
+		background: #fff5f6;
+	}
+
+	.leadership-avatar {
+		background: #ec3750;
+	}
+
+	.badge {
+		display: inline-block;
+		font-size: 11px;
+		font-weight: 600;
+		padding: 2px 6px;
+		border-radius: 4px;
+		margin-left: 8px;
+		vertical-align: middle;
+	}
+
+	.badge-leader {
+		background-color: #fff5f6;
+		color: #ec3750;
+		border: 1px solid #ec3750;
+	}
+
+	.badge-coleader {
+		background-color: #e6f4ff;
+		color: #338eda;
+		border: 1px solid #338eda;
 	}
 </style>
