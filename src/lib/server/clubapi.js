@@ -164,10 +164,10 @@ export async function getClubMembers(clubName) {
 	try {
 		const data = await fetchClubApi('/members', { club_name: clubName });
 		console.log('[ClubAPI] getClubMembers raw data:', JSON.stringify(data, null, 2));
-		return data.members || null;
+		return Array.isArray(data?.members) ? data.members : [];
 	} catch (error) {
 		console.error(`Error fetching members for club ${clubName}:`, error);
-		return null;
+		return [];
 	}
 }
 

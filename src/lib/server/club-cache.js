@@ -9,6 +9,11 @@ import {
 
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
+function parseJsonArray(value) {
+	const parsed = typeof value === 'string' ? JSON.parse(value) : value;
+	return Array.isArray(parsed) ? parsed : [];
+}
+
 export function isCacheStale(cachedAt) {
 	if (!cachedAt) return true;
 	const cacheTime = new Date(cachedAt).getTime();
@@ -129,8 +134,8 @@ export async function getClubWithCache(clubName) {
 			level: cached.level,
 			location: cached.location,
 			joinCode: cached.join_code,
-			ships: typeof cached.ships === 'string' ? JSON.parse(cached.ships) : cached.ships,
-			members: typeof cached.members === 'string' ? JSON.parse(cached.members) : cached.members,
+			ships: parseJsonArray(cached.ships),
+			members: parseJsonArray(cached.members),
 			cachedAt: cached.cached_at
 		};
 	}
