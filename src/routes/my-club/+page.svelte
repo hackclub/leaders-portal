@@ -3,9 +3,32 @@
 	import Modal from '$lib/Modal.svelte';
 	import SiteNav from '$lib/SiteNav.svelte';
 	import { mergeClubData } from '$lib/club-utils.js';
+	import { onMount } from 'svelte';
 	
 	let { data, form } = $props();
 	let clubs = $state(data.clubs);
+
+	let isDark = $state(false);
+	let iconColor = $derived(isDark ? 'white' : 'black');
+
+	function resolveTheme() {
+		const explicit = document.documentElement.getAttribute('data-theme');
+		isDark = explicit
+			? explicit === 'dark'
+			: window.matchMedia('(prefers-color-scheme: dark)').matches;
+	}
+
+	onMount(() => {
+		resolveTheme();
+		const media = window.matchMedia('(prefers-color-scheme: dark)');
+		media.addEventListener('change', resolveTheme);
+		const observer = new MutationObserver(resolveTheme);
+		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+		return () => {
+			media.removeEventListener('change', resolveTheme);
+			observer.disconnect();
+		};
+	});
 	let helpModal = $state({ open: false, clubName: null, loading: false, ambassador: null, error: null });
 	let transferModal = $state({ open: false, clubName: null });
 
@@ -74,7 +97,7 @@
 						<div class="club-toolbar">
 							<button class="toolbar-btn" onclick={() => openHelpModal(club.name)} title="Contact your ambassador">
 								<img
-									src="https://icons.hackclub.com/api/icons/black/message-simple-fill"
+									src="https://icons.hackclub.com/api/icons/{iconColor}/message-simple-fill"
 									alt=""
 									width="20"
 									height="20"
@@ -105,7 +128,7 @@
 							{#if club.joinCode}
 								<a href="https://hack.club/join/{club.joinCode}" target="_blank" rel="noopener noreferrer" class="link-card">
 									<span class="link-icon">
-										<img src="https://icons.hackclub.com/api/icons/black/link" alt="" width="20" height="20" />
+										<img src="https://icons.hackclub.com/api/icons/{iconColor}/link" alt="" width="20" height="20" />
 									</span>
 									<span class="link-text">
 										<span class="link-label">Invite link</span>
@@ -116,7 +139,7 @@
 							{#if club.clubWebsite}
 								<a href="https://hack.club/club/{getClubSlug(club.name)}" target="_blank" rel="noopener noreferrer" class="link-card">
 									<span class="link-icon">
-										<img src="https://icons.hackclub.com/api/icons/black/web" alt="" width="20" height="20" />
+										<img src="https://icons.hackclub.com/api/icons/{iconColor}/web" alt="" width="20" height="20" />
 									</span>
 									<span class="link-text">
 										<span class="link-label">Club website</span>
@@ -134,7 +157,7 @@
 								<span>Manage Club</span>
 							</a>
 							<button class="action-btn action-btn-secondary" onclick={() => openTransferModal(club.name)}>
-								<img src="https://icons.hackclub.com/api/icons/black/external" alt="" width="20" height="20" />
+								<img src="https://icons.hackclub.com/api/icons/{iconColor}/external" alt="" width="20" height="20" />
 								<span>Transfer Leadership</span>
 							</button>
 						</div>
