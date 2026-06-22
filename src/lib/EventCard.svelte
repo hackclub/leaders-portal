@@ -64,7 +64,8 @@
 	}
 
 	.event-card:hover {
-		opacity: 0.92;
+		transform: scale(1.05);
+		z-index: 2;
 	}
 
 	.event-card.highlighted {
