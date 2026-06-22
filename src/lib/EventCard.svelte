@@ -12,7 +12,7 @@
 	}
 </script>
 
-<div class="event-card" class:highlighted style="background-color: {event.color}; {event.backgroundUrl ? `background-image: url('${event.backgroundUrl}'); background-size: cover; background-position: center;` : ''} {highlighted ? `--highlight-color: ${highlightColor};` : ''}" on:click={() => openEvent(event)} on:keydown={(e) => e.key === 'Enter' && openEvent(event)} role="button" tabindex="0">
+<div class="event-card" class:highlighted style="border: 2px solid {event.color}; background-color: {event.color}; {event.backgroundUrl ? `background-image: url('${event.backgroundUrl}'); background-size: cover; background-position: center;` : ''} {highlighted ? `--highlight-color: ${highlightColor};` : ''}" on:click={() => openEvent(event)} on:keydown={(e) => e.key === 'Enter' && openEvent(event)} role="button" tabindex="0">
 	{#if event.backgroundUrl}
 		<div class="background-overlay"></div>
 	{/if}
@@ -41,7 +41,6 @@
 
 <style>
 	.event-card {
-		border: 2px solid #000000;
 		box-shadow: inset 0 0 0 1px #ffffff;
 		border-radius: 12px;
 		padding: 16px;
