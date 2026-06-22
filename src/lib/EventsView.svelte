@@ -14,7 +14,7 @@
 
 <style>
 	.placeholder-text {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 16px;
 		text-align: center;
 		padding: 32px;

@@ -30,7 +30,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		background: #ffffff;
+		background: var(--bg-card);
 	}
 
 	@media (min-width: 32em) {
@@ -61,7 +61,7 @@
 		font-size: 64px;
 		position: relative;
 		display: inline-block;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 16px 0;
 	}
 
@@ -76,8 +76,8 @@
 		content: attr(data-text);
 		position: absolute;
 		top: 0;
-		color: #e0e6ed;
-		background: #ffffff;
+		color: var(--color-border);
+		background: var(--bg-card);
 		overflow: hidden;
 		clip: rect(0, 512px, 0, 0);
 	}
@@ -146,7 +146,7 @@
 		font-size: 20px;
 		margin: 8px 0 32px;
 		display: block;
-		color: #8492a6;
+		color: var(--color-muted);
 	}
 
 	@media (min-width: 32em) {

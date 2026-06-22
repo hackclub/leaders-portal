@@ -33,7 +33,7 @@
 	.back-link {
 		font-size: 14px;
 		font-weight: 600;
-		color: #8492a6;
+		color: var(--color-muted);
 		text-decoration: none;
 		margin-bottom: 4px;
 	}
@@ -45,7 +45,7 @@
 	.page-title {
 		font-size: 30px;
 		font-weight: 700;
-		color: #1f2d3d;
+		color: var(--color-text);
 		letter-spacing: -0.02em;
 		margin: 0;
 		overflow-wrap: anywhere;

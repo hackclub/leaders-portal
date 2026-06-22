@@ -156,8 +156,8 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 	}
 
 	.current-status {
-		background: white;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 24px;
 		margin-bottom: 32px;
@@ -167,7 +167,7 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 	.status-label {
 		font-size: 14px;
 		font-weight: 600;
-		color: #8492a6;
+		color: var(--color-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		margin-bottom: 8px;
@@ -182,7 +182,7 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 
 	.status-ships {
 		font-size: 16px;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.levels-section {
@@ -202,8 +202,8 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 		align-items: center;
 		gap: 16px;
 		padding: 20px;
-		background: white;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		cursor: pointer;
 		transition: all 0.2s;
@@ -217,7 +217,7 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 
 	.level-card.active {
 		border-color: #ec3750;
-		background: #fff5f7;
+		background: light-dark(#fff5f7, rgba(236, 55, 80, 0.16));
 	}
 
 	.level-card.current .level-indicator .circle {
@@ -238,8 +238,8 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 		width: 24px;
 		height: 24px;
 		border-radius: 50%;
-		border: 3px solid #e0e6ed;
-		background: white;
+		border: 3px solid var(--color-border);
+		background: var(--bg-card);
 		transition: all 0.2s;
 	}
 
@@ -257,7 +257,7 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 	.level-name {
 		font-size: 18px;
 		font-weight: 700;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.level-badge {
@@ -270,30 +270,30 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 	}
 
 	.current-badge {
-		background: #dcfce7;
-		color: #166534;
+		background: light-dark(#dcfce7, rgba(51, 214, 166, 0.16));
+		color: light-dark(#166534, #5be0b0);
 	}
 
 	.past-badge {
-		background: #dbeafe;
-		color: #1e40af;
+		background: light-dark(#dbeafe, rgba(51, 142, 218, 0.18));
+		color: light-dark(#1e40af, #8cc2f0);
 	}
 
 	.future-badge {
-		background: #f9fafc;
-		color: #8492a6;
+		background: var(--bg-sunken);
+		color: var(--color-muted);
 	}
 
 	.level-details {
-		background: white;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 32px;
 	}
 
 	.details-content {
 		line-height: 1.7;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.details-content :global(h2) {
@@ -317,25 +317,25 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 	}
 
 	.details-content :global(strong) {
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.progress-status {
 		margin-top: 24px;
 		padding: 16px;
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 		font-size: 16px;
 		font-weight: 600;
-		color: #8492a6;
+		color: var(--color-muted);
 		text-align: center;
 	}
 
 	.progress-status.achieved {
-		background: #dcfce7;
+		background: light-dark(#dcfce7, rgba(51, 214, 166, 0.16));
 		border-color: #33d6a6;
-		color: #166534;
+		color: light-dark(#166534, #5be0b0);
 	}
 
 	@media (max-width: 768px) {

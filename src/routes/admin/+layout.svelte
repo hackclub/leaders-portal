@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/stores';
+	import ThemeToggle from '$lib/ThemeToggle.svelte';
 
 	let { children } = $props();
 
@@ -28,6 +29,7 @@
 					<a href={link.href} class="nav-link" class:active={isActive(link.href)}>{link.label}</a>
 				{/each}
 				<a href="/" class="nav-link back">← Back to Site</a>
+				<ThemeToggle />
 			</div>
 		</div>
 	</nav>
@@ -40,7 +42,7 @@
 <style>
 	.admin {
 		min-height: 100vh;
-		background: #f9fafc;
+		background: var(--bg-sunken);
 		font-family: 'Phantom Sans', system-ui, sans-serif;
 	}
 
@@ -48,8 +50,8 @@
 		position: sticky;
 		top: 0;
 		z-index: 50;
-		background: #ffffff;
-		border-bottom: 1px solid #e0e6ed;
+		background: var(--bg-card);
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	.nav-inner {
@@ -83,21 +85,21 @@
 		border-radius: 8px;
 		font-size: 15px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		text-decoration: none;
 	}
 
 	.nav-link:hover {
-		background: #f9fafc;
+		background: var(--bg-sunken);
 	}
 
 	.nav-link.active {
 		color: #ec3750;
-		background: #fff0f2;
+		background: light-dark(#fff0f2, rgba(236, 55, 80, 0.16));
 	}
 
 	.nav-link.back {
-		color: #8492a6;
+		color: var(--color-muted);
 		margin-left: auto;
 	}
 

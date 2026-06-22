@@ -81,9 +81,9 @@
 		align-items: center;
 		gap: 32px;
 		padding: 24px;
-		background: #f9fafc;
+		background: var(--bg-sunken);
 		border-radius: 12px;
-		border: 2px solid #e5e7eb;
+		border: 2px solid var(--color-border);
 		margin-bottom: 24px;
 	}
 
@@ -116,8 +116,8 @@
 		width: 24px;
 		height: 24px;
 		border-radius: 50%;
-		border: 3px solid #6b7280;
-		background: white;
+		border: 3px solid var(--color-border);
+		background: var(--bg-card);
 		transition: all 0.2s;
 	}
 
@@ -139,26 +139,26 @@
 	.level-label {
 		font-size: 16px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.timeline-line {
 		width: 3px;
 		height: 40px;
-		background: #e5e7eb;
+		background: var(--bg-sunken);
 		margin-left: 10px;
 	}
 
 	.arrow {
 		font-size: 32px;
-		color: #6b7280;
+		color: var(--color-muted);
 		flex-shrink: 0;
 	}
 
 	.perks-box {
 		flex: 1;
-		background: white;
-		border: 2px solid #1f2d3d;
+		background: var(--bg-card);
+		border: 2px solid var(--color-text);
 		border-radius: 8px;
 		padding: 24px;
 		min-height: 200px;
@@ -166,8 +166,8 @@
 	}
 
 	.perks-box.future {
-		background: #f3f4f6;
-		border-color: #d1d5db;
+		background: var(--bg-sunken);
+		border-color: var(--color-border);
 		opacity: 0.6;
 	}
 
@@ -183,13 +183,13 @@
 	.locked-title {
 		font-size: 24px;
 		font-weight: bold;
-		color: #6b7280;
+		color: var(--color-muted);
 		margin: 0 0 12px 0;
 	}
 
 	.locked-text {
 		font-size: 16px;
-		color: #9ca3af;
+		color: var(--color-muted);
 		margin: 0;
 		font-weight: 500;
 	}
@@ -197,14 +197,14 @@
 	.perks-title {
 		font-size: 24px;
 		font-weight: bold;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0 0 16px 0;
 	}
 
 	.perks-subtitle {
 		font-size: 18px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0 0 12px 0;
 	}
 

@@ -518,21 +518,21 @@
     h1 {
         font-size: 2rem;
         font-weight: 700;
-        color: #1f2d3d;
+        color: var(--color-text);
         margin-bottom: 2rem;
     }
 
     h2 {
         font-size: 1.25rem;
         font-weight: 600;
-        color: #1f2d3d;
+        color: var(--color-text);
         margin-bottom: 1rem;
     }
 
     h3 {
         font-size: 1rem;
         font-weight: 600;
-        color: #1f2d3d;
+        color: var(--color-text);
         margin-bottom: 0.75rem;
     }
 
@@ -544,8 +544,8 @@
     }
 
     .stat-card {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.25rem;
     }
@@ -564,13 +564,13 @@
     .stat-label {
         font-size: 0.875rem;
         font-weight: 500;
-        color: #8492a6;
+        color: var(--color-muted);
     }
 
     .stat-value {
         font-size: 2rem;
         font-weight: 700;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .stat-details {
@@ -582,7 +582,7 @@
 
     .stat-detail {
         font-size: 0.75rem;
-        color: #8492a6;
+        color: var(--color-muted);
     }
 
     .stat-detail.highlight {
@@ -605,15 +605,15 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem 0.75rem;
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 9999px;
     }
 
     .level-name {
         font-size: 0.875rem;
         font-weight: 500;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .level-count {
@@ -634,14 +634,14 @@
     }
 
     .impersonation-card {
-        background: #fff;
+        background: var(--bg-card);
         border: 2px solid #ec3750;
         border-radius: 12px;
         padding: 1.25rem;
     }
 
     .impersonation-warning {
-        color: #8492a6;
+        color: var(--color-muted);
         font-size: 0.875rem;
         margin-bottom: 1rem;
         max-width: 760px;
@@ -656,7 +656,7 @@
     .impersonation-form input {
         flex: 1;
         padding: 0.5rem 0.75rem;
-        border: 2px solid #e0e6ed;
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.875rem;
     }
@@ -687,8 +687,8 @@
     }
 
     .search-panel {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.25rem;
     }
@@ -702,7 +702,7 @@
     .search-form input {
         flex: 1;
         padding: 0.5rem 0.75rem;
-        border: 2px solid #e0e6ed;
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.875rem;
     }
@@ -733,7 +733,7 @@
 
     .results-count {
         font-size: 0.875rem;
-        color: #8492a6;
+        color: var(--color-muted);
         margin-bottom: 0.75rem;
     }
 
@@ -752,18 +752,18 @@
         text-align: left;
         padding: 0.5rem;
         font-weight: 500;
-        color: #8492a6;
-        border-bottom: 1px solid #e0e6ed;
+        color: var(--color-muted);
+        border-bottom: 1px solid var(--color-border);
     }
 
     .results-table td, .data-table td {
         padding: 0.5rem;
-        border-bottom: 1px solid #e0e6ed;
+        border-bottom: 1px solid var(--color-border);
     }
 
     .data-table td.empty {
         text-align: center;
-        color: #8492a6;
+        color: var(--color-muted);
         font-style: italic;
     }
 
@@ -778,12 +778,12 @@
 
     .user-name {
         font-weight: 500;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .user-username {
         font-size: 0.75rem;
-        color: #8492a6;
+        color: var(--color-muted);
     }
 
     .badge {
@@ -806,8 +806,8 @@
     }
 
     .badge.unverified {
-        background: #e0e6ed;
-        color: #8492a6;
+        background: var(--color-border);
+        color: var(--color-muted);
     }
 
     .badge.level {
@@ -833,16 +833,16 @@
     .btn-small {
         padding: 0.25rem 0.5rem;
         font-size: 0.75rem;
-        border: 1px solid #e0e6ed;
-        background: white;
+        border: 1px solid var(--color-border);
+        background: var(--bg-card);
         border-radius: 4px;
         cursor: pointer;
-        color: #1f2d3d;
+        color: var(--color-text);
         text-decoration: none;
     }
 
     .btn-small:hover {
-        background: #f9fafc;
+        background: var(--bg-sunken);
     }
 
     .btn-warning {
@@ -851,7 +851,7 @@
     }
 
     .btn-warning:hover {
-        background: #fff7ed;
+        background: light-dark(#fff7ed, rgba(241, 196, 15, 0.16));
     }
 
     .btn-danger {
@@ -860,7 +860,7 @@
     }
 
     .btn-danger:hover {
-        background: #fef2f2;
+        background: light-dark(#fef2f2, rgba(236, 55, 80, 0.16));
     }
 
     .quick-links {
@@ -878,8 +878,8 @@
         flex-direction: column;
         align-items: center;
         padding: 1.5rem 1rem;
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         text-decoration: none;
         transition: border-color 0.2s;
@@ -896,12 +896,12 @@
 
     .link-title {
         font-weight: 600;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .link-desc {
         font-size: 0.75rem;
-        color: #8492a6;
+        color: var(--color-muted);
         text-align: center;
     }
 
@@ -912,8 +912,8 @@
     }
 
     .data-panel {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.25rem;
     }
@@ -933,8 +933,8 @@
 
     .cache-button {
         cursor: pointer;
-        border: 2px solid #e0e6ed;
-        background: #fff;
+        border: 2px solid var(--color-border);
+        background: var(--bg-card);
     }
 
     .cache-button:hover:not(:disabled) {

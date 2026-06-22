@@ -2,6 +2,18 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
+		<script>
+			// Apply the saved theme before first paint to avoid a flash.
+			// No saved value => fall back to the system preference (handled in CSS).
+			(function () {
+				try {
+					var t = localStorage.getItem('theme');
+					if (t === 'dark' || t === 'light') {
+						document.documentElement.setAttribute('data-theme', t);
+					}
+				} catch (e) {}
+			})();
+		</script>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="https://css.hackclub.com/theme.css" />
 		<link rel="stylesheet" href="https://css.hackclub.com/fonts.css" />

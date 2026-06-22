@@ -65,13 +65,13 @@
 		align-items: center;
 		justify-content: center;
 		padding: 16px;
-		background-color: #f9fafc;
+		background-color: var(--bg-sunken);
 		font-family: 'Phantom Sans', system-ui, sans-serif;
 	}
 
 	.card {
-		background: white;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 48px;
 		max-width: 480px;
@@ -80,23 +80,23 @@
 	}
 
 	h1 {
-		color: #1f2d3d;
+		color: var(--color-text);
 		font-size: 28px;
 		margin: 0 0 16px 0;
 	}
 
 	.message {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 16px;
 		margin-bottom: 24px;
 	}
 
 	.message strong {
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.member-info {
-		background: #f9fafc;
+		background: var(--bg-sunken);
 		border-radius: 8px;
 		padding: 16px;
 		margin-bottom: 24px;
@@ -105,11 +105,11 @@
 
 	.member-info p {
 		margin: 8px 0;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.label {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-weight: 600;
 	}
 
@@ -130,7 +130,7 @@
 
 	.error {
 		color: #ec3750;
-		background: #fef2f2;
+		background: light-dark(#fef2f2, rgba(236, 55, 80, 0.16));
 		padding: 12px;
 		border-radius: 6px;
 		margin-bottom: 16px;

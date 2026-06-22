@@ -38,8 +38,8 @@
 	.tool-card {
 		padding: 24px;
 		border-radius: 12px;
-		border: 2px solid #e0e6ed;
-		background: white;
+		border: 2px solid var(--color-border);
+		background: var(--bg-card);
 		transition: all 0.2s ease;
 		text-decoration: none;
 		color: inherit;
@@ -54,7 +54,7 @@
 	}
 
 	.tool-card.featured {
-		background: #ffffff;
+		background: var(--bg-card);
 		border: 3px solid #ec3750;
 		position: relative;
 		overflow: hidden;
@@ -66,7 +66,7 @@
 	}
 
 	.tool-card.placeholder:hover {
-		border-color: #e0e6ed;
+		border-color: var(--color-border);
 		transform: none;
 		box-shadow: none;
 	}
@@ -88,20 +88,20 @@
 	}
 
 	.tool-card.placeholder .tool-icon {
-		background: #e0e6ed;
-		color: #8492a6;
+		background: var(--color-border);
+		color: var(--color-muted);
 	}
 
 	.tool-title {
 		font-size: 20px;
 		font-weight: bold;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0;
 		font-family: 'Phantom Sans', system-ui, sans-serif;
 	}
 
 	.tool-description {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 14px;
 		line-height: 1.5;
 		margin: 0;

@@ -224,7 +224,7 @@
 
 	.page-subtitle {
 		font-size: 16px;
-		color: #8492a6;
+		color: var(--color-muted);
 		margin: 4px 0 0;
 	}
 
@@ -235,8 +235,8 @@
 	}
 
 	.club-card {
-		background: white;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 24px;
 	}
@@ -259,7 +259,7 @@
 	.club-name {
 		font-size: 24px;
 		font-weight: 700;
-		color: #1f2d3d;
+		color: var(--color-text);
 		letter-spacing: -0.01em;
 		margin: 0;
 		overflow-wrap: anywhere;
@@ -282,17 +282,17 @@
 	}
 
 	.tag-level {
-		background-color: #e6faf4;
-		color: #1a7f64;
+		background-color: light-dark(#e6faf4, rgba(51, 214, 166, 0.16));
+		color: light-dark(#1a7f64, #5be0b0);
 	}
 
 	.tag-role.leader {
-		background-color: #fff0f2;
+		background-color: light-dark(#fff0f2, rgba(236, 55, 80, 0.16));
 		color: #ec3750;
 	}
 
 	.tag-role.member {
-		background-color: #eaf3fc;
+		background-color: light-dark(#eaf3fc, rgba(51, 142, 218, 0.18));
 		color: #338eda;
 	}
 
@@ -308,12 +308,12 @@
 		align-items: center;
 		gap: 6px;
 		padding: 8px 14px;
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 		font-size: 14px;
 		font-weight: 500;
-		color: #1f2d3d;
+		color: var(--color-text);
 		cursor: pointer;
 		transition: border-color 0.15s, color 0.15s;
 		font-family: 'Phantom Sans', system-ui, sans-serif;
@@ -345,8 +345,8 @@
 		align-items: center;
 		justify-content: center;
 		padding: 20px 12px;
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 		text-decoration: none;
 		color: inherit;
@@ -355,7 +355,7 @@
 
 	.stat-card:hover {
 		border-color: #ec3750;
-		background: #fff5f7;
+		background: light-dark(#fff5f7, rgba(236, 55, 80, 0.16));
 	}
 
 	.stat-number {
@@ -368,7 +368,7 @@
 	.stat-label {
 		font-size: 13px;
 		font-weight: 600;
-		color: #8492a6;
+		color: var(--color-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		margin-top: 8px;
@@ -386,8 +386,8 @@
 		align-items: center;
 		gap: 12px;
 		padding: 12px 14px;
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 		text-decoration: none;
 		min-width: 0;
@@ -396,7 +396,7 @@
 
 	.link-card:hover {
 		border-color: #338eda;
-		background: #f3f8fd;
+		background: light-dark(#f3f8fd, rgba(51, 142, 218, 0.18));
 	}
 
 	.link-icon {
@@ -406,8 +406,8 @@
 		width: 36px;
 		height: 36px;
 		flex-shrink: 0;
-		background: #ffffff;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 	}
 
@@ -425,7 +425,7 @@
 	.link-label {
 		font-size: 12px;
 		font-weight: 600;
-		color: #8492a6;
+		color: var(--color-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
 	}
@@ -445,7 +445,7 @@
 		flex-wrap: wrap;
 		margin-top: 16px;
 		padding-top: 16px;
-		border-top: 1px solid #e0e6ed;
+		border-top: 1px solid var(--color-border);
 	}
 
 	.action-btn {
@@ -475,26 +475,26 @@
 	}
 
 	.action-btn-secondary {
-		background: #ffffff;
-		color: #1f2d3d;
-		border-color: #e0e6ed;
+		background: var(--bg-card);
+		color: var(--color-text);
+		border-color: var(--color-border);
 	}
 
 	.action-btn-secondary:hover {
-		background: #f9fafc;
-		border-color: #8492a6;
+		background: var(--bg-sunken);
+		border-color: var(--color-muted);
 	}
 
 	.empty-state {
-		background: #f9fafc;
+		background: var(--bg-sunken);
 		padding: 48px;
 		border-radius: 12px;
-		border: 2px dashed #e0e6ed;
+		border: 2px dashed var(--color-border);
 		text-align: center;
 	}
 
 	.empty-state p {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 18px;
 		margin: 0;
 	}
@@ -515,7 +515,7 @@
 	}
 
 	.loading-text {
-		color: #8492a6;
+		color: var(--color-muted);
 		text-align: center;
 		margin: 0;
 	}
@@ -527,7 +527,7 @@
 	}
 
 	.help-intro {
-		color: #1f2d3d;
+		color: var(--color-text);
 		text-align: center;
 		margin: 0 0 20px 0;
 	}
@@ -577,12 +577,12 @@
 		height: 80px;
 		border-radius: 50%;
 		object-fit: cover;
-		border: 3px solid #e0e6ed;
+		border: 3px solid var(--color-border);
 		margin-bottom: 12px;
 	}
 
 	.ambassador-desc {
-		color: #1f2d3d;
+		color: var(--color-text);
 		text-align: center;
 		margin: 0;
 		font-size: 14px;
@@ -590,7 +590,7 @@
 	}
 
 	.error-banner {
-		background: #fff5f7;
+		background: light-dark(#fff5f7, rgba(236, 55, 80, 0.16));
 		color: #ec3750;
 		padding: 16px;
 		border-radius: 8px;
@@ -614,14 +614,14 @@
 		display: block;
 		font-size: 14px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin-bottom: 6px;
 	}
 
 	.form-group input {
 		width: 100%;
 		padding: 10px 12px;
-		border: 2px solid #e0e6ed;
+		border: 2px solid var(--color-border);
 		border-radius: 6px;
 		font-size: 14px;
 		font-family: 'Phantom Sans', system-ui, sans-serif;
@@ -641,13 +641,13 @@
 	}
 
 	.cancel-btn {
-		background-color: white !important;
-		color: #1f2d3d !important;
-		border: 2px solid #e0e6ed !important;
+		background-color: var(--bg-card) !important;
+		color: var(--color-text) !important;
+		border: 2px solid var(--color-border) !important;
 	}
 
 	.cancel-btn:hover {
-		border-color: #8492a6 !important;
+		border-color: var(--color-muted) !important;
 	}
 
 	.submit-btn {

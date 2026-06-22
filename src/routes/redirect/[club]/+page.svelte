@@ -69,12 +69,12 @@
 		align-items: center;
 		justify-content: center;
 		padding: 20px;
-		background: #f9fafc;
+		background: var(--bg-sunken);
 	}
 	
 	.warning-card {
-		background: white;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 40px;
 		max-width: 500px;
@@ -89,25 +89,25 @@
 	
 	h1 {
 		font-size: 24px;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0 0 16px 0;
 		font-family: 'Phantom Sans', system-ui, sans-serif;
 	}
 	
 	.description {
 		font-size: 16px;
-		color: #8492a6;
+		color: var(--color-muted);
 		line-height: 1.6;
 		margin: 0 0 16px 0;
 	}
 	
 	.description strong {
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 	
 	.url {
-		background: #f9fafc;
-		border: 1px solid #e0e6ed;
+		background: var(--bg-sunken);
+		border: 1px solid var(--color-border);
 		border-radius: 6px;
 		padding: 12px;
 		margin: 0 0 16px 0;
@@ -126,7 +126,7 @@
 	
 	.countdown {
 		font-size: 14px;
-		color: #8492a6;
+		color: var(--color-muted);
 		margin: 0 0 24px 0;
 	}
 	
@@ -159,9 +159,9 @@
 	
 	.cancel-btn {
 		padding: 12px 24px;
-		background: #f9fafc;
-		color: #1f2d3d;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		color: var(--color-text);
+		border: 2px solid var(--color-border);
 		border-radius: 6px;
 		font-size: 14px;
 		font-weight: 600;
@@ -170,7 +170,7 @@
 	}
 	
 	.cancel-btn:hover {
-		background: #e0e6ed;
+		background: var(--color-border);
 	}
 	
 	@media (max-width: 500px) {

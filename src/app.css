@@ -1,1 +1,46 @@
 @import 'tailwindcss';
+
+/* ===========================================================================
+   Theme variables (light + dark)
+   Dark mode colors are taken from the Hack Club theme:
+   https://theme.hackclub.com/
+   --------------------------------------------------------------------------- */
+:root {
+	color-scheme: light;
+	--bg-page: #ffffff; /* overall page background */
+	--bg-card: #ffffff; /* elevated cards / nav / modals */
+	--bg-sunken: #f9fafc; /* subtle / hover / empty-state backgrounds */
+	--color-text: #1f2d3d; /* primary text */
+	--color-muted: #8492a6; /* secondary / label text */
+	--color-border: #e0e6ed; /* borders & dividers */
+}
+
+/* Dark palette (Hack Club: dark #17171d, darkless #252429, darker #121217) */
+:root[data-theme='dark'] {
+	color-scheme: dark;
+	--bg-page: #17171d;
+	--bg-card: #252429;
+	--bg-sunken: #121217;
+	--color-text: #ffffff;
+	--color-muted: #8492a6;
+	--color-border: #33333b;
+}
+
+/* Follow the system preference automatically, unless the user explicitly
+   chose light mode via the toggle. */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		color-scheme: dark;
+		--bg-page: #17171d;
+		--bg-card: #252429;
+		--bg-sunken: #121217;
+		--color-text: #ffffff;
+		--color-muted: #8492a6;
+		--color-border: #33333b;
+	}
+}
+
+body {
+	background-color: var(--bg-page);
+	color: var(--color-text);
+}

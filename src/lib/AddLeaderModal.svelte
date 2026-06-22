@@ -111,16 +111,16 @@
 
     label {
         font-weight: 500;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     select {
         padding: 0.75rem;
-        border: 2px solid #e0e6ed;
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         font-size: 1rem;
         font-family: 'Phantom Sans', system-ui, sans-serif;
-        background: white;
+        background: var(--bg-card);
     }
 
     select:focus {
@@ -129,7 +129,7 @@
     }
 
     select:disabled {
-        background: #f9fafc;
+        background: var(--bg-sunken);
         cursor: not-allowed;
     }
 
@@ -155,7 +155,7 @@
     }
 
     .loading {
-        color: #8492a6;
+        color: var(--color-muted);
         font-size: 0.875rem;
     }
 
@@ -179,8 +179,8 @@
 
     .form-link {
         padding: 0.75rem;
-        background: #f9fafc;
-        border: 1px solid #e0e6ed;
+        background: var(--bg-sunken);
+        border: 1px solid var(--color-border);
         border-radius: 8px;
         word-break: break-all;
     }

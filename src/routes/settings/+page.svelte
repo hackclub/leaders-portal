@@ -454,8 +454,8 @@
 
 <style>
 	:global(body) {
-		background-color: var(--white);
-		color: var(--black);
+		background-color: var(--bg-page);
+		color: var(--color-text);
 		margin: 0;
 		padding: 0;
 	}
@@ -469,8 +469,8 @@
 	}
 
 	.settings-card {
-		background: white;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 32px;
 		max-width: 700px;
@@ -485,14 +485,14 @@
 	.title {
 		font-size: 32px;
 		font-weight: bold;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0;
 	}
 
 	.section {
 		margin-bottom: 32px;
 		padding-bottom: 32px;
-		border-bottom: 1px solid #e0e6ed;
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	.section:last-child {
@@ -511,7 +511,7 @@
 	.section-title {
 		font-size: 18px;
 		font-weight: bold;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0;
 		margin-bottom: 12px;
 	}
@@ -531,7 +531,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 12px 16px;
-		background-color: #f9fafc;
+		background-color: var(--bg-sunken);
 		border-radius: 8px;
 	}
 
@@ -546,13 +546,13 @@
 	}
 
 	.label {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 14px;
 		font-weight: 600;
 	}
 
 	.value {
-		color: #1f2d3d;
+		color: var(--color-text);
 		font-size: 14px;
 	}
 
@@ -573,7 +573,7 @@
 		gap: 12px;
 		margin-bottom: 16px;
 		padding: 16px;
-		background-color: #dcfce7;
+		background-color: light-dark(#dcfce7, rgba(51, 214, 166, 0.16));
 		border-radius: 8px;
 	}
 
@@ -581,26 +581,26 @@
 		display: flex;
 		align-items: center;
 		gap: 6px;
-		color: #16a34a;
+		color: light-dark(#16a34a, #5be0b0);
 		font-weight: 600;
 		font-size: 14px;
 	}
 
 	.linked-info {
-		color: #166534;
+		color: light-dark(#166534, #5be0b0);
 		font-size: 14px;
 		margin: 0;
 	}
 
 	.unlinked-status {
 		padding: 16px;
-		background-color: #f9fafc;
+		background-color: var(--bg-sunken);
 		border-radius: 8px;
 	}
 
 	.unlinked-status p {
 		margin: 0 0 16px 0;
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 14px;
 		line-height: 1.5;
 	}
@@ -608,7 +608,7 @@
 	.developer-copy {
 		margin-top: 0;
 		margin-bottom: 14px;
-		color: #5b6878;
+		color: var(--color-muted);
 		font-size: 14px;
 		line-height: 1.5;
 	}
@@ -620,9 +620,9 @@
 	}
 
 	.success-banner {
-		background-color: #dcfce7;
-		border: 1px solid #16a34a;
-		color: #166534;
+		background-color: light-dark(#dcfce7, rgba(51, 214, 166, 0.16));
+		border: 1px solid light-dark(#16a34a, rgba(51, 214, 166, 0.4));
+		color: light-dark(#166534, #5be0b0);
 		padding: 16px;
 		border-radius: 8px;
 		margin-bottom: 24px;
@@ -630,9 +630,9 @@
 	}
 
 	.error-banner {
-		background-color: #fee;
-		border: 1px solid #fcc;
-		color: #c33;
+		background-color: light-dark(#fee, rgba(236, 55, 80, 0.16));
+		border: 1px solid light-dark(#fcc, rgba(236, 55, 80, 0.4));
+		color: light-dark(#c33, #ff8a9c);
 		padding: 16px;
 		border-radius: 8px;
 		margin-bottom: 24px;
@@ -662,13 +662,13 @@
 	}
 
 	.btn-secondary {
-		background-color: #f9fafc;
-		color: #1f2d3d;
-		border: 2px solid #e0e6ed;
+		background-color: var(--bg-sunken);
+		color: var(--color-text);
+		border: 2px solid var(--color-border);
 	}
 
 	.btn-secondary:hover:not(:disabled) {
-		background-color: #e0e6ed;
+		background-color: var(--color-border);
 	}
 
 	.edit-form {
@@ -686,7 +686,7 @@
 	.form-section-title {
 		font-size: 14px;
 		font-weight: 600;
-		color: #8492a6;
+		color: var(--color-muted);
 		margin: 0;
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
@@ -717,17 +717,17 @@
 	.form-group label {
 		font-size: 14px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.form-group input,
 	.form-group select {
 		padding: 10px 12px;
-		border: 2px solid #e0e6ed;
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 		font-size: 14px;
-		color: #1f2d3d;
-		background-color: white;
+		color: var(--color-text);
+		background-color: var(--bg-card);
 	}
 
 	.form-group input:focus,
@@ -745,12 +745,12 @@
 	}
 
 	.disabled-field label {
-		color: #8492a6;
+		color: var(--color-muted);
 	}
 
 	.locked-badge {
 		display: inline-block;
-		background-color: #8492a6;
+		background-color: var(--color-muted);
 		color: white;
 		font-size: 10px;
 		font-weight: 600;
@@ -761,15 +761,15 @@
 	}
 
 	.disabled-input {
-		background-color: #e8e8e8;
-		color: #8492a6;
+		background-color: var(--bg-sunken);
+		color: var(--color-muted);
 		cursor: not-allowed;
-		border-color: #d0d0d0;
+		border-color: var(--color-border);
 	}
 
 	.field-hint {
 		font-size: 12px;
-		color: #8492a6;
+		color: var(--color-muted);
 		margin-top: 4px;
 		font-style: italic;
 	}
@@ -779,7 +779,7 @@
 		gap: 12px;
 		justify-content: flex-end;
 		padding-top: 16px;
-		border-top: 1px solid #e0e6ed;
+		border-top: 1px solid var(--color-border);
 	}
 
 	.profile-view {
@@ -797,7 +797,7 @@
 	.profile-section-title {
 		font-size: 14px;
 		font-weight: 600;
-		color: #8492a6;
+		color: var(--color-muted);
 		margin: 0;
 		text-transform: uppercase;
 		letter-spacing: 0.5px;

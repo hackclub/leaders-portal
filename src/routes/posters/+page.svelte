@@ -574,7 +574,7 @@
 	}
 
 	.subtitle {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 18px;
 		margin: 0;
 	}
@@ -587,18 +587,18 @@
 
 	section h2 {
 		font-size: 28px;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0 0 8px 0;
 	}
 
 	.section-description {
-		color: #8492a6;
+		color: var(--color-muted);
 		margin: 0 0 24px 0;
 	}
 
 	.interactive-section {
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
 		border-radius: 16px;
 		padding: 32px;
 	}
@@ -612,7 +612,7 @@
 
 	.canvas-container {
 		position: relative;
-		background: #e0e6ed;
+		background: var(--color-border);
 		border-radius: 8px;
 		overflow: hidden;
 		min-height: 400px;
@@ -632,7 +632,7 @@
 	}
 
 	.loading {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 16px;
 	}
 
@@ -650,14 +650,14 @@
 
 	.input-group label {
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		font-size: 14px;
 	}
 
 	.input-group input,
 	.input-group select {
 		padding: 12px 16px;
-		border: 2px solid #e0e6ed;
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 		font-size: 16px;
 		font-family: inherit;
@@ -680,7 +680,7 @@
 		gap: 10px;
 		cursor: pointer;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.checkbox-label input[type="checkbox"] {
@@ -693,7 +693,7 @@
 	.input-hint {
 		margin: 0;
 		font-size: 13px;
-		color: #8492a6;
+		color: var(--color-muted);
 	}
 
 	.download-button {
@@ -735,8 +735,8 @@
 	}
 
 	.poster-card {
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 16px;
 		display: flex;
@@ -766,13 +766,13 @@
 		margin: 0;
 		font-size: 16px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.poster-credit {
 		margin: 0;
 		font-size: 14px;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.poster-actions {

@@ -168,7 +168,7 @@
 </div>
 <style>
 	:global(body) {
-		color: var(--black);
+		color: var(--color-text);
 		margin: 0;
 		padding: 0;
 	}
@@ -185,7 +185,7 @@
 	}
 
 	.login-card {
-		background: white;
+		background: var(--bg-card);
 		border: 3px solid #ec3750;
 		border-radius: 16px;
 		padding: 48px;
@@ -211,14 +211,14 @@
 		display: block;
 		font-weight: 600;
 		margin-bottom: 8px;
-		color: #1f2d3d;
+		color: var(--color-text);
 		font-size: 14px;
 	}
 
 	input {
 		width: 100%;
 		padding: 12px 16px;
-		border: 2px solid #ddd;
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 		font-size: 16px;
 		font-family: 'Phantom Sans', sans-serif;
@@ -232,7 +232,7 @@
 	}
 
 	input:disabled {
-		background-color: #f5f5f5;
+		background-color: var(--bg-sunken);
 		cursor: not-allowed;
 	}
 
@@ -241,9 +241,9 @@
 	}
 
 	.error {
-		background-color: #fee;
-		border: 1px solid #fcc;
-		color: #c33;
+		background-color: light-dark(#fee, rgba(236, 55, 80, 0.16));
+		border: 1px solid light-dark(#fcc, rgba(236, 55, 80, 0.4));
+		color: light-dark(#c33, #ff8a9c);
 		padding: 12px 16px;
 		border-radius: 8px;
 		margin-bottom: 16px;
@@ -251,9 +251,9 @@
 	}
 
 	.otp-sent-message {
-		background-color: #e8f4fd;
-		border: 1px solid #3b82f6;
-		color: #1e40af;
+		background-color: light-dark(#e8f4fd, rgba(51, 142, 218, 0.18));
+		border: 1px solid light-dark(#3b82f6, rgba(51, 142, 218, 0.5));
+		color: light-dark(#1e40af, #8cc2f0);
 		padding: 16px;
 		border-radius: 8px;
 		margin-bottom: 24px;
@@ -293,12 +293,12 @@
 		content: '';
 		flex: 1;
 		height: 1px;
-		background-color: #ddd;
+		background-color: var(--bg-sunken);
 	}
 
 	.divider span {
 		padding: 0 16px;
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 14px;
 	}
 </style>

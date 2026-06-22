@@ -358,8 +358,8 @@
 	}
 
 	.invite-banner {
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 		padding: 16px 20px;
 		display: flex;
@@ -371,7 +371,7 @@
 	.invite-label {
 		font-size: 14px;
 		font-weight: 600;
-		color: #8492a6;
+		color: var(--color-muted);
 	}
 
 	.invite-link {
@@ -386,8 +386,8 @@
 	}
 
 	.success-banner {
-		background: #e6fff2;
-		color: #1f2d3d;
+		background: light-dark(#e6fff2, rgba(51, 214, 166, 0.16));
+		color: var(--color-text);
 		padding: 12px 16px;
 		border-radius: 8px;
 		margin-bottom: 16px;
@@ -407,8 +407,8 @@
 		align-items: center;
 		gap: 12px;
 		padding: 16px;
-		background: white;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 	}
 
@@ -438,7 +438,7 @@
 	.member-name {
 		font-size: 16px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		display: block;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -453,9 +453,9 @@
 		height: 28px;
 		padding: 0;
 		background: transparent;
-		border: 2px solid #e0e6ed;
+		border: 2px solid var(--color-border);
 		border-radius: 6px;
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 14px;
 		cursor: pointer;
 		line-height: 1;
@@ -479,9 +479,9 @@
 		height: 28px;
 		padding: 0;
 		background: transparent;
-		border: 2px solid #e0e6ed;
+		border: 2px solid var(--color-border);
 		border-radius: 6px;
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 18px;
 		font-weight: bold;
 		cursor: pointer;
@@ -495,15 +495,15 @@
 	}
 
 	.empty-state {
-		background: #f9fafc;
+		background: var(--bg-sunken);
 		padding: 48px;
 		border-radius: 12px;
-		border: 2px dashed #e0e6ed;
+		border: 2px dashed var(--color-border);
 		text-align: center;
 	}
 
 	.empty-state p {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 18px;
 		margin: 0;
 	}
@@ -522,11 +522,11 @@
 	}
 
 	.modal {
-		background: white;
+		background: var(--bg-card);
 		border-radius: 12px;
 		width: 90%;
 		max-width: 500px;
-		border: 2px solid #e0e6ed;
+		border: 2px solid var(--color-border);
 	}
 
 	.modal-header {
@@ -534,27 +534,27 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 20px 24px;
-		border-bottom: 1px solid #e0e6ed;
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	.modal-header h3 {
 		margin: 0;
 		font-size: 18px;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.modal-close {
 		background: none;
 		border: none;
 		font-size: 24px;
-		color: #8492a6;
+		color: var(--color-muted);
 		cursor: pointer;
 		padding: 0;
 		line-height: 1;
 	}
 
 	.modal-close:hover {
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.modal-body {
@@ -565,7 +565,7 @@
 		display: block;
 		font-size: 14px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin-bottom: 8px;
 	}
 
@@ -574,7 +574,7 @@
 	.modal-body input[type="email"] {
 		width: 100%;
 		padding: 12px;
-		border: 2px solid #e0e6ed;
+		border: 2px solid var(--color-border);
 		border-radius: 6px;
 		font-size: 14px;
 		font-family: 'Phantom Sans', sans-serif;
@@ -595,12 +595,12 @@
 	.char-count {
 		text-align: right;
 		font-size: 12px;
-		color: #8492a6;
+		color: var(--color-muted);
 		margin-top: -12px;
 	}
 
 	.loading-text {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 14px;
 		margin-bottom: 16px;
 	}
@@ -610,14 +610,14 @@
 		justify-content: flex-end;
 		gap: 12px;
 		padding: 16px 24px;
-		border-top: 1px solid #e0e6ed;
+		border-top: 1px solid var(--color-border);
 	}
 
 	.cancel-btn {
 		padding: 10px 20px;
-		background: #f9fafc;
-		color: #1f2d3d;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		color: var(--color-text);
+		border: 2px solid var(--color-border);
 		border-radius: 6px;
 		font-size: 14px;
 		font-weight: 600;
@@ -626,7 +626,7 @@
 	}
 
 	.cancel-btn:hover {
-		background: #e0e6ed;
+		background: var(--color-border);
 	}
 
 	.send-btn {
@@ -652,7 +652,7 @@
 	}
 
 	.error-message {
-		background: #fff5f7;
+		background: light-dark(#fff5f7, rgba(236, 55, 80, 0.16));
 		color: #ec3750;
 		padding: 12px;
 		border-radius: 6px;
@@ -662,7 +662,7 @@
 	}
 
 	.success-message {
-		background: #e6fff2;
+		background: light-dark(#e6fff2, rgba(51, 214, 166, 0.16));
 		color: #33d6a6;
 		padding: 12px;
 		border-radius: 6px;
@@ -673,7 +673,7 @@
 
 	.leadership-card {
 		border-color: #ec3750;
-		background: #fff5f6;
+		background: light-dark(#fff5f6, rgba(236, 55, 80, 0.16));
 	}
 
 	.leadership-avatar {
@@ -691,13 +691,13 @@
 	}
 
 	.badge-leader {
-		background-color: #fff5f6;
+		background-color: light-dark(#fff5f6, rgba(236, 55, 80, 0.16));
 		color: #ec3750;
 		border: 1px solid #ec3750;
 	}
 
 	.badge-coleader {
-		background-color: #e6f4ff;
+		background-color: light-dark(#e6f4ff, rgba(51, 142, 218, 0.18));
 		color: #338eda;
 		border: 1px solid #338eda;
 	}

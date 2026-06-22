@@ -167,19 +167,19 @@
     }
 
     h1 {
-        color: #1f2d3d;
+        color: var(--color-text);
         font-size: 1.75rem;
         margin: 0;
     }
 
     h2 {
-        color: #1f2d3d;
+        color: var(--color-text);
         font-size: 1.25rem;
         margin: 0;
     }
 
     h3 {
-        color: #1f2d3d;
+        color: var(--color-text);
         font-size: 1rem;
         margin: 0 0 1rem 0;
     }
@@ -202,8 +202,8 @@
     }
 
     .stat-card {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.25rem;
     }
@@ -221,13 +221,13 @@
 
     .stat-label {
         font-size: 0.875rem;
-        color: #8492a6;
+        color: var(--color-muted);
     }
 
     .stat-value {
         font-size: 2rem;
         font-weight: 700;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .search-section {
@@ -235,8 +235,8 @@
     }
 
     .search-panel {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.25rem;
     }
@@ -249,7 +249,7 @@
     .search-form input {
         flex: 1;
         padding: 0.5rem 0.75rem;
-        border: 2px solid #e0e6ed;
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.875rem;
     }
@@ -280,8 +280,8 @@
     }
 
     .results-section, .data-section {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.25rem;
         margin-bottom: 2rem;
@@ -296,7 +296,7 @@
 
     .results-count, .total-count {
         font-size: 0.875rem;
-        color: #8492a6;
+        color: var(--color-muted);
     }
 
     .table-container {
@@ -313,24 +313,24 @@
         text-align: left;
         padding: 0.75rem 0.5rem;
         font-weight: 500;
-        color: #8492a6;
-        border-bottom: 2px solid #e0e6ed;
+        color: var(--color-muted);
+        border-bottom: 2px solid var(--color-border);
     }
 
     .data-table td {
         padding: 0.75rem 0.5rem;
-        border-bottom: 1px solid #e0e6ed;
+        border-bottom: 1px solid var(--color-border);
     }
 
     .club-name {
         font-weight: 500;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .count-badge {
         display: inline-block;
-        background: #f1f5f9;
-        color: #1f2d3d;
+        background: var(--bg-sunken);
+        color: var(--color-text);
         padding: 0.25rem 0.5rem;
         border-radius: 4px;
         font-weight: 500;
@@ -361,7 +361,7 @@
     }
 
     .muted {
-        color: #8492a6;
+        color: var(--color-muted);
         font-style: italic;
     }
 
@@ -374,21 +374,21 @@
     .btn-small {
         padding: 0.25rem 0.5rem;
         font-size: 0.75rem;
-        border: 1px solid #e0e6ed;
-        background: white;
+        border: 1px solid var(--color-border);
+        background: var(--bg-card);
         border-radius: 4px;
         cursor: pointer;
-        color: #1f2d3d;
+        color: var(--color-text);
         text-decoration: none;
     }
 
     .btn-small:hover {
-        background: #f9fafc;
+        background: var(--bg-sunken);
     }
 
     .no-results {
         text-align: center;
-        color: #8492a6;
+        color: var(--color-muted);
         font-style: italic;
         padding: 1rem 0;
     }

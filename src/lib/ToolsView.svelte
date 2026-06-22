@@ -119,7 +119,7 @@
 	}
 
 	.section-title {
-		color: #1f2d3d;
+		color: var(--color-text);
 		font-weight: bold;
 		font-size: 32px;
 		margin: 0 0 8px 0;
@@ -127,7 +127,7 @@
 	}
 
 	.description {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 16px;
 		margin-bottom: 32px;
 	}

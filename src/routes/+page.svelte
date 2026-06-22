@@ -184,8 +184,8 @@
 
 <style>
 	:global(body) {
-		background-color: var(--white);
-		color: var(--black);
+		background-color: var(--bg-page);
+		color: var(--color-text);
 		margin: 0;
 		padding: 0;
 	}
@@ -222,7 +222,7 @@
 	.subtitle {
 		font-size: 16px;
 		line-height: 1.5;
-		color: #8492a6;
+		color: var(--color-muted);
 		margin: 0;
 		max-width: 42ch;
 	}
@@ -230,7 +230,7 @@
 	.hero-map {
 		width: 100%;
 		height: 240px;
-		border: 1px solid #e0e6ed;
+		border: 1px solid var(--color-border);
 		border-radius: 12px;
 	}
 
@@ -238,7 +238,7 @@
 		display: flex;
 		gap: 24px;
 		margin-bottom: 28px;
-		border-bottom: 1px solid #e0e6ed;
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	.tab-button {
@@ -247,7 +247,7 @@
 		border-bottom: 2px solid transparent;
 		margin-bottom: -1px;
 		background: transparent;
-		color: #8492a6;
+		color: var(--color-muted);
 		font-weight: 600;
 		font-size: 16px;
 		font-family: inherit;
@@ -255,7 +255,7 @@
 	}
 
 	.tab-button:hover {
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.tab-button.active {
@@ -279,7 +279,7 @@
 		display: flex;
 		align-items: center;
 		gap: 10px;
-		color: #1f2d3d;
+		color: var(--color-text);
 		font-weight: 700;
 		font-size: 22px;
 		margin: 0;
@@ -300,13 +300,13 @@
 		gap: 8px 24px;
 		margin-top: 48px;
 		padding-top: 24px;
-		border-top: 1px solid #e0e6ed;
+		border-top: 1px solid var(--color-border);
 	}
 
 	.footer-link {
 		font-size: 14px;
 		font-weight: 600;
-		color: #8492a6;
+		color: var(--color-muted);
 		text-decoration: none;
 	}
 

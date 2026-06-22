@@ -169,19 +169,19 @@
     }
 
     h1 {
-        color: #1f2d3d;
+        color: var(--color-text);
         font-size: 1.75rem;
         margin: 0;
     }
 
     h2 {
-        color: #1f2d3d;
+        color: var(--color-text);
         font-size: 1.25rem;
         margin: 0;
     }
 
     h3 {
-        color: #1f2d3d;
+        color: var(--color-text);
         font-size: 1rem;
         margin: 0 0 1rem 0;
     }
@@ -201,8 +201,8 @@
     }
 
     .search-panel {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.25rem;
     }
@@ -215,7 +215,7 @@
     .search-form input {
         flex: 1;
         padding: 0.5rem 0.75rem;
-        border: 2px solid #e0e6ed;
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.875rem;
     }
@@ -246,8 +246,8 @@
     }
 
     .results-section, .data-section {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.25rem;
         margin-bottom: 2rem;
@@ -262,7 +262,7 @@
 
     .results-count, .total-count {
         font-size: 0.875rem;
-        color: #8492a6;
+        color: var(--color-muted);
     }
 
     .table-container {
@@ -279,27 +279,27 @@
         text-align: left;
         padding: 0.75rem 0.5rem;
         font-weight: 500;
-        color: #8492a6;
-        border-bottom: 2px solid #e0e6ed;
+        color: var(--color-muted);
+        border-bottom: 2px solid var(--color-border);
     }
 
     .data-table td {
         padding: 0.75rem 0.5rem;
-        border-bottom: 1px solid #e0e6ed;
+        border-bottom: 1px solid var(--color-border);
     }
 
     .user-name {
         font-weight: 500;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .user-username {
         font-size: 0.75rem;
-        color: #8492a6;
+        color: var(--color-muted);
     }
 
     .date {
-        color: #8492a6;
+        color: var(--color-muted);
     }
 
     .badge {
@@ -322,8 +322,8 @@
     }
 
     .badge.unverified {
-        background: #e0e6ed;
-        color: #8492a6;
+        background: var(--color-border);
+        color: var(--color-muted);
     }
 
     .actions {
@@ -339,15 +339,15 @@
     .btn-small {
         padding: 0.25rem 0.5rem;
         font-size: 0.75rem;
-        border: 1px solid #e0e6ed;
-        background: white;
+        border: 1px solid var(--color-border);
+        background: var(--bg-card);
         border-radius: 4px;
         cursor: pointer;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .btn-small:hover {
-        background: #f9fafc;
+        background: var(--bg-sunken);
     }
 
     .btn-warning {
@@ -356,7 +356,7 @@
     }
 
     .btn-warning:hover {
-        background: #fff7ed;
+        background: light-dark(#fff7ed, rgba(241, 196, 15, 0.16));
     }
 
     .btn-danger {
@@ -365,12 +365,12 @@
     }
 
     .btn-danger:hover {
-        background: #fef2f2;
+        background: light-dark(#fef2f2, rgba(236, 55, 80, 0.16));
     }
 
     .no-results {
         text-align: center;
-        color: #8492a6;
+        color: var(--color-muted);
         font-style: italic;
         padding: 1rem 0;
     }

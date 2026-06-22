@@ -71,26 +71,26 @@
 		align-items: center;
 		justify-content: center;
 		padding: 1rem;
-		background: #f9fafc;
+		background: var(--bg-sunken);
 	}
 
 	.panel {
 		width: 100%;
 		max-width: 680px;
-		background: #fff;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 1.25rem;
 	}
 
 	h1 {
 		margin: 0 0 0.6rem;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.subtitle,
 	.description {
-		color: #445268;
+		color: var(--color-muted);
 	}
 
 	.banner {
@@ -101,20 +101,20 @@
 	}
 
 	.banner.warning {
-		background: #fffbeb;
-		border: 1px solid #fcd34d;
-		color: #92400e;
+		background: light-dark(#fffbeb, rgba(241, 196, 15, 0.16));
+		border: 1px solid light-dark(#fcd34d, rgba(241, 196, 15, 0.45));
+		color: light-dark(#92400e, #f4ce6b);
 	}
 
 	.banner.danger {
-		background: #fff1f2;
-		border: 1px solid #fecdd6;
-		color: #be123c;
+		background: light-dark(#fff1f2, rgba(236, 55, 80, 0.16));
+		border: 1px solid light-dark(#fecdd6, rgba(236, 55, 80, 0.4));
+		color: light-dark(#be123c, #ff8a9c);
 	}
 
 	h2 {
 		font-size: 1rem;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.scope-list {
@@ -126,25 +126,25 @@
 	}
 
 	.scope-list li {
-		border: 1px solid #e0e6ed;
+		border: 1px solid var(--color-border);
 		border-radius: 8px;
 		padding: 0.6rem;
 	}
 
 	.scope-list li.sensitive {
-		border-color: #fbbf24;
-		background: #fffdf6;
+		border-color: light-dark(#fbbf24, rgba(241, 196, 15, 0.45));
+		background: light-dark(#fffdf6, rgba(241, 196, 15, 0.16));
 	}
 
 	.scope-name {
 		font-size: 0.9rem;
 		font-weight: 700;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.scope-description {
 		font-size: 0.82rem;
-		color: #64748b;
+		color: var(--color-muted);
 	}
 
 	.actions {

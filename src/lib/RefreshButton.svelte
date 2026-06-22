@@ -64,12 +64,12 @@
 		align-items: center;
 		gap: 6px;
 		padding: 8px 14px;
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 		font-size: 14px;
 		font-weight: 500;
-		color: #1f2d3d;
+		color: var(--color-text);
 		cursor: pointer;
 		transition: all 0.2s;
 		font-family: 'Phantom Sans', system-ui, sans-serif;

@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/stores';
+	import ThemeToggle from '$lib/ThemeToggle.svelte';
 
 	let { user = null } = $props();
 
@@ -20,20 +21,23 @@
 	<div class="nav-inner">
 		<a href="/" class="brand" onclick={closeMenu}>Club Leaders Portal</a>
 
-		<button
-			class="menu-toggle"
-			aria-label="Toggle navigation"
-			aria-expanded={menuOpen}
-			onclick={() => (menuOpen = !menuOpen)}
-		>
-			<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-				<line x1="3" y1="6" x2="21" y2="6" />
-				<line x1="3" y1="12" x2="21" y2="12" />
-				<line x1="3" y1="18" x2="21" y2="18" />
-			</svg>
-		</button>
+		<div class="nav-right">
+			<ThemeToggle />
 
-		<div class="nav-links" class:open={menuOpen}>
+			<button
+				class="menu-toggle"
+				aria-label="Toggle navigation"
+				aria-expanded={menuOpen}
+				onclick={() => (menuOpen = !menuOpen)}
+			>
+				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+					<line x1="3" y1="6" x2="21" y2="6" />
+					<line x1="3" y1="12" x2="21" y2="12" />
+					<line x1="3" y1="18" x2="21" y2="18" />
+				</svg>
+			</button>
+
+			<div class="nav-links" class:open={menuOpen}>
 			<a href="/" class="nav-link" class:active={isActive('/')} onclick={closeMenu}>Home</a>
 			{#if user}
 				<a href="/my-club" class="nav-link" class:active={isActive('/my-club')} onclick={closeMenu}>My Club</a>
@@ -48,6 +52,7 @@
 				<a href="/auth/login" class="nav-cta" onclick={closeMenu}>Sign in</a>
 				<a href="/email-login" class="nav-link" class:active={isActive('/email-login')} onclick={closeMenu}>Email login</a>
 			{/if}
+			</div>
 		</div>
 	</div>
 </nav>
@@ -57,8 +62,8 @@
 		position: sticky;
 		top: 0;
 		z-index: 50;
-		background: #ffffff;
-		border-bottom: 1px solid #e0e6ed;
+		background: var(--bg-card);
+		border-bottom: 1px solid var(--color-border);
 		font-family: 'Phantom Sans', system-ui, sans-serif;
 	}
 
@@ -80,6 +85,12 @@
 		letter-spacing: -0.01em;
 	}
 
+	.nav-right {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
 	.nav-links {
 		display: flex;
 		align-items: center;
@@ -91,17 +102,17 @@
 		border-radius: 8px;
 		font-size: 15px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		text-decoration: none;
 	}
 
 	.nav-link:hover {
-		background: #f9fafc;
+		background: var(--bg-sunken);
 	}
 
 	.nav-link.active {
 		color: #ec3750;
-		background: #fff0f2;
+		background: rgba(236, 55, 80, 0.12);
 	}
 
 	.nav-cta {
@@ -123,12 +134,12 @@
 	}
 
 	.nav-cta.secondary {
-		background: #ffffff;
+		background: var(--bg-card);
 		color: #ec3750;
 	}
 
 	.nav-cta.secondary:hover {
-		background: #fff0f2;
+		background: rgba(236, 55, 80, 0.12);
 	}
 
 	.logout-form {
@@ -140,7 +151,7 @@
 		display: none;
 		background: none;
 		border: none;
-		color: #1f2d3d;
+		color: var(--color-text);
 		cursor: pointer;
 		padding: 6px;
 	}
@@ -159,8 +170,8 @@
 			align-items: stretch;
 			width: 220px;
 			padding: 8px;
-			background: #ffffff;
-			border: 1px solid #e0e6ed;
+			background: var(--bg-card);
+			border: 1px solid var(--color-border);
 			border-radius: 12px;
 		}
 

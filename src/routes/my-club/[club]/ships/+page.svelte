@@ -65,8 +65,8 @@
 	}
 
 	.submit-banner {
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 		padding: 20px 24px;
 		display: flex;
@@ -83,13 +83,13 @@
 	.submit-title {
 		font-size: 18px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0 0 4px 0;
 	}
 
 	.submit-text {
 		font-size: 14px;
-		color: #8492a6;
+		color: var(--color-muted);
 		margin: 0;
 	}
 
@@ -114,7 +114,7 @@
 	.section-title {
 		font-size: 20px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0 0 16px 0;
 	}
 
@@ -129,8 +129,8 @@
 		align-items: center;
 		gap: 16px;
 		padding: 16px 20px;
-		background: white;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 8px;
 	}
 
@@ -145,7 +145,7 @@
 		width: 44px;
 		height: 44px;
 		border-radius: 50%;
-		background: #fff0f2;
+		background: light-dark(#fff0f2, rgba(236, 55, 80, 0.16));
 		font-size: 22px;
 		flex-shrink: 0;
 	}
@@ -161,7 +161,7 @@
 	.ship-name {
 		font-size: 16px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -184,15 +184,15 @@
 	}
 
 	.empty-state {
-		background: #f9fafc;
+		background: var(--bg-sunken);
 		padding: 48px;
 		border-radius: 12px;
-		border: 2px dashed #e0e6ed;
+		border: 2px dashed var(--color-border);
 		text-align: center;
 	}
 
 	.empty-state p {
-		color: #8492a6;
+		color: var(--color-muted);
 		font-size: 18px;
 		margin: 0;
 	}

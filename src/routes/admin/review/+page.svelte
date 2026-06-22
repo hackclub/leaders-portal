@@ -145,7 +145,7 @@
 
 <style>
 	:global(body) {
-		background-color: var(--snow);
+		background-color: var(--bg-page);
 		margin: 0;
 	}
 
@@ -182,9 +182,9 @@
 	
 
 	.error-banner {
-		background-color: #fee2e2;
-		border: 1px solid #ef4444;
-		color: #b91c1c;
+		background-color: light-dark(#fee2e2, rgba(236, 55, 80, 0.16));
+		border: 1px solid light-dark(#ef4444, rgba(236, 55, 80, 0.4));
+		color: light-dark(#b91c1c, #ff8a9c);
 		padding: 12px;
 		border-radius: 8px;
 		margin-bottom: 16px;
@@ -201,9 +201,9 @@
 	/* Sidebar */
 	.project-list {
 		width: 300px;
-		background: white;
+		background: var(--bg-card);
 		border-radius: 12px;
-		border: 1px solid #e5e7eb;
+		border: 1px solid var(--color-border);
 		overflow-y: auto;
 		display: flex;
 		flex-direction: column;
@@ -212,17 +212,17 @@
 
 	.project-list-item {
 		padding: 16px;
-		border-bottom: 1px solid #f3f4f6;
+		border-bottom: 1px solid var(--color-border);
 		cursor: pointer;
 		transition: background-color 0.2s;
 	}
 
 	.project-list-item:hover {
-		background-color: #f9fafc;
+		background-color: var(--bg-sunken);
 	}
 
 	.project-list-item.selected {
-		background-color: #fff1f3;
+		background-color: light-dark(#fff1f3, rgba(236, 55, 80, 0.16));
 		border-left: 4px solid #ec3750;
 	}
 
@@ -234,17 +234,17 @@
 
 	.item-name {
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.item-date {
 		font-size: 12px;
-		color: #6b7280;
+		color: var(--color-muted);
 	}
 
 	.item-summary {
 		font-size: 13px;
-		color: #4b5563;
+		color: var(--color-muted);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -253,9 +253,9 @@
 	/* Main Content */
 	.project-detail {
 		flex: 1;
-		background: white;
+		background: var(--bg-card);
 		border-radius: 12px;
-		border: 1px solid #e5e7eb;
+		border: 1px solid var(--color-border);
 		overflow-y: auto;
 		padding: 32px;
 	}
@@ -265,14 +265,14 @@
 		justify-content: space-between;
 		align-items: flex-start;
 		margin-bottom: 32px;
-		border-bottom: 1px solid #e5e7eb;
+		border-bottom: 1px solid var(--color-border);
 		padding-bottom: 24px;
 	}
 
 	.detail-name {
 		font-size: 28px;
 		font-weight: bold;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0 0 8px 0;
 	}
 
@@ -287,8 +287,8 @@
 	}
 
 	.badge.pending {
-		background-color: #fef3c7;
-		color: #92400e;
+		background-color: light-dark(#fef3c7, rgba(241, 196, 15, 0.16));
+		color: light-dark(#92400e, #f4ce6b);
 	}
 
 	.action-buttons {
@@ -323,14 +323,14 @@
 	.info-label {
 		font-size: 12px;
 		font-weight: 600;
-		color: #6b7280;
+		color: var(--color-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 	}
 
 	.info-value {
 		font-size: 16px;
-		color: #1f2d3d;
+		color: var(--color-text);
 		line-height: 1.5;
 	}
 
@@ -347,7 +347,7 @@
 	.section-title {
 		font-size: 20px;
 		font-weight: 600;
-		color: #1f2d3d;
+		color: var(--color-text);
 		margin: 0 0 16px 0;
 	}
 
@@ -358,7 +358,7 @@
 	}
 
 	.asset-card {
-		border: 1px solid #e5e7eb;
+		border: 1px solid var(--color-border);
 		border-radius: 8px;
 		overflow: hidden;
 		transition: all 0.2s;
@@ -371,7 +371,7 @@
 
 	.asset-preview {
 		height: 150px;
-		background-color: #f3f4f6;
+		background-color: var(--bg-sunken);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -389,7 +389,7 @@
 	}
 
 	.file-card .asset-preview {
-		background-color: #f9fafc;
+		background-color: var(--bg-sunken);
 	}
 
 	.asset-info {
@@ -402,14 +402,14 @@
 	.asset-type {
 		font-size: 11px;
 		text-transform: uppercase;
-		color: #6b7280;
+		color: var(--color-muted);
 		font-weight: 600;
 	}
 
 	.file-name {
 		font-size: 14px;
 		font-weight: 500;
-		color: #1f2d3d;
+		color: var(--color-text);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -430,10 +430,10 @@
 	.empty-state {
 		text-align: center;
 		padding: 64px;
-		color: #6b7280;
-		background: white;
+		color: var(--color-muted);
+		background: var(--bg-card);
 		border-radius: 12px;
-		border: 2px dashed #e5e7eb;
+		border: 2px dashed var(--color-border);
 		text-align: center;
 	}
 </style>

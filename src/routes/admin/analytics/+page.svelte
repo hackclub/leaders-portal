@@ -131,7 +131,7 @@
     h1 {
         font-size: 2rem;
         font-weight: 700;
-        color: #1f2d3d;
+        color: var(--color-text);
         margin-bottom: 1.5rem;
     }
 
@@ -147,11 +147,11 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.75rem 1.25rem;
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         text-decoration: none;
-        color: #1f2d3d;
+        color: var(--color-text);
         font-weight: 500;
         transition: border-color 0.15s;
     }
@@ -171,14 +171,14 @@
     h2 {
         font-size: 1.25rem;
         font-weight: 600;
-        color: #1f2d3d;
+        color: var(--color-text);
         margin-bottom: 1rem;
     }
 
     h3 {
         font-size: 1rem;
         font-weight: 600;
-        color: #1f2d3d;
+        color: var(--color-text);
         margin: 1.5rem 0 0.75rem;
     }
 
@@ -190,8 +190,8 @@
     }
 
     .panel {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.5rem;
     }
@@ -208,8 +208,8 @@
     }
 
     .stat-card {
-        background: #f9fafc;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-sunken);
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         padding: 1rem;
         text-align: center;
@@ -218,7 +218,7 @@
     .stat-label {
         display: block;
         font-size: 0.875rem;
-        color: #8492a6;
+        color: var(--color-muted);
         margin-bottom: 0.25rem;
     }
 
@@ -226,7 +226,7 @@
         display: block;
         font-size: 2rem;
         font-weight: 700;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .list-container {
@@ -239,7 +239,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 0.75rem 0;
-        border-bottom: 1px solid #e0e6ed;
+        border-bottom: 1px solid var(--color-border);
     }
 
     .list-item:last-child {
@@ -253,12 +253,12 @@
 
     .item-title {
         font-weight: 500;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .item-subtitle {
         font-size: 0.75rem;
-        color: #8492a6;
+        color: var(--color-muted);
     }
 
     .badge {
@@ -285,7 +285,7 @@
 
     .empty-state {
         text-align: center;
-        color: #8492a6;
+        color: var(--color-muted);
         padding: 1rem;
         font-style: italic;
     }
@@ -304,15 +304,15 @@
         padding: 0.75rem;
         font-size: 0.75rem;
         font-weight: 500;
-        color: #8492a6;
+        color: var(--color-muted);
         text-transform: uppercase;
-        border-bottom: 2px solid #e0e6ed;
+        border-bottom: 2px solid var(--color-border);
     }
 
     td {
         padding: 0.75rem;
-        border-bottom: 1px solid #e0e6ed;
-        color: #1f2d3d;
+        border-bottom: 1px solid var(--color-border);
+        color: var(--color-text);
     }
 
     td.font-medium {
@@ -329,6 +329,6 @@
     }
 
     .muted {
-        color: #8492a6;
+        color: var(--color-muted);
     }
 </style>

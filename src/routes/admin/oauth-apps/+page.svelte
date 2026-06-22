@@ -94,12 +94,12 @@
 
 	h1 {
 		margin: 0;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.header p {
 		margin-top: 0.4rem;
-		color: #64748b;
+		color: var(--color-muted);
 	}
 
 	.back {
@@ -114,17 +114,17 @@
 	}
 
 	.empty {
-		background: #fff;
-		border: 2px dashed #e0e6ed;
+		background: var(--bg-card);
+		border: 2px dashed var(--color-border);
 		border-radius: 12px;
 		padding: 2rem;
 		text-align: center;
-		color: #64748b;
+		color: var(--color-muted);
 	}
 
 	.app-card {
-		background: #fff;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 1rem;
 	}
@@ -138,7 +138,7 @@
 
 	h2 {
 		margin: 0;
-		color: #1f2d3d;
+		color: var(--color-text);
 		font-size: 1.1rem;
 	}
 
@@ -156,18 +156,18 @@
 	}
 
 	.badge.verified {
-		background: #d1fae5;
-		color: #065f46;
+		background: light-dark(#d1fae5, rgba(51, 214, 166, 0.16));
+		color: light-dark(#065f46, #5be0b0);
 	}
 
 	.badge.unverified {
-		background: #fef3c7;
-		color: #92400e;
+		background: light-dark(#fef3c7, rgba(241, 196, 15, 0.16));
+		color: light-dark(#92400e, #f4ce6b);
 	}
 
 	.badge.kind {
-		background: #e2e8f0;
-		color: #334155;
+		background: var(--bg-sunken);
+		color: var(--color-muted);
 	}
 
 	.btn {
@@ -192,14 +192,14 @@
 		text-transform: uppercase;
 		letter-spacing: 0.03em;
 		font-weight: 700;
-		color: #64748b;
+		color: var(--color-muted);
 		margin-bottom: 0.3rem;
 	}
 
 	.muted {
 		margin-top: 0.2rem;
 		font-size: 0.82rem;
-		color: #64748b;
+		color: var(--color-muted);
 	}
 
 	.section {
@@ -216,7 +216,7 @@
 	}
 
 	code {
-		background: #f1f5f9;
+		background: var(--bg-sunken);
 		padding: 0.1rem 0.35rem;
 		border-radius: 4px;
 	}
@@ -228,8 +228,8 @@
 	}
 
 	.scope {
-		background: #f8fafc;
-		border: 1px solid #e2e8f0;
+		background: var(--bg-sunken);
+		border: 1px solid var(--color-border);
 		border-radius: 999px;
 		padding: 0.2rem 0.5rem;
 		font-size: 0.8rem;

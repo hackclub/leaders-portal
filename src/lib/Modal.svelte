@@ -41,7 +41,7 @@
 	}
 
 	.modal {
-		background: white;
+		background: var(--bg-card);
 		border-radius: 12px;
 		width: 90%;
 		max-width: 400px;
@@ -53,27 +53,27 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 20px 24px;
-		border-bottom: 1px solid #e0e6ed;
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	.modal-header h2 {
 		margin: 0;
 		font-size: 20px;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.modal-close {
 		background: none;
 		border: none;
 		font-size: 28px;
-		color: #8492a6;
+		color: var(--color-muted);
 		cursor: pointer;
 		padding: 0;
 		line-height: 1;
 	}
 
 	.modal-close:hover {
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.modal-body {

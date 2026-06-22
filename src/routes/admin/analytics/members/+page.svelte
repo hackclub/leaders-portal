@@ -136,14 +136,14 @@
     h1 {
         font-size: 2rem;
         font-weight: 700;
-        color: #1f2d3d;
+        color: var(--color-text);
         margin-top: 0.5rem;
     }
 
     h2 {
         font-size: 1.25rem;
         font-weight: 600;
-        color: #1f2d3d;
+        color: var(--color-text);
         margin-bottom: 1rem;
     }
 
@@ -155,8 +155,8 @@
     }
 
     .stat-card {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.5rem;
         text-align: center;
@@ -165,7 +165,7 @@
     .stat-label {
         display: block;
         font-size: 0.875rem;
-        color: #8492a6;
+        color: var(--color-muted);
         margin-bottom: 0.25rem;
     }
 
@@ -173,7 +173,7 @@
         display: block;
         font-size: 2.5rem;
         font-weight: 700;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .grid-layout {
@@ -189,8 +189,8 @@
     }
 
     .panel {
-        background: #fff;
-        border: 2px solid #e0e6ed;
+        background: var(--bg-card);
+        border: 2px solid var(--color-border);
         border-radius: 12px;
         padding: 1.5rem;
     }
@@ -205,7 +205,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 0.75rem 0;
-        border-bottom: 1px solid #e0e6ed;
+        border-bottom: 1px solid var(--color-border);
     }
 
     .list-item:last-child {
@@ -214,7 +214,7 @@
 
     .item-title {
         font-weight: 500;
-        color: #1f2d3d;
+        color: var(--color-text);
     }
 
     .badge {
@@ -238,7 +238,7 @@
     .search-input {
         flex: 1;
         padding: 0.5rem 0.75rem;
-        border: 2px solid #e0e6ed;
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.875rem;
     }
@@ -250,10 +250,10 @@
 
     .filter-select {
         padding: 0.5rem 0.75rem;
-        border: 2px solid #e0e6ed;
+        border: 2px solid var(--color-border);
         border-radius: 8px;
         font-size: 0.875rem;
-        background: white;
+        background: var(--bg-card);
     }
 
     .table-container {
@@ -271,18 +271,18 @@
         padding: 0.75rem;
         font-size: 0.75rem;
         font-weight: 500;
-        color: #8492a6;
+        color: var(--color-muted);
         text-transform: uppercase;
-        border-bottom: 2px solid #e0e6ed;
+        border-bottom: 2px solid var(--color-border);
         position: sticky;
         top: 0;
-        background: white;
+        background: var(--bg-card);
     }
 
     td {
         padding: 0.75rem;
-        border-bottom: 1px solid #e0e6ed;
-        color: #1f2d3d;
+        border-bottom: 1px solid var(--color-border);
+        color: var(--color-text);
     }
 
     td.font-medium {
@@ -291,7 +291,7 @@
 
     .empty-state {
         text-align: center;
-        color: #8492a6;
+        color: var(--color-muted);
         padding: 1rem;
         font-style: italic;
     }
@@ -299,6 +299,6 @@
     .count-label {
         margin-top: 1rem;
         font-size: 0.875rem;
-        color: #8492a6;
+        color: var(--color-muted);
     }
 </style>

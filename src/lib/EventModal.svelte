@@ -57,7 +57,7 @@
 	}
 
 	.modal-content {
-		background: #ffffff;
+		background: var(--bg-card);
 		border-radius: 16px;
 		padding: 48px;
 		max-width: 600px;
@@ -86,7 +86,7 @@
 		background: none;
 		border: none;
 		font-size: 32px;
-		color: #8492a6;
+		color: var(--color-muted);
 		cursor: pointer;
 		padding: 0;
 		width: 40px;
@@ -99,7 +99,7 @@
 	}
 
 	.close-button:hover {
-		background: #f9fafc;
+		background: var(--bg-sunken);
 		color: #ec3750;
 	}
 
@@ -128,7 +128,7 @@
 	}
 
 	.modal-header h2 {
-		color: #1f2d3d;
+		color: var(--color-text);
 		font-size: 36px;
 		margin: 0;
 		padding-right: 40px;

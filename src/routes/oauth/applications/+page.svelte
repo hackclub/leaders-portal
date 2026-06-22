@@ -285,12 +285,12 @@
 	h1 {
 		margin: 0;
 		font-size: 2rem;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.page-header p {
 		margin-top: 0.5rem;
-		color: #5b6878;
+		color: var(--color-muted);
 	}
 
 	.back-link {
@@ -301,8 +301,8 @@
 	}
 
 	.card {
-		background: #fff;
-		border: 2px solid #e0e6ed;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 1.25rem;
 		margin-bottom: 1rem;
@@ -310,7 +310,7 @@
 
 	h2 {
 		margin-top: 0;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.message {
@@ -320,15 +320,15 @@
 	}
 
 	.message.success {
-		background: #e8faf4;
-		color: #1b7f63;
-		border: 1px solid #9fe7d1;
+		background: light-dark(#e8faf4, rgba(51, 214, 166, 0.16));
+		color: light-dark(#1b7f63, #5be0b0);
+		border: 1px solid light-dark(#9fe7d1, rgba(51, 214, 166, 0.4));
 	}
 
 	.message.error {
-		background: #fff0f2;
-		color: #b42334;
-		border: 1px solid #fecdd6;
+		background: light-dark(#fff0f2, rgba(236, 55, 80, 0.16));
+		color: light-dark(#b42334, #ff8a9c);
+		border: 1px solid light-dark(#fecdd6, rgba(236, 55, 80, 0.4));
 	}
 
 	.warning {
@@ -350,14 +350,14 @@
 	.app-form span {
 		font-size: 0.875rem;
 		font-weight: 600;
-		color: #334155;
+		color: var(--color-muted);
 	}
 
 	input,
 	textarea {
 		padding: 0.6rem 0.75rem;
 		border-radius: 8px;
-		border: 2px solid #e0e6ed;
+		border: 2px solid var(--color-border);
 		font: inherit;
 	}
 
@@ -388,14 +388,14 @@
 		grid-template-columns: auto 1fr;
 		gap: 0.5rem;
 		align-items: start;
-		border: 1px solid #e0e6ed;
+		border: 1px solid var(--color-border);
 		border-radius: 8px;
 		padding: 0.5rem;
 	}
 
 	.scope-item.sensitive {
-		border-color: #fbbf24;
-		background: #fffdf6;
+		border-color: light-dark(#fbbf24, rgba(241, 196, 15, 0.45));
+		background: light-dark(#fffdf6, rgba(241, 196, 15, 0.16));
 	}
 
 	.scope-item.disabled {
@@ -410,19 +410,19 @@
 	.scope-name {
 		font-weight: 700;
 		font-size: 0.9rem;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.scope-description {
 		font-size: 0.8rem;
-		color: #64748b;
+		color: var(--color-muted);
 	}
 
 	.subheading {
 		margin: 0 0 0.35rem;
 		font-size: 0.9rem;
 		font-weight: 700;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.btn {
@@ -453,14 +453,14 @@
 	}
 
 	.app-item {
-		border: 2px solid #e0e6ed;
+		border: 2px solid var(--color-border);
 		border-radius: 12px;
 		padding: 1rem;
 	}
 
 	.app-meta h3 {
 		margin: 0;
-		color: #1f2d3d;
+		color: var(--color-text);
 	}
 
 	.badges {
@@ -478,29 +478,29 @@
 	}
 
 	.badge.verified {
-		background: #d1fae5;
-		color: #065f46;
+		background: light-dark(#d1fae5, rgba(51, 214, 166, 0.16));
+		color: light-dark(#065f46, #5be0b0);
 	}
 
 	.badge.unverified {
-		background: #fef3c7;
-		color: #92400e;
+		background: light-dark(#fef3c7, rgba(241, 196, 15, 0.16));
+		color: light-dark(#92400e, #f4ce6b);
 	}
 
 	.badge.type {
-		background: #e2e8f0;
-		color: #334155;
+		background: var(--bg-sunken);
+		color: var(--color-muted);
 	}
 
 	.client-id,
 	.description {
 		font-size: 0.85rem;
-		color: #5b6878;
+		color: var(--color-muted);
 		margin: 0.4rem 0;
 	}
 
 	code {
-		background: #f1f5f9;
+		background: var(--bg-sunken);
 		padding: 0.1rem 0.3rem;
 		border-radius: 4px;
 	}
@@ -518,12 +518,12 @@
 	}
 
 	.empty {
-		color: #64748b;
+		color: var(--color-muted);
 		font-style: italic;
 	}
 
 	.api-intro {
-		color: #5b6878;
+		color: var(--color-muted);
 		font-size: 0.9rem;
 		margin-bottom: 1rem;
 	}
@@ -539,7 +539,7 @@
 		gap: 0.6rem;
 		align-items: start;
 		padding: 0.6rem;
-		border: 1px solid #e0e6ed;
+		border: 1px solid var(--color-border);
 		border-radius: 8px;
 	}
 
@@ -552,9 +552,9 @@
 		min-width: 48px;
 	}
 
-	.api-method.get { background: #dbeafe; color: #1d4ed8; }
-	.api-method.post { background: #d1fae5; color: #065f46; }
-	.api-method.delete { background: #fee2e2; color: #991b1b; }
+	.api-method.get { background: light-dark(#dbeafe, rgba(51, 142, 218, 0.18)); color: light-dark(#1d4ed8, #8cc2f0); }
+	.api-method.post { background: light-dark(#d1fae5, rgba(51, 214, 166, 0.16)); color: light-dark(#065f46, #5be0b0); }
+	.api-method.delete { background: light-dark(#fee2e2, rgba(236, 55, 80, 0.16)); color: light-dark(#991b1b, #ff8a9c); }
 
 	.api-details code {
 		font-size: 0.85rem;
@@ -563,13 +563,13 @@
 	.api-details p {
 		margin: 0.2rem 0 0;
 		font-size: 0.8rem;
-		color: #64748b;
+		color: var(--color-muted);
 	}
 
 	.api-scope {
 		font-size: 0.7rem;
-		background: #f1f5f9;
-		color: #475569;
+		background: var(--bg-sunken);
+		color: var(--color-muted);
 		padding: 0.1rem 0.35rem;
 		border-radius: 4px;
 		margin-left: 0.4rem;
@@ -579,12 +579,12 @@
 	.api-auth-flow {
 		margin-top: 1rem;
 		padding-top: 1rem;
-		border-top: 1px solid #e0e6ed;
+		border-top: 1px solid var(--color-border);
 	}
 
 	.api-auth-flow h3 {
 		margin: 0 0 0.5rem;
-		color: #1f2d3d;
+		color: var(--color-text);
 		font-size: 0.95rem;
 	}
 
@@ -592,7 +592,7 @@
 		margin: 0;
 		padding-left: 1.2rem;
 		font-size: 0.85rem;
-		color: #5b6878;
+		color: var(--color-muted);
 		line-height: 1.7;
 	}
 
