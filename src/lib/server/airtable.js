@@ -484,15 +484,18 @@ export async function getClubLeaders(clubName) {
 	
 	try {
 		const records = await base('Leaders').select({
-			filterByFormula: `SEARCH("${escapeAirtableString(clubName)}", ARRAYJOIN({club_name})) > 0`
+			filterByFormula: `SEARCH("${escapeAirtableString(clubName)}", ARRAYJOIN({club_name (from rel_leader_to_clubs)})) > 0`
 		}).all();
 
 		return records.map(record => {
 			const firstName = record.get('first_name') || '';
 			const lastName = record.get('last_name') || '';
+			const email = record.get('email') || '';
+			const fullName = `${firstName} ${lastName}`.trim();
 			return {
-				name: `${firstName} ${lastName}`.trim(),
-				email: record.get('email') || '',
+				// Fall back to the email when the leader has no name set in Airtable
+				name: fullName || email.split('@')[0] || 'Leader',
+				email,
 				isPrimary: record.get('leader') === true
 			};
 		});
