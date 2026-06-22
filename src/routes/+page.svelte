@@ -13,6 +13,7 @@
 	let hasWebdevEvents = $derived(events.some(e => e.category === 'Webdev'));
 	let hasCadEvents = $derived(events.some(e => e.category === 'CAD'));
 	let hasGamedevEvents = $derived(events.some(e => e.category === 'GameDev'));
+	let hasPullQuestEvents = $derived(events.some(e => e.category === 'PullQuest'));
 	let hasHardwareEvents = $derived(events.some(e => e.category === 'Hardware'));
 	let hasOtherEvents = $derived(events.some(e => e.category === 'Other'));
 	let hasCompletedEvents = $derived(events.some(e => e.completed));
@@ -159,6 +160,13 @@
 				<div class="category-bubble gamedev">
 					<h2 class="section-title">Game Development Series:</h2>
 					<EventGrid {events} category="GameDev" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
+				</div>
+			{/if}
+
+			{#if hasPullQuestEvents}
+				<div class="category-bubble pullquest">
+					<h2 class="section-title">Pull Quest Series:</h2>
+					<EventGrid {events} category="PullQuest" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
 				</div>
 			{/if}
 			
@@ -402,6 +410,11 @@
 	.category-bubble.gamedev {
 		background: #eed7f7;
 		border: 3px solid #a633d6;
+	}
+
+	.category-bubble.pullquest {
+	    background: #d1fae5;
+	    border: 3px solid #6b7280;
 	}
 
 	.category-bubble.hardware {
