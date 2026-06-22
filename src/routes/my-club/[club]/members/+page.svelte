@@ -5,6 +5,8 @@
 	let { data, form } = $props();
 	let club = $state(data.club);
 	let leaders = $state(data.leaders || []);
+	let coleaders = $state(data.coleaders || []);
+
 
 	function handleRefresh(refreshedClub) {
 		club = mergeClubData(club, refreshedClub);
@@ -140,8 +142,21 @@
 						<div class="member-info">
 							<span class="member-name">
 								{leader.name}
-								<span class="badge {leader.isPrimary ? 'badge-leader' : 'badge-coleader'}">
-									{leader.isPrimary ? 'Leader' : 'Co-Leader'}
+								<span class="badge badge-leader">
+									Leader
+								</span>
+							</span>
+						</div>
+					</div>
+				{/each}
+				{#each coleaders as coleader}
+					<div class="member-card leadership-card">
+						<div class="member-avatar leadership-avatar">{coleader.name.charAt(0).toUpperCase()}</div>
+						<div class="member-info">
+							<span class="member-name">
+								{coleader.name}
+								<span class="badge badge-coleader">
+									Co-Leader
 								</span>
 							</span>
 						</div>

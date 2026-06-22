@@ -2,7 +2,7 @@ import { redirect, fail } from '@sveltejs/kit';
 import { getKnex } from '$lib/server/db/knex.js';
 import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clubs.js';
 import { deleteMember, sendAnnouncement, getMember, updateMember, createMember } from '$lib/server/clubapi.js';
-import { getClubLeaders } from '$lib/server/airtable.js';
+import { getClubLeaders, getColeaders } from '$lib/server/airtable.js';
 
 export async function load({ locals, params }) {
 	if (!locals.userPublic) {
@@ -22,11 +22,14 @@ export async function load({ locals, params }) {
 	}
 
 	const leaders = await getClubLeaders(clubName);
+	const coleaders = await getColeaders(clubName);
+
 
 	return {
 		user: locals.userPublic,
 		club,
-		leaders
+		leaders,
+		coleaders
 	};
 }
 

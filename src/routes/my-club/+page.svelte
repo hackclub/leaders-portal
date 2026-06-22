@@ -91,7 +91,7 @@
 
 						<div class="stats-row">
 							<a href="/my-club/{encodeURIComponent(club.name)}/members" class="stat-card">
-								<span class="stat-number">{club.members?.length || 0}</span>
+								<span class="stat-number">{club.memberCount ?? club.members?.length ?? 0}</span>
 								<span class="stat-label">Members</span>
 							</a>
 							<a href="/my-club/{encodeURIComponent(club.name)}/ships" class="stat-card">

@@ -2,7 +2,7 @@ import { redirect, fail } from '@sveltejs/kit';
 import { getKnex } from '$lib/server/db/knex.js';
 import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clubs.js';
 import { deleteMember, sendAnnouncement } from '$lib/server/clubapi.js';
-import { getClubSettings } from '$lib/server/airtable.js';
+import { getClubSettings, getClubLeaders, getColeaders } from '$lib/server/airtable.js';
 
 export async function load({ locals }) {
 	console.log('[MyClub] load called, userPublic:', !!locals.userPublic, 'userId:', locals.userId);
@@ -20,10 +20,22 @@ export async function load({ locals }) {
 
 	const clubsWithWebsite = await Promise.all(
 		clubs.map(async (club) => {
-			const settings = await getClubSettings(club.name);
+			const [settings, leaders, coleaders] = await Promise.all([
+				getClubSettings(club.name),
+				getClubLeaders(club.name),
+				getColeaders(club.name)
+			]);
+
+			// Count members but avoid double-counting anyone already listed as a leader
+			const nonLeaderMembers = (club.members || []).filter(
+				(member) => !leaders.some((l) => l.name.toLowerCase() === member.toLowerCase())
+			);
+			const memberCount = leaders.length + coleaders.length + nonLeaderMembers.length;
+
 			return {
 				...club,
-				clubWebsite: settings?.clubWebsite || ''
+				clubWebsite: settings?.clubWebsite || '',
+				memberCount
 			};
 		})
 	);

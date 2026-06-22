@@ -504,3 +504,29 @@ export async function getClubLeaders(clubName) {
 		return [];
 	}
 }
+
+export async function getColeaders(clubName) {
+	const base = getAirtableBase();
+	
+	try {
+		const records = await base('Leaders').select({
+			filterByFormula: `SEARCH("${escapeAirtableString(clubName)}", ARRAYJOIN({club_name (from rel_coleader_to_clubs)})) > 0`
+		}).all();
+
+		return records.map(record => {
+			const firstName = record.get('first_name') || '';
+			const lastName = record.get('last_name') || '';
+			const email = record.get('email') || '';
+			const fullName = `${firstName} ${lastName}`.trim();
+			return {
+				// Fall back to the email when the leader has no name set in Airtable
+				name: fullName || email.split('@')[0] || 'Leader',
+				email,
+				isPrimary: record.get('leader') === true
+			};
+		});
+	} catch (error) {
+		console.error('Error getting club leaders from Airtable:', error);
+		return [];
+	}
+}
