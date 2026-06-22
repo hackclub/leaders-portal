@@ -1,9 +1,55 @@
 import { getKnex } from '$lib/server/db/knex.js';
 import { error, fail, redirect } from '@sveltejs/kit';
+import crypto from 'node:crypto';
+import { dev } from '$app/environment';
+import { createSession } from '$lib/server/auth/sessions.js';
 import Airtable from 'airtable';
 import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '$env/static/private';
 
 const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
+const SESSION_COOKIE = 'sid';
+
+function normalizeEmail(email) {
+    return email?.toString().trim().toLowerCase();
+}
+
+function isValidEmail(email) {
+    return !!email && email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isSameOriginRequest(request) {
+    const requestOrigin = new URL(request.url).origin;
+    const origin = request.headers.get('origin');
+    if (origin) {
+        return origin === requestOrigin;
+    }
+
+    const referer = request.headers.get('referer');
+    if (!referer) {
+        return false;
+    }
+
+    try {
+        return new URL(referer).origin === requestOrigin;
+    } catch {
+        return false;
+    }
+}
+
+async function findSingleUserByEmail(knex, email) {
+    const users = await knex('users')
+        .whereRaw('lower(email) = ?', [email])
+        .orWhereRaw('lower(provider_user_id) = ?', [email])
+        .orWhereRaw('lower(hackclub_primary_email) = ?', [email])
+        .limit(2)
+        .select('id', 'email', 'provider_user_id', 'hackclub_primary_email', 'is_admin');
+
+    if (users.length !== 1) {
+        return null;
+    }
+
+    return users[0];
+}
 
 export async function load({ locals }) {
     if (!locals.userPublic?.isAdmin) {
@@ -193,6 +239,112 @@ export async function load({ locals }) {
 }
 
 export const actions = {
+    impersonateUser: async ({ request, locals, cookies, getClientAddress }) => {
+        if (!locals.userPublic?.isAdmin || !locals.userId) {
+            throw error(403, 'Forbidden');
+        }
+
+        if (!isSameOriginRequest(request)) {
+            throw error(403, 'Forbidden');
+        }
+
+        const formData = await request.formData();
+        const targetEmail = normalizeEmail(formData.get('email'));
+
+        if (!isValidEmail(targetEmail)) {
+            return fail(400, {
+                impersonateError: 'Enter a valid user email address.',
+                impersonateEmail: targetEmail
+            });
+        }
+
+        const currentSessionToken = cookies.get(SESSION_COOKIE);
+        if (!currentSessionToken) {
+            throw error(401, 'Your admin session expired. Please sign in again.');
+        }
+
+        const currentSessionHash = crypto.createHash('sha256').update(currentSessionToken).digest('hex');
+        const impersonatedSessionToken = crypto.randomBytes(32).toString('base64url');
+        const knex = getKnex();
+
+        const result = await knex.transaction(async (trx) => {
+            const currentSession = await trx('sessions')
+                .where({ session_token_hash: currentSessionHash })
+                .andWhere('expires_at', '>', trx.fn.now())
+                .first();
+
+            if (!currentSession || String(currentSession.user_id) !== String(locals.userId)) {
+                throw error(401, 'Your admin session expired. Please sign in again.');
+            }
+
+            const currentAdmin = await trx('users')
+                .where({ id: locals.userId, is_admin: true })
+                .first('id');
+
+            if (!currentAdmin) {
+                throw error(403, 'Forbidden');
+            }
+
+            const targetUser = await findSingleUserByEmail(trx, targetEmail);
+            if (!targetUser) {
+                return {
+                    ok: false,
+                    response: fail(404, {
+                        impersonateError: 'No unique portal user exists for that email address.',
+                        impersonateEmail: targetEmail
+                    })
+                };
+            }
+
+            const newSession = await createSession(trx, targetUser.id, impersonatedSessionToken, {
+                ip: getClientAddress(),
+                userAgent: request.headers.get('user-agent') ?? undefined
+            });
+
+            const auditId = crypto.randomUUID();
+            await trx('admin_impersonation_audit').insert({
+                id: auditId,
+                admin_user_id: locals.userId,
+                admin_email: locals.userPublic.email || locals.userPublic.hackclubPrimaryEmail || locals.userPublic.username || String(locals.userId),
+                target_user_id: targetUser.id,
+                target_email: targetEmail,
+                admin_session_id: currentSession.id,
+                impersonated_session_id: newSession.id,
+                ip: getClientAddress(),
+                user_agent: request.headers.get('user-agent')
+            });
+
+            await trx('sessions').where({ id: currentSession.id }).delete();
+
+            return {
+                ok: true,
+                targetUser,
+                auditId,
+                expiresAt: newSession.expiresAt
+            };
+        });
+
+        if (!result.ok) {
+            return result.response;
+        }
+
+        cookies.set(SESSION_COOKIE, impersonatedSessionToken, {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: !dev,
+            path: '/',
+            maxAge: Math.max(0, Math.floor((result.expiresAt.getTime() - Date.now()) / 1000))
+        });
+
+        console.warn('[Admin] Impersonation started', {
+            auditId: result.auditId,
+            adminUserId: locals.userId,
+            targetUserId: result.targetUser.id
+        });
+
+        throw redirect(303, '/');
+    },
+
     searchUser: async ({ request, locals }) => {
         if (!locals.userPublic?.isAdmin) {
             throw error(403, 'Forbidden');

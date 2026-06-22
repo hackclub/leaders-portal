@@ -6,6 +6,7 @@
     let userSearchQuery = $state('');
     let clubSearchQuery = $state('');
     let memberSearchQuery = $state('');
+    let impersonationEmail = $state('');
     
     let isClearingCache = $state(false);
     let cacheMessage = $state(null);
@@ -104,6 +105,39 @@
 
 
 
+
+    <section class="impersonation-section">
+        <div class="impersonation-card">
+            <div>
+                <h2>Impersonate Portal User</h2>
+                <p class="impersonation-warning">
+                    Security-sensitive: this replaces your current admin session with a fresh session for the exact user email entered. You will lose admin access unless the target user is also an admin.
+                </p>
+            </div>
+
+            <form
+                method="POST"
+                action="?/impersonateUser"
+                class="impersonation-form"
+                onsubmit={(e) => { if (!confirm(`Replace your admin session and continue as ${impersonationEmail}?`)) e.preventDefault(); }}
+            >
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="user@example.com"
+                    autocomplete="off"
+                    bind:value={impersonationEmail}
+                    required
+                    maxlength="254"
+                />
+                <button type="submit" class="btn-danger-primary">Impersonate</button>
+            </form>
+
+            {#if form?.impersonateError}
+                <p class="error">{form.impersonateError}</p>
+            {/if}
+        </div>
+    </section>
 
     <section class="moderation-section">
         <h2>Quick Search</h2>
@@ -593,6 +627,57 @@
 
     .moderation-section {
         margin-bottom: 2rem;
+    }
+
+    .impersonation-section {
+        margin-bottom: 2rem;
+    }
+
+    .impersonation-card {
+        background: #fff;
+        border: 2px solid #ec3750;
+        border-radius: 12px;
+        padding: 1.25rem;
+    }
+
+    .impersonation-warning {
+        color: #8492a6;
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+        max-width: 760px;
+    }
+
+    .impersonation-form {
+        display: flex;
+        gap: 0.5rem;
+        max-width: 620px;
+    }
+
+    .impersonation-form input {
+        flex: 1;
+        padding: 0.5rem 0.75rem;
+        border: 2px solid #e0e6ed;
+        border-radius: 8px;
+        font-size: 0.875rem;
+    }
+
+    .impersonation-form input:focus {
+        outline: none;
+        border-color: #ec3750;
+    }
+
+    .btn-danger-primary {
+        padding: 0.5rem 1rem;
+        background: #ec3750;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .btn-danger-primary:hover {
+        background: #d32f44;
     }
 
     .search-panels {

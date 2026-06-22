@@ -2,11 +2,12 @@ import crypto from 'node:crypto';
 
 export async function createSession(knex, userId, rawToken, meta = {}) {
 	const hash = crypto.createHash('sha256').update(rawToken).digest('hex');
+	const id = crypto.randomUUID();
 	const now = new Date();
 	const expires = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
 
 	await knex('sessions').insert({
-		id: crypto.randomUUID(),
+		id,
 		user_id: userId,
 		session_token_hash: hash,
 		created_at: now,
@@ -15,6 +16,8 @@ export async function createSession(knex, userId, rawToken, meta = {}) {
 		ip: meta.ip ?? null,
 		user_agent: meta.userAgent ?? null
 	});
+
+	return { id, expiresAt: expires };
 }
 
 export async function findSessionByTokenHash(knex, hash) {
