@@ -1,5 +1,7 @@
 <script>
 	import { marked } from 'marked';
+	import SiteNav from '$lib/SiteNav.svelte';
+	import ClubHeader from '$lib/ClubHeader.svelte';
 
 	let { data } = $props();
 	let club = $state(data.club);
@@ -94,14 +96,10 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 	<title>Club Levels - {club.name} - Clubs Event Portal</title>
 </svelte:head>
 
+<SiteNav user={data.user} />
+
 <div class="container">
-	<header>
-		<div class="header-left">
-			<a href="/my-club" class="back-link">← Back to My Club</a>
-			<h1 class="page-title">{club.name}</h1>
-			<p class="page-subtitle">Club Levels</p>
-		</div>
-	</header>
+	<ClubHeader clubName={club.name} section="Club Levels" />
 
 	<div class="current-status">
 		<div class="status-label">Current Level</div>
@@ -153,46 +151,8 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 	.container {
 		max-width: 1024px;
 		margin: 0 auto;
-		padding: 32px 16px;
+		padding: 32px 16px 48px;
 		font-family: 'Phantom Sans', system-ui, sans-serif;
-	}
-
-	header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: 32px;
-	}
-
-	.header-left {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-
-	.back-link {
-		font-size: 14px;
-		color: #8492a6;
-		text-decoration: none;
-		margin-bottom: 8px;
-	}
-
-	.back-link:hover {
-		color: #ec3750;
-	}
-
-	.page-title {
-		font-size: 48px;
-		font-weight: bold;
-		color: #ec3750;
-		letter-spacing: -0.02em;
-		margin: 0;
-	}
-
-	.page-subtitle {
-		font-size: 18px;
-		color: #8492a6;
-		margin: 0;
 	}
 
 	.current-status {
@@ -381,10 +341,6 @@ The third and final club level. You receive all perks from Level 1 and 2, plus:
 	@media (max-width: 768px) {
 		.levels-grid {
 			flex-direction: column;
-		}
-
-		.page-title {
-			font-size: 32px;
 		}
 
 		.status-value {

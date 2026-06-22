@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/stores';
+	import SiteNav from '$lib/SiteNav.svelte';
 
 	let { data } = $props();
 
@@ -138,10 +139,11 @@
 	<title>Settings - Club Leaders Portal</title>
 </svelte:head>
 
+<SiteNav user={data.user} />
+
 <div class="container">
 	<div class="settings-card">
 		<div class="header">
-			<a href="/" class="back-link">← Back to Home</a>
 			<h1 class="title">Settings</h1>
 		</div>
 
@@ -459,39 +461,25 @@
 	}
 
 	.container {
-		min-height: 100vh;
 		display: flex;
 		align-items: flex-start;
 		justify-content: center;
-		padding: 48px 16px;
+		padding: 32px 16px 48px;
 		box-sizing: border-box;
 	}
 
 	.settings-card {
 		background: white;
-		border: 3px solid #e0e6ed;
-		border-radius: 16px;
-		padding: 48px;
+		border: 2px solid #e0e6ed;
+		border-radius: 12px;
+		padding: 32px;
 		max-width: 700px;
 		width: 100%;
 		box-sizing: border-box;
 	}
 
 	.header {
-		margin-bottom: 32px;
-	}
-
-	.back-link {
-		color: #ec3750;
-		text-decoration: none;
-		font-size: 14px;
-		font-weight: 600;
-		display: inline-block;
-		margin-bottom: 16px;
-	}
-
-	.back-link:hover {
-		text-decoration: underline;
+		margin-bottom: 28px;
 	}
 
 	.title {

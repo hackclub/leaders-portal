@@ -1,225 +1,137 @@
 <script>
-	export let event;
-	export let openEvent;
-	export let onComplete;
-	export let isLoggedIn;
-	export let highlighted = false;
-	export let highlightColor = '#ec3750';
-
-	async function toggleComplete(e) {
-		e.stopPropagation();
-		await onComplete(event.id, !event.completed);
-	}
+	let {
+		href = null,
+		title,
+		description,
+		featured = false,
+		placeholder = false,
+		actionText = null,
+		icon
+	} = $props();
 </script>
 
-<div class="event-card" class:highlighted style="background-color: {event.color}; {event.backgroundUrl ? `background-image: url('${event.backgroundUrl}'); background-size: cover; background-position: center;` : ''} {highlighted ? `--highlight-color: ${highlightColor};` : ''}" on:click={() => openEvent(event)} on:keydown={(e) => e.key === 'Enter' && openEvent(event)} role="button" tabindex="0">
-	{#if event.backgroundUrl}
-		<div class="background-overlay"></div>
-	{/if}
-	{#if isLoggedIn}
-		<button 
-			class="complete-button" 
-			class:completed={event.completed}
-			on:click={toggleComplete}
-			aria-label={event.completed ? "Mark as incomplete" : "Mark as complete"}
-			title={event.completed ? "Mark as incomplete" : "Mark as complete"}
-		>
-			✓
-		</button>
-	{/if}
-	<div class="event-compact">
-		{#if event.category == "Hardware"}
-		<img src={event.icon} alt="{event.title} icon" class="event-icon-hardware" />
-		{:else}
-		<img src={event.icon} alt="{event.title} icon" class="event-icon" />
-		{/if}
-		<h3 style="color: {event.textColor};">{event.title}</h3>
-		<span class="type-badge" class:type-badge-highlighted={highlighted} style="background-color: {event.buttonColor}; color: {event.buttonTextColor};">{event.type}</span>
-		<span class="et" style="color: {event.textColor};">Estimated time: {event.et}</span>
+<svelte:element
+	this={href ? 'a' : 'div'}
+	href={href}
+	target={href ? '_blank' : undefined}
+	rel={href ? 'noopener noreferrer' : undefined}
+	class="tool-card"
+	class:featured
+	class:placeholder
+>
+	<div class="tool-icon">
+		{@render icon()}
 	</div>
-</div>
+	<h3 class="tool-title">{title}</h3>
+	<p class="tool-description">{description}</p>
+	{#if actionText}
+		<div class="tool-action">
+			<span class="action-text">{actionText}</span>
+			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+		</div>
+	{/if}
+</svelte:element>
 
 <style>
-	.event-card {
+	.tool-card {
+		padding: 24px;
 		border-radius: 12px;
-		padding: 16px;
-		cursor: pointer;
+		border: 2px solid #e0e6ed;
+		background: white;
 		transition: all 0.2s ease;
-		aspect-ratio: 1;
+		text-decoration: none;
+		color: inherit;
 		display: flex;
 		flex-direction: column;
-		font-weight: 800;
+		gap: 12px;
+	}
+
+	.tool-card:hover {
+		border-color: #ec3750;
+		transform: scale(1.03);
+	}
+
+	.tool-card.featured {
+		background: #ffffff;
+		border: 3px solid #ec3750;
 		position: relative;
 		overflow: hidden;
 	}
 
-	.background-overlay {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		pointer-events: none;
+	.tool-card.placeholder {
+		opacity: 0.6;
+		cursor: default;
 	}
 
-	.event-card:hover {
-		transform: translateY(-2px);
+	.tool-card.placeholder:hover {
+		border-color: #e0e6ed;
+		transform: none;
+		box-shadow: none;
 	}
 
-	.event-card.highlighted {
-		border: 3px solid var(--highlight-color, #ec3750);
-	}
-
-	.type-badge-highlighted {
-		background: var(--highlight-color, #ec3750);
-	}
-
-	.event-compact {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		text-align: center;
-		height: 100%;
-		gap: 8px;
-	}
-
-	.event-icon {
-		width: 40px;
-		height: 40px;
-		margin-bottom: 4px;
-	}
-
-	.event-icon-hardware {
-		max-width: 60px;
-		max-height: 60px;
-		margin-bottom: 4px;
-	}
-
-	.event-compact h3 {
-		font-size: 16px;
-		margin: 0;
-		font-weight: 900;
-	}
-
-	.type-badge {
-		display: inline-block;
+	.tool-icon {
+		width: 48px;
+		height: 48px;
+		border-radius: 12px;
 		background: #ec3750;
-		color: #ffffff;
-		padding: 3px 8px;
-		border-radius: 999px;
-		font-size: 11px;
-		font-weight: bold;
-		width: fit-content;
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
-	.et {
-		font-size: 14px;
-		opacity: 0.9;
-	}
-
-	.complete-button {
-		position: absolute;
-		top: 8px;
-		right: 8px;
+	.tool-icon :global(svg) {
 		width: 28px;
 		height: 28px;
-		border: 2px solid rgba(255, 255, 255, 0.5);
-		border-radius: 50%;
-		background-color: rgba(255, 255, 255, 0.2);
-		color: transparent;
-		font-size: 16px;
+	}
+
+	.tool-card.placeholder .tool-icon {
+		background: #e0e6ed;
+		color: #8492a6;
+	}
+
+	.tool-title {
+		font-size: 20px;
 		font-weight: bold;
-		cursor: pointer;
-		transition: all 0.2s;
+		color: #1f2d3d;
+		margin: 0;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+	}
+
+	.tool-description {
+		color: #8492a6;
+		font-size: 14px;
+		line-height: 1.5;
+		margin: 0;
+		flex-grow: 1;
+	}
+
+	.tool-action {
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		padding: 0;
+		gap: 8px;
+		color: #ec3750;
+		font-weight: 600;
+		font-size: 14px;
 	}
 
-	.complete-button:hover {
-		background-color: rgba(255, 255, 255, 0.4);
-		border-color: rgba(255, 255, 255, 0.8);
-		transform: scale(1.1);
+	.tool-card.featured:hover .tool-action {
+		gap: 12px;
 	}
 
-	.complete-button.completed {
-		background-color: #33d9b2;
-		border-color: #33d9b2;
-		color: white;
+	.tool-card.featured .tool-action svg {
+		transition: transform 0.2s ease;
 	}
 
-	.complete-button.completed:hover {
-		background-color: #2ecc9d;
-		border-color: #2ecc9d;
+	.tool-card.featured:hover .tool-action svg {
+		transform: translateX(4px);
 	}
 
 	@media (max-width: 768px) {
-		.event-card {
-			padding: 14px;
-		}
-
-		.event-compact h3 {
-			font-size: 14px;
-		}
-
-		.event-icon {
-			width: 32px;
-			height: 32px;
-		}
-
-		.event-icon-hardware {
-			max-width: 48px;
-			max-height: 48px;
-		}
-
-		.type-badge {
-			font-size: 10px;
-			padding: 2px 6px;
-		}
-
-		.et {
-			font-size: 12px;
-		}
-
-		.complete-button {
-			width: 24px;
-			height: 24px;
-			font-size: 14px;
-		}
-	}
-
-	@media (max-width: 480px) {
-		.event-card {
-			aspect-ratio: auto;
-			padding: 16px;
-		}
-
-		.event-compact {
-			flex-direction: row;
-			justify-content: flex-start;
-			text-align: left;
-			gap: 12px;
-		}
-
-		.event-compact h3 {
-			font-size: 15px;
-			flex: 1;
-		}
-
-		.event-icon,
-		.event-icon-hardware {
-			width: 40px;
-			height: 40px;
-			max-width: 40px;
-			max-height: 40px;
-			margin-bottom: 0;
-		}
-
-		.type-badge,
-		.et {
-			display: none;
+		.tool-card {
+			padding: 24px;
 		}
 	}
 </style>

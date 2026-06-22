@@ -1,6 +1,7 @@
 <script>
 	import EventGrid from "./EventGrid.svelte";
 	import EventModal from "./EventModal.svelte";
+	import ToolCard from "./ToolCard.svelte";
 	import { onMount } from "svelte";
 
 	let { user } = $props();
@@ -66,38 +67,45 @@
 	<p class="description">Useful tools and resources for running your club.</p>
 
 	<div class="tools-grid">
-		<a href="https://project.hackclub.com/" target="_blank" rel="noopener noreferrer" class="tool-card featured">
-			<div class="tool-icon">
+		<ToolCard
+			href="https://project.hackclub.com/"
+			featured
+			title="Create Your Own YSWS"
+			description="Design custom You Ship, We Ship programs for your club with your own requirements and rewards"
+			actionText="Apply Now"
+		>
+			{#snippet icon()}
 				<svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 					<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 					<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 				</svg>
-			</div>
-			<h3 class="tool-title">Create Your Own YSWS</h3>
-			<p class="tool-description">
-				Design custom You Ship, We Ship programs for your club with your own requirements and rewards
-			</p>
-			<div class="tool-action">
-				<span class="action-text">Apply Now</span>
-				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
-			</div>
-		</a>
+			{/snippet}
+		</ToolCard>
 
-		<div class="tool-card placeholder">
-			<div class="tool-icon">
+		<ToolCard
+			href="https://spaces.hackclub.com/"
+			featured
+			title="Hack Club Spaces"
+			description="Virtual development environments for Hack Clubbers. VSCode, Blender, KiCad, and more, in the cloud."
+			actionText="Try now!"
+		>
+			{#snippet icon()}
+				<svg fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="1.414" xmlns="http://www.w3.org/2000/svg" aria-label="flag" viewBox="0 0 32 32" preserveAspectRatio="xMidYMid meet" fill="currentColor" width="256" height="256"><path d="M10.953 5.034a1 1 0 0 0-1.225.707L4.034 26.992a1 1 0 1 0 1.932.517l5.694-21.25a1 1 0 0 0-.707-1.225zm2.107 9.005c.425-1.703.798-3.036 1.225-4.079.429-1.058.766-1.43.912-1.532a.216.216 0 0 0 .022-.023l.017.003c.131-.022.133-.021.353.073l.065.028c.584.23 1.492.826 2.826 2.076 1.584 1.462 3.173 2.338 4.36 2.738a9.906 9.906 0 0 0 2.045.4c-.312 1.161-.627 2.297-1.028 3.334-.405 1.061-.756 1.774-1.284 2.307-.385.41-.719.542-1.131.527-.519-.018-1.447-.289-2.901-1.37-1.746-1.291-3.25-2.073-4.327-2.514a17.61 17.61 0 0 0-1.498-.524c.08-.375.193-.838.344-1.444zm12.104-1.615a.522.522 0 0 1 0 0zm-13.21 2.816l.017.008a.08.08 0 0 1-.017-.008zm-.834-1.685c1.727-6.93 3.174-9.634 8.727-4.43 2.833 2.655 4.933 2.646 6.14 2.641 1.16-.005 1.494-.007.86 2.359-1.294 4.83-3.053 10.796-9.5 6-2.638-1.962-4.392-2.486-5.449-2.801-1.526-.456-1.599-.478-.778-3.769z"/></svg>			{/snippet}
+		</ToolCard>
+
+		<ToolCard
+			placeholder
+			title="More Tools Coming Soon"
+			description="We're working on more resources to help you run an amazing club. Stay tuned!"
+		>
+			{#snippet icon()}
 				<svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
 					<path d="M12 8V16M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 				</svg>
-			</div>
-			<h3 class="tool-title">More Tools Coming Soon</h3>
-			<p class="tool-description">
-				We're working on more resources to help you run an amazing club. Stay tuned!
-			</p>
-		</div>
+			{/snippet}
+		</ToolCard>
 	</div>
 </div>
 
@@ -126,109 +134,14 @@
 
 	.tools-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-		gap: 24px;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 20px;
 	}
 
-	.tool-card {
-		padding: 32px;
-		border-radius: 12px;
-		border: 2px solid #e0e6ed;
-		background: white;
-		transition: all 0.2s ease;
-		text-decoration: none;
-		color: inherit;
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-	}
-
-	.tool-card:hover {
-		border-color: #ec3750;
-		transform: translateY(-2px);
-		box-shadow: 0 8px 24px rgba(236, 55, 80, 0.15);
-	}
-
-	.tool-card.featured {
-		background: linear-gradient(135deg, #fff5f7 0%, #ffffff 100%);
-		border: 3px solid #ec3750;
-		position: relative;
-		overflow: hidden;
-	}
-
-	.tool-card.featured::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		right: 0;
-		width: 100px;
-		height: 100px;
-		background: radial-gradient(circle, rgba(236, 55, 80, 0.1) 0%, transparent 70%);
-		pointer-events: none;
-	}
-
-	.tool-card.placeholder {
-		opacity: 0.6;
-		cursor: default;
-	}
-
-	.tool-card.placeholder:hover {
-		border-color: #e0e6ed;
-		transform: none;
-		box-shadow: none;
-	}
-
-	.tool-icon {
-		width: 64px;
-		height: 64px;
-		border-radius: 12px;
-		background: #ec3750;
-		color: white;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.tool-card.placeholder .tool-icon {
-		background: #e0e6ed;
-		color: #8492a6;
-	}
-
-	.tool-title {
-		font-size: 24px;
-		font-weight: bold;
-		color: #1f2d3d;
-		margin: 0;
-		font-family: 'Phantom Sans', system-ui, sans-serif;
-	}
-
-	.tool-description {
-		color: #8492a6;
-		font-size: 16px;
-		line-height: 1.6;
-		margin: 0;
-		flex-grow: 1;
-	}
-
-	.tool-action {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		color: #ec3750;
-		font-weight: 600;
-		font-size: 16px;
-	}
-
-	.tool-card.featured:hover .tool-action {
-		gap: 12px;
-	}
-
-	.tool-card.featured .tool-action svg {
-		transition: transform 0.2s ease;
-	}
-
-	.tool-card.featured:hover .tool-action svg {
-		transform: translateX(4px);
+	@media (max-width: 900px) {
+		.tools-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
 	}
 
 	@media (max-width: 768px) {
@@ -238,10 +151,6 @@
 
 		.section-title {
 			font-size: 28px;
-		}
-
-		.tool-card {
-			padding: 24px;
 		}
 	}
 </style>

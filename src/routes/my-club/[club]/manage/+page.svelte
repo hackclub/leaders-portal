@@ -1,5 +1,7 @@
 <script>
 	import { page } from '$app/stores';
+	import SiteNav from '$lib/SiteNav.svelte';
+	import ClubHeader from '$lib/ClubHeader.svelte';
 	
 	let { data, form } = $props();
 	let club = $state(data.club);
@@ -79,14 +81,10 @@
 	<title>Manage Club - {club.name} - Club Leaders Portal</title>
 </svelte:head>
 
+<SiteNav user={data.user} />
+
 <div class="container">
-	<header>
-		<div class="header-left">
-			<a href="/my-club" class="back-link">← Back to My Club</a>
-			<h1 class="page-title">{club.name}</h1>
-			<p class="page-subtitle">Manage Club</p>
-		</div>
-	</header>
+	<ClubHeader clubName={club.name} section="Manage Club" />
 
 	{#if successFromUrl || form?.success}
 		<div class="success-banner">{form?.message || 'Settings updated successfully!'}</div>
@@ -433,43 +431,10 @@
 
 <style>
 	.container {
-		max-width: 1000px;
+		max-width: 1024px;
 		margin: 0 auto;
-		padding: 32px 24px;
-	}
-
-	header {
-		margin-bottom: 32px;
-	}
-
-	.header-left {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-
-	.back-link {
-		color: #338eda;
-		text-decoration: none;
-		font-size: 14px;
-		font-weight: 500;
-	}
-
-	.back-link:hover {
-		text-decoration: underline;
-	}
-
-	.page-title {
-		font-size: 32px;
-		font-weight: 700;
-		color: #1f2d3d;
-		margin: 8px 0 0 0;
-	}
-
-	.page-subtitle {
-		font-size: 18px;
-		color: #8492a6;
-		margin: 4px 0 0 0;
+		padding: 32px 16px 48px;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
 	}
 
 	.success-banner {

@@ -1,5 +1,7 @@
 <script>
 	import RefreshButton from '$lib/RefreshButton.svelte';
+	import SiteNav from '$lib/SiteNav.svelte';
+	import ClubHeader from '$lib/ClubHeader.svelte';
 	import { mergeClubData } from '$lib/club-utils.js';
 	
 	let { data, form } = $props();
@@ -96,25 +98,20 @@
 	<title>Members - {club.name} - Clubs Event Portal</title>
 </svelte:head>
 
+<SiteNav user={data.user} />
+
 <div class="container">
-	<header>
-		<div class="header-left">
-			<a href="/my-club" class="back-link">← Back to My Club</a>
-			<h1 class="page-title">{club.name}</h1>
-			<p class="page-subtitle">Members</p>
-		</div>
-		<div class="header-buttons">
-			<RefreshButton clubName={club.name} onRefresh={handleRefresh} />
-			{#if club.role === 'leader'}
-				<button type="button" class="add-btn" onclick={openAddModal}>
-					+ Add Member
-				</button>
-				<button type="button" class="announce-btn" onclick={openAnnouncementModal}>
-					Send Announcement
-				</button>
-			{/if}
-		</div>
-	</header>
+	<ClubHeader clubName={club.name} section="Members">
+		<RefreshButton clubName={club.name} onRefresh={handleRefresh} />
+		{#if club.role === 'leader'}
+			<button type="button" class="add-btn" onclick={openAddModal}>
+				+ Add Member
+			</button>
+			<button type="button" class="announce-btn" onclick={openAnnouncementModal}>
+				Send Announcement
+			</button>
+		{/if}
+	</ClubHeader>
 
 	{#if club.joinCode}
 		<div class="invite-banner">
@@ -322,52 +319,8 @@
 	.container {
 		max-width: 1024px;
 		margin: 0 auto;
-		padding: 32px 16px;
+		padding: 32px 16px 48px;
 		font-family: 'Phantom Sans', system-ui, sans-serif;
-	}
-
-	header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: 24px;
-	}
-
-	.header-left {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-
-	.back-link {
-		font-size: 14px;
-		color: #8492a6;
-		text-decoration: none;
-		font-weight: 500;
-	}
-
-	.back-link:hover {
-		color: #ec3750;
-	}
-
-	.page-title {
-		font-size: 36px;
-		font-weight: bold;
-		color: #1f2d3d;
-		margin: 0;
-	}
-
-	.page-subtitle {
-		font-size: 18px;
-		color: #ec3750;
-		font-weight: 600;
-		margin: 0;
-	}
-
-	.header-buttons {
-		display: flex;
-		gap: 12px;
-		align-items: center;
 	}
 
 	.add-btn {
@@ -385,24 +338,6 @@
 	.add-btn:hover {
 		background-color: #2bc495;
 		border-color: #2bc495;
-	}
-
-	.coleader-btn {
-		padding: 10px 20px;
-		background-color: #a633d6;
-		color: white;
-		border: 2px solid #a633d6;
-		border-radius: 6px;
-		font-size: 14px;
-		font-weight: 600;
-		cursor: pointer;
-		font-family: 'Phantom Sans', sans-serif;
-		text-decoration: none;
-	}
-
-	.coleader-btn:hover {
-		background-color: #8e2bb8;
-		border-color: #8e2bb8;
 	}
 
 	.announce-btn {

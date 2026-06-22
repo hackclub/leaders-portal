@@ -41,6 +41,8 @@
 
 <style>
 	.event-card {
+		border: 2px solid #000000;
+		box-shadow: inset 0 0 0 1px #ffffff;
 		border-radius: 12px;
 		padding: 16px;
 		cursor: pointer;
@@ -63,7 +65,7 @@
 	}
 
 	.event-card:hover {
-		transform: translateY(-2px);
+		opacity: 0.92;
 	}
 
 	.event-card.highlighted {

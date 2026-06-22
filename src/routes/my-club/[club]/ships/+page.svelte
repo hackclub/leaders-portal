@@ -1,6 +1,8 @@
 <script>
 	import LevelCard from '$lib/LevelCard.svelte';
 	import RefreshButton from '$lib/RefreshButton.svelte';
+	import SiteNav from '$lib/SiteNav.svelte';
+	import ClubHeader from '$lib/ClubHeader.svelte';
 	import { mergeClubData } from '$lib/club-utils.js';
 	
 	let { data } = $props();
@@ -15,31 +17,14 @@
 	<title>Ships - {club.name} - Clubs Event Portal</title>
 </svelte:head>
 
+<SiteNav user={data.user} />
+
 <div class="container">
-	<header>
-		<div class="header-left">
-			<a href="/my-club" class="back-link">← Back to My Club</a>
-			<h1 class="page-title">{club.name}</h1>
-			<p class="page-subtitle">Ships</p>
-		</div>
-		<div class="header-buttons">
-			<RefreshButton clubName={club.name} onRefresh={handleRefresh} />
-		</div>
-	</header>
+	<ClubHeader clubName={club.name} section="Club Ships">
+		<RefreshButton clubName={club.name} onRefresh={handleRefresh} />
+	</ClubHeader>
 
-	<div class="level-section">
-		<LevelCard currentLevel={club.level || 'Bronze'} clubShips={club.ships.length || 0} />
-	</div>
 
-	<div class="submit-banner">
-		<div class="submit-content">
-			<h3 class="submit-title">Link a shipped project to your club</h3>
-			<p class="submit-text">Fill out the form to add your projects and help your club level up!</p>
-		</div>
-		<a href="https://forms.hackclub.com/club-ships" target="_blank" rel="noopener noreferrer" class="submit-btn">
-			Submit Ship
-		</a>
-	</div>
 
 	<section class="ships-section">
 		<h2 class="section-title">All Ships ({club.ships.length})</h2>
@@ -48,9 +33,8 @@
 			<div class="ships-grid">
 				{#each club.ships as ship}
 					<div class="ship-card">
-						<div class="ship-icon">🚀</div>
 						<div class="ship-info">
-							<span class="ship-name">{ship.ysws}</span>
+							<span class="ship-name">{ship.ysws} - {ship.email}</span>
 						</div>
 						{#if ship.codeUrl}
 							<a href={ship.codeUrl} target="_blank" rel="noopener noreferrer" class="ship-link">
@@ -72,52 +56,8 @@
 	.container {
 		max-width: 1024px;
 		margin: 0 auto;
-		padding: 32px 16px;
+		padding: 32px 16px 48px;
 		font-family: 'Phantom Sans', system-ui, sans-serif;
-	}
-
-	header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: 24px;
-	}
-
-	.header-left {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-
-	.header-buttons {
-		display: flex;
-		gap: 12px;
-		align-items: center;
-	}
-
-	.back-link {
-		font-size: 14px;
-		color: #8492a6;
-		text-decoration: none;
-		font-weight: 500;
-	}
-
-	.back-link:hover {
-		color: #ec3750;
-	}
-
-	.page-title {
-		font-size: 36px;
-		font-weight: bold;
-		color: #1f2d3d;
-		margin: 0;
-	}
-
-	.page-subtitle {
-		font-size: 18px;
-		color: #ec3750;
-		font-weight: 600;
-		margin: 0;
 	}
 
 	.level-section {
@@ -199,7 +139,14 @@
 	}
 
 	.ship-icon {
-		font-size: 24px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		background: #fff0f2;
+		font-size: 22px;
 		flex-shrink: 0;
 	}
 

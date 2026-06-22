@@ -1,6 +1,7 @@
 <script>
 	import RefreshButton from '$lib/RefreshButton.svelte';
 	import Modal from '$lib/Modal.svelte';
+	import SiteNav from '$lib/SiteNav.svelte';
 	import { mergeClubData } from '$lib/club-utils.js';
 	
 	let { data, form } = $props();
@@ -49,108 +50,103 @@
 	<title>My Club - Clubs Event Portal</title>
 </svelte:head>
 
+<SiteNav user={data.user} />
+
 <div class="container">
-	<header>
+	<header class="page-header">
 		<h1 class="page-title">My Club</h1>
-		<div class="header-buttons">
-			<a href="/" class="nav-button">Home</a>
-			<form method="POST" action="/logout" style="display: inline;">
-				<button type="submit" class="nav-button">Logout</button>
-			</form>
-		</div>
+		<p class="page-subtitle">Manage your clubs and track your progress.</p>
 	</header>
 
 	{#if form?.error}
 		<div class="error-banner">{form.error}</div>
 	{/if}
 
-	<section class="clubs-info">
-		{#if clubs.length > 0}
-			<div class="clubs-grid">
-				{#each clubs as club}
-					<div class="club-card">
-						<div class="club-header">
-							<h3 class="club-name">{club.name}</h3>
-							<div class="club-badges">
-								<button class="contact-us-button" onclick={() => openHelpModal(club.name)} title="Contact your ambassador">
-									<img 
-										src="https://icons.hackclub.com/api/icons/black/message-simple-fill" 
-										alt="Contact icon"
-										width="24"
-										height="24"
-									/>
-									<span>Contact Us</span>
-								</button>
-								<RefreshButton clubName={club.name} onRefresh={(refreshedClub) => handleRefresh(club.name, refreshedClub)} />
-								{#if club.level}
-									<span class="club-level">{club.level}</span>
-								{/if}
-								<span class="club-role {club.role}">{club.role}</span>
-							</div>
+	{#if clubs.length > 0}
+		<div class="clubs-grid">
+			{#each clubs as club}
+				<article class="club-card">
+					<div class="card-top">
+						<div class="club-identity">
+							<h2 class="club-name">{club.name}</h2>
+				
 						</div>
+						<div class="club-toolbar">
+							<button class="toolbar-btn" onclick={() => openHelpModal(club.name)} title="Contact your ambassador">
+								<img
+									src="https://icons.hackclub.com/api/icons/black/message-simple-fill"
+									alt=""
+									width="20"
+									height="20"
+								/>
+								<span>Contact Us</span>
+							</button>
+							<RefreshButton clubName={club.name} onRefresh={(refreshedClub) => handleRefresh(club.name, refreshedClub)} />
+						</div>
+					</div>
 
-						<div class="stats-row">
-							<a href="/my-club/{encodeURIComponent(club.name)}/members" class="stat-card">
-								<span class="stat-number">{club.memberCount ?? club.members?.length ?? 0}</span>
-								<span class="stat-label">Members</span>
-							</a>
-							<a href="/my-club/{encodeURIComponent(club.name)}/ships" class="stat-card">
-								<span class="stat-number">{club.ships?.length || 0}</span>
-								<span class="stat-label">Ships</span>
-							</a>
-							<a href="/my-club/{encodeURIComponent(club.name)}/levels" class="stat-card">
-								<span class="stat-number">{(club.level || 'level 1').replace('level ', '')}</span>
-								<span class="stat-label">Club Level</span>
-							</a>
-							{#if club.role === 'leader'}
-								<a href="/my-club/{encodeURIComponent(club.name)}/manage" class="stat-card manage-card">
-									<img 
-										src="https://icons.hackclub.com/api/icons/black/settings" 
-										alt="Manage icon"
-										width="32"
-										height="32"
-									/>
-									<span class="stat-label">Manage Club</span>
+					<div class="stats-grid">
+						<a href="/my-club/{encodeURIComponent(club.name)}/members" class="stat-card">
+							<span class="stat-number">{club.memberCount ?? club.members?.length ?? 0}</span>
+							<span class="stat-label">Members</span>
+						</a>
+						<a href="/my-club/{encodeURIComponent(club.name)}/ships" class="stat-card">
+							<span class="stat-number">{club.ships?.length || 0}</span>
+							<span class="stat-label">Ships</span>
+						</a>
+						<a href="/my-club/{encodeURIComponent(club.name)}/levels" class="stat-card">
+							<span class="stat-number">{(club.level || 'level 1').replace('level ', '')}</span>
+							<span class="stat-label">Club Level</span>
+						</a>
+					</div>
+
+					{#if club.joinCode || club.clubWebsite}
+						<div class="links-row">
+							{#if club.joinCode}
+								<a href="https://hack.club/join/{club.joinCode}" target="_blank" rel="noopener noreferrer" class="link-card">
+									<span class="link-icon">
+										<img src="https://icons.hackclub.com/api/icons/black/link" alt="" width="20" height="20" />
+									</span>
+									<span class="link-text">
+										<span class="link-label">Invite link</span>
+										<span class="link-value">hack.club/join/{club.joinCode}</span>
+									</span>
 								</a>
-								<button class="stat-card manage-card button-card" onclick={() => openTransferModal(club.name)}>
-									<img 
-										src="https://icons.hackclub.com/api/icons/black/external" 
-										alt="Transfer icon"
-										width="32"
-										height="32"
-									/>
-									<span class="stat-label">Transfer Leadership</span>
-								</button>
+							{/if}
+							{#if club.clubWebsite}
+								<a href="https://hack.club/club/{getClubSlug(club.name)}" target="_blank" rel="noopener noreferrer" class="link-card">
+									<span class="link-icon">
+										<img src="https://icons.hackclub.com/api/icons/black/web" alt="" width="20" height="20" />
+									</span>
+									<span class="link-text">
+										<span class="link-label">Club website</span>
+										<span class="link-value">hack.club/club/{getClubSlug(club.name)}</span>
+									</span>
+								</a>
 							{/if}
 						</div>
+					{/if}
 
-						{#if club.joinCode}
-							<div class="invite-section">
-								<span class="invite-label">Invite link:</span>
-								<a href="https://hack.club/join/{club.joinCode}" target="_blank" rel="noopener noreferrer" class="invite-link">
-									hack.club/join/{club.joinCode}
-								</a>
-							</div>
-						{/if}
-
-						{#if club.clubWebsite}
-							<div class="website-section">
-								<span class="website-label">Club website:</span>
-								<a href="https://hack.club/club/{getClubSlug(club.name)}" target="_blank" rel="noopener noreferrer" class="website-link">
-									hack.club/club/{getClubSlug(club.name)}
-								</a>
-							</div>
-						{/if}
-
-					</div>
-				{/each}
-			</div>
-		{:else}
-			<div class="empty-state">
-				<p>You are not a member of any clubs yet.</p>
-			</div>
-		{/if}
-	</section>
+					{#if club.role === 'leader'}
+						<div class="actions-row">
+							<a href="/my-club/{encodeURIComponent(club.name)}/manage" class="action-btn">
+								<img src="https://icons.hackclub.com/api/icons/white/settings" alt="" width="20" height="20" />
+								<span>Manage Club</span>
+							</a>
+							<button class="action-btn action-btn-secondary" onclick={() => openTransferModal(club.name)}>
+								<img src="https://icons.hackclub.com/api/icons/black/external" alt="" width="20" height="20" />
+								<span>Transfer Leadership</span>
+							</button>
+						</div>
+					{/if}
+				</article>
+			{/each}
+		</div>
+	{:else}
+		<div class="empty-state">
+			<p>You are not a member of any clubs yet.</p>
+		</div>
+	{/if}
 </div>
 
 <Modal open={helpModal.open} title="Contact Us" onClose={closeHelpModal}>
@@ -214,54 +210,28 @@
 		font-family: 'Phantom Sans', system-ui, sans-serif;
 	}
 
-	header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 32px;
+	.page-header {
+		margin-bottom: 24px;
 	}
 
 	.page-title {
-		font-size: 48px;
-		font-weight: bold;
+		font-size: 32px;
+		font-weight: 700;
 		color: #ec3750;
 		letter-spacing: -0.02em;
 		margin: 0;
 	}
 
-	.header-buttons {
-		display: flex;
-		gap: 12px;
-		align-items: center;
+	.page-subtitle {
+		font-size: 16px;
+		color: #8492a6;
+		margin: 4px 0 0;
 	}
-
-	.nav-button {
-		padding: 10px 20px;
-		border-radius: 6px;
-		text-decoration: none;
-		font-weight: 600;
-		font-size: 14px;
-		font-family: inherit;
-		transition: all 0.2s;
-		border: 2px solid var(--red);
-		cursor: pointer;
-		background-color: var(--red);
-		color: var(--white);
-		box-shadow: none;
-	}
-
-	.nav-button:hover {
-		opacity: 0.9;
-		box-shadow: none;
-		transform: scale(1.0625);
-	}
-
-	
 
 	.clubs-grid {
 		display: flex;
 		flex-direction: column;
-		gap: 24px;
+		gap: 20px;
 	}
 
 	.club-card {
@@ -271,69 +241,101 @@
 		padding: 24px;
 	}
 
-	.club-card:hover {
-		border-color: #ec3750;
-	}
-
-	.club-header {
+	.card-top {
 		display: flex;
 		justify-content: space-between;
-		align-items: start;
-		margin-bottom: 16px;
+		align-items: flex-start;
+		gap: 16px;
+		flex-wrap: wrap;
+	}
+
+	.club-identity {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		min-width: 0;
 	}
 
 	.club-name {
 		font-size: 24px;
-		font-weight: bold;
+		font-weight: 700;
 		color: #1f2d3d;
+		letter-spacing: -0.01em;
 		margin: 0;
-		flex: 1;
+		overflow-wrap: anywhere;
 	}
 
-	.club-badges {
+	.club-tags {
+		display: flex;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+
+	.tag {
+		display: inline-flex;
+		align-items: center;
+		padding: 4px 10px;
+		border-radius: 999px;
+		font-size: 13px;
+		font-weight: 600;
+		text-transform: capitalize;
+	}
+
+	.tag-level {
+		background-color: #e6faf4;
+		color: #1a7f64;
+	}
+
+	.tag-role.leader {
+		background-color: #fff0f2;
+		color: #ec3750;
+	}
+
+	.tag-role.member {
+		background-color: #eaf3fc;
+		color: #338eda;
+	}
+
+	.club-toolbar {
 		display: flex;
 		gap: 8px;
 		align-items: center;
+		flex-wrap: wrap;
 	}
 
-	.club-level {
+	.toolbar-btn {
 		display: inline-flex;
 		align-items: center;
+		gap: 6px;
 		padding: 8px 14px;
-		background-color: #dcfce7;
-		border: 2px solid #dcfce7;
+		background: #f9fafc;
+		border: 2px solid #e0e6ed;
 		border-radius: 8px;
 		font-size: 14px;
-		font-weight: 700;
-		color: #166534;
+		font-weight: 500;
+		color: #1f2d3d;
+		cursor: pointer;
+		transition: border-color 0.15s, color 0.15s;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
 	}
 
-	.club-role {
-		display: inline-flex;
-		align-items: center;
-		padding: 8px 14px;
-		border: 2px solid transparent;
-		border-radius: 8px;
-		font-size: 14px;
-		font-weight: 700;
+	.toolbar-btn:hover {
+		border-color: #338eda;
+		color: #338eda;
 	}
 
-	.club-role.leader {
-		background-color: #fef3c7;
-		border-color: #fef3c7;
-		color: #92400e;
+	.toolbar-btn img {
+		flex-shrink: 0;
 	}
 
-	.club-role.member {
-		background-color: #dbeafe;
-		border-color: #dbeafe;
-		color: #1e40af;
+	.toolbar-btn span {
+		white-space: nowrap;
 	}
 
-	.stats-row {
+	.stats-grid {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 16px;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 12px;
 		margin-top: 20px;
 	}
 
@@ -341,12 +343,14 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding: 20px;
+		justify-content: center;
+		padding: 20px 12px;
 		background: #f9fafc;
 		border: 2px solid #e0e6ed;
 		border-radius: 8px;
 		text-decoration: none;
 		color: inherit;
+		transition: border-color 0.15s, background-color 0.15s;
 	}
 
 	.stat-card:hover {
@@ -355,80 +359,130 @@
 	}
 
 	.stat-number {
-		font-size: 36px;
-		font-weight: bold;
+		font-size: 34px;
+		font-weight: 700;
 		color: #ec3750;
+		line-height: 1;
 	}
 
 	.stat-label {
-		font-size: 14px;
+		font-size: 13px;
 		font-weight: 600;
 		color: #8492a6;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
-		margin-top: 4px;
+		margin-top: 8px;
 	}
 
-	.invite-section {
-		margin-top: 20px;
+	.links-row {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 12px;
+		margin-top: 16px;
+	}
+
+	.link-card {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 12px 14px;
+		background: #f9fafc;
+		border: 2px solid #e0e6ed;
+		border-radius: 8px;
+		text-decoration: none;
+		min-width: 0;
+		transition: border-color 0.15s, background-color 0.15s;
+	}
+
+	.link-card:hover {
+		border-color: #338eda;
+		background: #f3f8fd;
+	}
+
+	.link-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		flex-shrink: 0;
+		background: #ffffff;
+		border: 2px solid #e0e6ed;
+		border-radius: 8px;
+	}
+
+	.link-card:hover .link-icon {
+		border-color: #338eda;
+	}
+
+	.link-text {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
+
+	.link-label {
+		font-size: 12px;
+		font-weight: 600;
+		color: #8492a6;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+
+	.link-value {
+		font-size: 14px;
+		font-weight: 600;
+		color: #338eda;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.actions-row {
+		display: flex;
+		gap: 10px;
+		flex-wrap: wrap;
+		margin-top: 16px;
 		padding-top: 16px;
 		border-top: 1px solid #e0e6ed;
-		display: flex;
+	}
+
+	.action-btn {
+		display: inline-flex;
 		align-items: center;
 		gap: 8px;
-	}
-
-	.invite-label {
+		padding: 10px 18px;
+		border-radius: 8px;
 		font-size: 14px;
 		font-weight: 600;
-		color: #8492a6;
-	}
-
-	.invite-link {
-		font-size: 14px;
-		font-weight: 600;
-		color: #338eda;
 		text-decoration: none;
+		cursor: pointer;
+		border: 2px solid #ec3750;
+		background: #ec3750;
+		color: #ffffff;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+		transition: background-color 0.15s, border-color 0.15s;
 	}
 
-	.invite-link:hover {
-		text-decoration: underline;
+	.action-btn:hover {
+		background: #d63349;
+		border-color: #d63349;
 	}
 
-	.website-section {
-		margin-top: 12px;
-		padding-top: 12px;
-		border-top: 1px solid #e0e6ed;
-		display: flex;
-		align-items: center;
-		gap: 8px;
+	.action-btn img {
+		flex-shrink: 0;
 	}
 
-	.website-label {
-		font-size: 14px;
-		font-weight: 600;
-		color: #8492a6;
+	.action-btn-secondary {
+		background: #ffffff;
+		color: #1f2d3d;
+		border-color: #e0e6ed;
 	}
 
-	.website-link {
-		font-size: 14px;
-		font-weight: 600;
-		color: #338eda;
-		text-decoration: none;
-	}
-
-	.website-link:hover {
-		text-decoration: underline;
-	}
-
-	.manage-card {
-		justify-content: center;
-	}
-
-	.manage-card img {
-		width: 32px;
-		height: 32px;
-		margin-bottom: 8px;
+	.action-btn-secondary:hover {
+		background: #f9fafc;
+		border-color: #8492a6;
 	}
 
 	.empty-state {
@@ -445,33 +499,19 @@
 		margin: 0;
 	}
 
-	.contact-us-button {
-		display: inline-flex;
-		align-items: center;
-		gap: 6px;
-		padding: 8px 14px;
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
-		border-radius: 8px;
-		font-size: 14px;
-		font-weight: 500;
-		color: #1f2d3d;
-		cursor: pointer;
-		transition: all 0.2s;
-		font-family: 'Phantom Sans', system-ui, sans-serif;
-	}
+	@media (max-width: 600px) {
+		.stats-grid {
+			grid-template-columns: 1fr;
+		}
 
-	.contact-us-button:hover {
-		border-color: #338eda;
-		color: #338eda;
-	}
+		.links-row {
+			grid-template-columns: 1fr;
+		}
 
-	.contact-us-button img {
-		flex-shrink: 0;
-	}
-
-	.contact-us-button span {
-		white-space: nowrap;
+		.action-btn {
+			flex: 1;
+			justify-content: center;
+		}
 	}
 
 	.loading-text {
@@ -518,8 +558,7 @@
 	}
 
 	.btn:hover {
-		opacity: 0.9;
-		transform: scale(1.05);
+		opacity: 0.92;
 	}
 
 	.slack-button {
@@ -548,14 +587,6 @@
 		margin: 0;
 		font-size: 14px;
 		line-height: 1.5;
-	}
-
-	.button-card {
-		background: #f9fafc;
-		border: 2px solid #e0e6ed;
-		cursor: pointer;
-		font-family: 'Phantom Sans', system-ui, sans-serif;
-		width: 100%;
 	}
 
 	.error-banner {

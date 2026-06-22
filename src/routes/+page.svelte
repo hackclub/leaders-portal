@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import EventGrid from '$lib/EventGrid.svelte';
 	import EventModal from '$lib/EventModal.svelte';
+	import SiteNav from '$lib/SiteNav.svelte';
 
 	import EventsView from '$lib/EventsView.svelte';
 	import ToolsView from '$lib/ToolsView.svelte';
@@ -78,33 +79,21 @@
 	<title>Club Leaders Portal</title>
 </svelte:head>
 
+<SiteNav user={data.user} />
+
 <div class="container">
-	<header>
-		<iframe 
-			src="https://hackclub.github.io/map?mode={data.user ? 'manage' : 'signin'}" 
-			class="header-map"
+	<section class="hero">
+		<div class="hero-text">
+			<h1 class="title">Club Leaders Portal</h1>
+			<p class="subtitle">Browse workshops, track your club's progress, and find everything you need to run your Hack Club.</p>
+		</div>
+		<iframe
+			src="https://hackclub.github.io/map?banner=small&mode={data.user ? 'manage' : 'signin'}"
+			class="hero-map"
 			title="Hack Club Map"
 			loading="lazy"
 		></iframe>
-		<div class="header-content">
-			<h1 class="title">Club Leaders Portal</h1>
-			<div class="header-buttons">
-				{#if data.user}
-					<a href="/my-club" class="nav-button">My Club</a>
-					<a href="/settings" class="nav-button secondary">Settings</a>
-					{#if data.user.isAdmin}
-						<a href="/admin" class="nav-button">Admin</a>
-					{/if}
-					<form method="POST" action="/logout" style="display: inline;">
-						<button type="submit" class="nav-button">Logout</button>
-					</form>
-				{:else}
-					<a href="/auth/login" class="nav-button">Sign in with Hack Club</a>
-					<a href="/email-login" class="nav-button secondary">Sign in with Email</a>
-				{/if}
-			</div>
-		</div>
-	</header>
+	</section>
 
 	<div class="tab-selector">
 		<button 
@@ -130,57 +119,48 @@
 		</button>
 	</div>
 
-
-	<a href="https://guide.leaders.hackclub.com/" target="_blank" rel="noopener noreferrer" class="help-button" aria-label="Club Leaders Guide">
-		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-			<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-			<circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
-		</svg>
-	</a>
-
 	<main>
 		{#if activeTab === 'ysws'}
 			{#if hasWebdevEvents}
-				<div class="category-bubble webdev">
-					<h2 class="section-title">Web development series:</h2>
+				<section class="category">
+					<h2 class="section-title"><span class="accent" style="--accent: #338eda"></span>Web development series</h2>
 					<EventGrid {events} category="Webdev" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
-				</div>
+				</section>
 			{/if}
 
 			{#if hasCadEvents}
-				<div class="category-bubble cad">
-					<h2 class="section-title">CAD series:</h2>
+				<section class="category">
+					<h2 class="section-title"><span class="accent" style="--accent: #f1c40f"></span>CAD series</h2>
 					<EventGrid {events} category="CAD" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
-				</div>
+				</section>
 			{/if}
 
 			{#if hasGamedevEvents}
-				<div class="category-bubble gamedev">
-					<h2 class="section-title">Game Development Series:</h2>
+				<section class="category">
+					<h2 class="section-title"><span class="accent" style="--accent: #a633d6"></span>Game development series</h2>
 					<EventGrid {events} category="GameDev" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
-				</div>
+				</section>
 			{/if}
 			
 			{#if hasHardwareEvents}
-				<div class="category-bubble hardware">
-					<h2 class="section-title">Hardware Series:</h2>
+				<section class="category">
+					<h2 class="section-title"><span class="accent" style="--accent: #5bc0de"></span>Hardware series</h2>
 					<EventGrid {events} category="Hardware" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
-				</div>
+				</section>
 			{/if}
 
 			{#if hasOtherEvents}
-				<div class="category-bubble other">
-					<h2 class="section-title">Other Clubs YSWS:</h2>
+				<section class="category">
+					<h2 class="section-title"><span class="accent" style="--accent: #ec3750"></span>Other clubs YSWS</h2>
 					<EventGrid {events} category="Other" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
-				</div>
+				</section>
 			{/if}
 
 			{#if hasCompletedEvents}
-				<div class="category-bubble completed">
-					<h2 class="section-title">Completed YSWS:</h2>
+				<section class="category">
+					<h2 class="section-title"><span class="accent" style="--accent: #33d6a6"></span>Completed YSWS</h2>
 					<EventGrid {events} category="Completed" {openEvent} onComplete={handleComplete} isLoggedIn={!!data.user} />
-				</div>
+				</section>
 			{/if}
 		{:else if activeTab === 'events'}
 			<EventsView user={data.user} {bannerEvents} />
@@ -190,29 +170,17 @@
 	</main>
 
 	<footer>
-		<a href="https://apply.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-button">
-			Start a club
-		</a>
-		<a href="https://ysws.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-button">
-			All YSWS Programs
-		</a>
-		<a href="https://guide.leaders.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-button">
-			Club Leaders Guide
-		</a>
-		<a href="https://hackclub.github.io/map" target="_blank" rel="noopener noreferrer" class="footer-button">
-			Club Map
-		</a>
-		<a href="/posters" class="footer-button">
-			Club Posters
-		</a>
+		<a href="https://apply.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-link">Start a club</a>
+		<a href="https://ysws.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-link">All YSWS Programs</a>
+		<a href="https://guide.leaders.hackclub.com/" target="_blank" rel="noopener noreferrer" class="footer-link">Club Leaders Guide</a>
+		<a href="https://hackclub.github.io/map" target="_blank" rel="noopener noreferrer" class="footer-link">Club Map</a>
+		<a href="/posters" class="footer-link">Club Posters</a>
 	</footer>
 </div>
 
 {#if selectedEvent}
 	<EventModal event={selectedEvent} {closeModal} />
 {/if}
-
-
 
 <style>
 	:global(body) {
@@ -222,350 +190,151 @@
 		padding: 0;
 	}
 
-
-
 	.container {
 		max-width: 1024px;
 		margin: 0 auto;
-		padding: 32px 16px;
+		padding: 24px 16px 48px;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+	}
+
+	.hero {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 24px;
+		align-items: center;
+		margin-bottom: 28px;
+	}
+
+	.hero-text {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.title {
+		font-size: 36px;
+		font-weight: 700;
+		color: #ec3750;
+		letter-spacing: -0.02em;
+		margin: 0;
+	}
+
+	.subtitle {
+		font-size: 16px;
+		line-height: 1.5;
+		color: #8492a6;
+		margin: 0;
+		max-width: 42ch;
+	}
+
+	.hero-map {
+		width: 100%;
+		height: 240px;
+		border: 1px solid #e0e6ed;
+		border-radius: 12px;
 	}
 
 	.tab-selector {
 		display: flex;
-		justify-content: center;
-		gap: 8px;
-		margin-bottom: 24px;
-		padding: 8px;
-		background: #f9fafc;
-		border-radius: 12px;
-		border: 2px solid #e0e6ed;
+		gap: 24px;
+		margin-bottom: 28px;
+		border-bottom: 1px solid #e0e6ed;
 	}
 
 	.tab-button {
-		padding: 12px 32px;
-		border-radius: 8px;
+		padding: 12px 2px;
 		border: none;
+		border-bottom: 2px solid transparent;
+		margin-bottom: -1px;
 		background: transparent;
 		color: #8492a6;
 		font-weight: 600;
 		font-size: 16px;
 		font-family: inherit;
 		cursor: pointer;
-		transition: all 0.2s;
 	}
 
 	.tab-button:hover {
-		background: #e0e6ed;
 		color: #1f2d3d;
 	}
 
 	.tab-button.active {
-		background: #ec3750;
-		color: white;
-	}
-
-	header {
-		position: relative;
-		width: 100vw;
-		margin-left: calc(-50vw + 50%);
-		margin-top: -32px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin-bottom: 32px;
-		min-height: 500px;
-		overflow: hidden;
-	}
-
-	.header-map {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		border: none;
-		z-index: 0;
-	}
-
-	.header-content {
-		position: relative;
-		z-index: 1;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 20px;
-		padding: 40px 20px;
-		background: rgba(255, 255, 255, 0.9);
-		border-radius: 16px;
-		pointer-events: none;
-	}
-
-	.header-content .title,
-	.header-content .header-buttons,
-	.header-content .nav-button {
-		pointer-events: auto;
-	}
-
-	.title {
-		font-size: 48px;
-		font-weight: bold;
 		color: #ec3750;
-		letter-spacing: -0.02em;
-		margin: 0;
-		padding: 12px 24px;
-		border-radius: 12px;
-	}
-
-	.header-buttons {
-		display: flex;
-		gap: 12px;
-		align-items: center;
-	}
-
-	.nav-button {
-		padding: 10px 20px;
-		border-radius: 6px;
-		text-decoration: none;
-		font-weight: 600;
-		font-size: 14px;
-		font-family: inherit;
-		transition: all 0.2s;
-		border: 2px solid var(--red);
-		cursor: pointer;
-		background-color: var(--red);
-		color: var(--white);
-		box-shadow: none;
-	}
-
-	.nav-button:hover {
-		opacity: 0.9;
-		box-shadow: none;
-		transform: scale(1.0625);
-	}
-
-	.nav-button.secondary {
-		background-color: var(--white);
-		color: var(--red);
-	}
-
-	.nav-button.secondary:hover {
-		background-color: var(--snow);
-	}
-
-	.footer-button {
-		display: inline-block;
-		padding: 12px 28px;
-		border-radius: 8px;
-		text-decoration: none;
-		font-weight: 600;
-		font-size: 14px;
-		transition: all 0.2s;
-		background-color: var(--red);
-		color: var(--white);
-		box-shadow: none;
-	}
-
-	.footer-button:hover {
-		opacity: 0.9;
-		box-shadow: none;
-		transform: scale(1.0625);
+		border-bottom-color: #ec3750;
 	}
 
 	main {
 		display: flex;
 		flex-direction: column;
-		gap: 24px;
+		gap: 36px;
 	}
 
-
-	.category-bubble {
-		padding: 32px;
-		border-radius: 24px;
-		margin-bottom: 24px;
-		transition: transform 0.3s
-	}
-
-	.category-bubble:hover {
-		transform: translateY(-4px);
-	}
-
-	.category-bubble.webdev {
-		background: #dbeafe;
-		border: 3px solid #338eda;
-	}
-
-	.category-bubble.cad {
-		background: #fef3c7;
-		border: 3px solid #f1c40f;
-	}
-
-	.category-bubble.gamedev {
-		background: #eed7f7;
-		border: 3px solid #a633d6;
-	}
-
-	.category-bubble.hardware {
-		background: #d3ebf2;
-		border: 3px solid #5bc0de;
-	}
-
-	.category-bubble.other {
-		background: #fce7f3;
-		border: 3px solid #ec3750;
-	}
-
-	.category-bubble.completed {
-		background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-		border: 3px solid #33d6a6;
+	.category {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
 	}
 
 	.section-title {
-		color: #1f2d3d;
-		font-weight: bold;
-		font-size: 32px;
-		margin: 0 0 16px 0;
-	}
-
-	.help-button {
-		position: fixed;
-		bottom: 24px;
-		right: 24px;
-		width: 56px;
-		height: 56px;
-		border-radius: 50%;
-		background-color: #ec3750;
-		color: white;
-		border: none;
-		cursor: pointer;
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		transition: all 0.2s ease;
-		z-index: 100;
+		gap: 10px;
+		color: #1f2d3d;
+		font-weight: 700;
+		font-size: 22px;
+		margin: 0;
 	}
 
-	.help-button:hover {
-		background-color: #d63447;
-		transform: translateY(-2px);
+	.accent {
+		display: inline-block;
+		width: 4px;
+		height: 22px;
+		border-radius: 2px;
+		background: var(--accent, #ec3750);
 	}
 
 	footer {
-		text-align: center;
-		margin-top: 48px;
-		padding: 32px;
-		border-radius: 16px;
-		background-color: #f9fafc;
-		border: 2px solid #e0e6ed;
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
-		gap: 12px;
+		gap: 8px 24px;
+		margin-top: 48px;
+		padding-top: 24px;
+		border-top: 1px solid #e0e6ed;
 	}
 
-	
+	.footer-link {
+		font-size: 14px;
+		font-weight: 600;
+		color: #8492a6;
+		text-decoration: none;
+	}
+
+	.footer-link:hover {
+		color: #ec3750;
+	}
 
 	@media (max-width: 768px) {
-		.container {
-			padding: 16px 12px;
+		.hero {
+			grid-template-columns: 1fr;
+			gap: 16px;
 		}
 
-		header {
-			min-height: auto;
-			margin-bottom: 24px;
-		}
-
-		.header-map {
-			display: none;
-		}
-
-		.header-content {
-			padding: 24px 16px;
-			margin: 0;
-			width: 100%;
-			box-sizing: border-box;
-			background: #f9fafc;
-			border: 2px solid #e0e6ed;
+		.hero-map {
+			height: 200px;
+			order: -1;
 		}
 
 		.title {
 			font-size: 28px;
-			padding: 8px 16px;
-			text-align: center;
-		}
-
-		.header-buttons {
-			flex-wrap: wrap;
-			justify-content: center;
-			gap: 8px;
-		}
-
-		.nav-button {
-			padding: 8px 14px;
-			font-size: 13px;
-		}
-
-		.tab-selector {
-			padding: 6px;
-			gap: 4px;
 		}
 
 		.tab-button {
-			padding: 10px 20px;
-			font-size: 14px;
-		}
-
-		.category-bubble {
-			padding: 20px 16px;
-			border-radius: 16px;
-			margin-bottom: 16px;
+			font-size: 15px;
 		}
 
 		.section-title {
-			font-size: 22px;
-			margin-bottom: 12px;
-		}
-
-		footer {
-			padding: 20px 16px;
-			margin-top: 32px;
-			flex-direction: column;
-			gap: 8px;
-		}
-
-		.footer-button {
-			width: 100%;
-			padding: 12px 20px;
-		}
-
-		.help-button {
-			width: 48px;
-			height: 48px;
-			bottom: 16px;
-			right: 16px;
-		}
-	}
-
-	@media (max-width: 480px) {
-		.title {
-			font-size: 24px;
-		}
-
-		.header-buttons {
-			flex-direction: column;
-			width: 100%;
-		}
-
-		.nav-button {
-			width: 100%;
-			text-align: center;
-		}
-
-		.nav-button[type="submit"] {
-			width: 100%;
-		}
-
-		header {
-			min-height: 300px;
+			font-size: 19px;
 		}
 	}
 </style>

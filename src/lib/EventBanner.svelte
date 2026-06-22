@@ -29,8 +29,8 @@
 		font-weight: 800;
 		position: relative;
 		overflow: hidden;
-		margin-bottom: 24px;
 		text-decoration: none;
+		margin-bottom: -12px;
 		height: 250px;
 	}
 
