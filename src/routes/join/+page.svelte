@@ -1,7 +1,7 @@
 <script>
 	import { enhance } from '$app/forms';
 
-	let { data, form } = $props();
+	let { form } = $props();
 
 	let isSubmitting = $state(false);
 	let hasJoined = $state(false);
@@ -19,7 +19,7 @@
 </script>
 
 <svelte:head>
-	<title>Join {data.clubName}</title>
+	<title>Join a Club</title>
 </svelte:head>
 
 <div class="container">
@@ -29,10 +29,10 @@
 				<img src="https://icons.hackclub.com/api/icons/white/checkmark" alt="Success" width="32" height="32" />
 			</div>
 			<h1>You're in!</h1>
-			<p class="message">You've successfully joined <strong>{data.clubName}</strong>.</p>
+			<p class="message">You've successfully joined the club.</p>
 			<a href="https://hackclub.com" class="btn">Go to hackclub.com</a>
 		{:else}
-			<h1>Join {data.clubName}</h1>
+			<h1>Join a Club</h1>
 			<p class="message">Enter your details below to join the club.</p>
 
 			{#if form?.error}
@@ -63,6 +63,24 @@
 						value={form?.email ?? ''}
 						required
 						autocomplete="email"
+					/>
+				</div>
+
+				<div class="field">
+					<label for="joinCode">Join Code</label>
+					<input
+						id="joinCode"
+						name="joinCode"
+						type="text"
+						placeholder="ABC123"
+						value={form?.joinCode ?? ''}
+						required
+						minlength="2"
+						maxlength="6"
+						pattern="[A-Za-z1-9]{'{'}2,6{'}'}"
+						autocapitalize="characters"
+						autocomplete="off"
+						style="text-transform: uppercase;"
 					/>
 				</div>
 

@@ -631,6 +631,50 @@ paths:
                     type: string
                     example: "Member not found"
 
+  /member/ships:
+    get:
+      summary: Get ships by member email
+      description: Returns all ships (projects) associated with the given member email. Requires Read permissions.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          required: true
+          description: Email of the member
+      responses:
+        '200':
+          description: List of ships
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Missing email parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing email parameter"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+
   /member/code:
     get:
       summary: Get member info by leave code

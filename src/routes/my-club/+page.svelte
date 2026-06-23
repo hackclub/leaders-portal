@@ -67,6 +67,19 @@
 	function closeTransferModal() {
 		transferModal = { open: false, clubName: null };
 	}
+
+	let announceModal = $state({ open: false, clubName: null });
+	let announcementMessage = $state('');
+	let isSending = $state(false);
+
+	function openAnnounceModal(clubName) {
+		announcementMessage = '';
+		announceModal = { open: true, clubName };
+	}
+
+	function closeAnnounceModal() {
+		announceModal = { open: false, clubName: null };
+	}
 </script>
 
 <svelte:head>
@@ -83,6 +96,10 @@
 
 	{#if form?.error}
 		<div class="error-banner">{form.error}</div>
+	{/if}
+
+	{#if form?.success && form?.membersUpdated !== undefined}
+		<div class="success-banner">Announcement sent to {form.membersUpdated} members!</div>
 	{/if}
 
 	{#if clubs.length > 0}
@@ -156,6 +173,10 @@
 								<img src="https://icons.hackclub.com/api/icons/white/settings" alt="" width="20" height="20" />
 								<span>Manage Club</span>
 							</a>
+							<button class="action-btn action-btn-secondary" onclick={() => openAnnounceModal(club.name)}>
+								<img src="https://icons.hackclub.com/api/icons/{iconColor}/message-simple-fill" alt="" width="20" height="20" />
+								<span>Send Announcement</span>
+							</button>
 							<button class="action-btn action-btn-secondary" onclick={() => openTransferModal(club.name)}>
 								<img src="https://icons.hackclub.com/api/icons/{iconColor}/external" alt="" width="20" height="20" />
 								<span>Transfer Leadership</span>
@@ -218,6 +239,35 @@
 			<div class="modal-actions">
 				<button type="button" class="btn cancel-btn" onclick={closeTransferModal}>Cancel</button>
 				<button type="submit" class="btn submit-btn">Transfer Leadership</button>
+			</div>
+		</form>
+	</div>
+</Modal>
+
+<Modal open={announceModal.open} title="Send Announcement" onClose={closeAnnounceModal}>
+	<div class="announce-modal-content">
+		<p class="help-intro">Send an announcement to all members of <strong>{announceModal.clubName}</strong>.</p>
+
+		<form method="POST" action="?/sendAnnouncement" onsubmit={() => (isSending = true)}>
+			<input type="hidden" name="clubName" value={announceModal.clubName} />
+			<div class="form-group">
+				<label for="announcementMessage">Message</label>
+				<textarea
+					id="announcementMessage"
+					name="message"
+					bind:value={announcementMessage}
+					placeholder="Write your announcement here..."
+					rows="5"
+					maxlength="1000"
+					required
+				></textarea>
+				<div class="char-count">{announcementMessage.length}/1000</div>
+			</div>
+			<div class="modal-actions">
+				<button type="button" class="btn cancel-btn" onclick={closeAnnounceModal}>Cancel</button>
+				<button type="submit" class="btn submit-btn" disabled={isSending || !announcementMessage.trim()}>
+					{isSending ? 'Sending...' : 'Send Announcement'}
+				</button>
 			</div>
 		</form>
 	</div>
@@ -620,6 +670,44 @@
 		margin-bottom: 24px;
 		font-weight: 600;
 		border: 2px solid #ec3750;
+	}
+
+	.success-banner {
+		background: light-dark(#e6faf4, rgba(51, 214, 166, 0.16));
+		color: light-dark(#1a7f64, #5be0b0);
+		padding: 16px;
+		border-radius: 8px;
+		margin-bottom: 24px;
+		font-weight: 600;
+		border: 2px solid #33d6a6;
+	}
+
+	.form-group textarea {
+		width: 100%;
+		padding: 10px 12px;
+		border: 2px solid var(--color-border);
+		border-radius: 6px;
+		font-size: 14px;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+		box-sizing: border-box;
+		resize: vertical;
+	}
+
+	.form-group textarea:focus {
+		outline: none;
+		border-color: #338eda;
+	}
+
+	.char-count {
+		font-size: 12px;
+		color: var(--color-muted);
+		text-align: right;
+		margin-top: 6px;
+	}
+
+	.submit-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
 	.warning-text {

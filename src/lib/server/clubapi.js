@@ -160,6 +160,26 @@ export async function getClubShips(clubName) {
 	}
 }
 
+export async function getMemberShips(email) {
+	try {
+		const data = await fetchClubApi('/member/ships', { email });
+		if (!data || !Array.isArray(data)) {
+			console.log('[ClubAPI] getMemberShips got empty or invalid response, returning empty array');
+			return [];
+		}
+		console.log('[ClubAPI] getMemberShips fetched', data.length, 'ships for email:', email);
+
+		return data.map((ship) => ({
+			ysws: ship.fields?.ysws || ship.ysws || 'Unknown',
+			codeUrl: sanitizeUrl(ship.fields?.code_url || ship.code_url),
+			email: ship.fields?.email || ship.email || null
+		}));
+	} catch (error) {
+		console.error(`Error fetching ships for member ${email}:`, error);
+		return [];
+	}
+}
+
 export async function getClubMembers(clubName) {
 	try {
 		const data = await fetchClubApi('/members', { club_name: clubName });

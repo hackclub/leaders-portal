@@ -3,6 +3,7 @@ import { getKnex } from '$lib/server/db/knex.js';
 import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clubs.js';
 import { deleteMember, sendAnnouncement, getMember, updateMember, createMember } from '$lib/server/clubapi.js';
 import { getClubLeaders, getColeaders } from '$lib/server/airtable.js';
+import { saveAnnouncement } from '$lib/server/announcements.js';
 
 export async function load({ locals, params }) {
 	if (!locals.userPublic) {
@@ -108,6 +109,7 @@ export const actions = {
 
 		try {
 			const result = await sendAnnouncement(clubName, message);
+			await saveAnnouncement(clubName, message.toString());
 			return { success: true, membersUpdated: result.membersUpdated };
 		} catch (error) {
 			console.error('[Members] Error sending announcement:', error);

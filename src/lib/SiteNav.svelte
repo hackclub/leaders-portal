@@ -19,7 +19,7 @@
 
 <nav class="site-nav">
 	<div class="nav-inner">
-		<a href="/" class="brand" onclick={closeMenu}>Club Leaders Portal</a>
+		<a href="/" class="brand" onclick={closeMenu}>Club Portal</a>
 
 		<div class="nav-right">
 			<ThemeToggle />
@@ -38,8 +38,14 @@
 			</button>
 
 			<div class="nav-links" class:open={menuOpen}>
-			<a href="/" class="nav-link" class:active={isActive('/')} onclick={closeMenu}>Home</a>
-			{#if user}
+			{#if user && user.provider === 'member'}
+				<a href="/members" class="nav-link" class:active={path === '/members'} onclick={closeMenu}>Home</a>
+				<a href="/members/dashboard" class="nav-link" class:active={isActive('/members/dashboard')} onclick={closeMenu}>Dashboard</a>
+				<form method="POST" action="/logout" class="logout-form">
+					<button type="submit" class="nav-cta secondary">Logout</button>
+				</form>
+			{:else if user}
+				<a href="/" class="nav-link" class:active={isActive('/')} onclick={closeMenu}>Home</a>
 				<a href="/my-club" class="nav-link" class:active={isActive('/my-club')} onclick={closeMenu}>My Club</a>
 				<a href="/settings" class="nav-link" class:active={isActive('/settings')} onclick={closeMenu}>Settings</a>
 				{#if user.isAdmin}
@@ -49,6 +55,7 @@
 					<button type="submit" class="nav-cta secondary">Logout</button>
 				</form>
 			{:else}
+				<a href="/" class="nav-link" class:active={isActive('/')} onclick={closeMenu}>Home</a>
 				<a href="/auth/login" class="nav-cta" onclick={closeMenu}>Sign in</a>
 				<a href="/email-login" class="nav-link" class:active={isActive('/email-login')} onclick={closeMenu}>Email login</a>
 			{/if}
