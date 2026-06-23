@@ -89,6 +89,16 @@
 		flex-shrink: 0;
 	}
 
+	:global(:root[data-theme='dark']) .refresh-icon {
+		filter: invert(1);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:global(:root:not([data-theme='light'])) .refresh-icon {
+			filter: invert(1);
+		}
+	}
+
 	.refresh-icon.spinning {
 		animation: spin 1s linear infinite;
 	}
