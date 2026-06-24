@@ -170,11 +170,14 @@
 								<button
 									type="button"
 									class="event-chip"
+									class:going={event.my_rsvp === 'going'}
 									onclick={(e) => handleEventClick(e, event)}
 									title={event.title}
 								>
 									{#if event.event_time}<span class="chip-time">{formatTime(event.event_time)}</span>{/if}
 									<span class="chip-title">{event.title}</span>
+									{#if event.my_rsvp === 'going'}<span class="chip-going" title="You're going">✓</span>{/if}
+									{#if event.rsvp_count > 0}<span class="chip-rsvp" title="{event.rsvp_count} going">👥 {event.rsvp_count}</span>{/if}
 								</button>
 							{/each}
 						</div>
@@ -346,6 +349,14 @@
 		background: #d63349;
 	}
 
+	.event-chip.going {
+		background: #33d6a6;
+	}
+
+	.event-chip.going:hover {
+		background: #2bbf94;
+	}
+
 	.chip-time {
 		flex-shrink: 0;
 		opacity: 0.85;
@@ -355,6 +366,21 @@
 	.chip-title {
 		overflow: hidden;
 		text-overflow: ellipsis;
+		white-space: nowrap;
+		flex: 1;
+	}
+
+	.chip-going {
+		flex-shrink: 0;
+		font-weight: 700;
+	}
+
+	.chip-rsvp {
+		flex-shrink: 0;
+		margin-left: auto;
+		font-size: 10px;
+		font-weight: 700;
+		opacity: 0.9;
 		white-space: nowrap;
 	}
 

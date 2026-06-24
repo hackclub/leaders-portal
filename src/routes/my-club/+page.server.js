@@ -4,7 +4,8 @@ import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clu
 import { deleteMember, sendAnnouncement } from '$lib/server/clubapi.js';
 import { getClubSettings, getClubLeaders, getColeaders } from '$lib/server/airtable.js';
 import { saveAnnouncement } from '$lib/server/announcements.js';
-import { saveEvent, updateEvent, deleteEvent, getEventsForClub, getEventById } from '$lib/server/events.js';
+import { saveEvent, updateEvent, deleteEvent, getEventsForClub, getEventById, attachRsvpLists } from '$lib/server/events.js';
+import { getChatMessages, saveChatMessage, deleteChatMessage } from '$lib/server/chat.js';
 
 export async function load({ locals }) {
 	console.log('[MyClub] load called, userPublic:', !!locals.userPublic, 'userId:', locals.userId);
@@ -34,13 +35,15 @@ export async function load({ locals }) {
 			);
 			const memberCount = leaders.length + coleaders.length + nonLeaderMembers.length;
 
-			const events = await getEventsForClub(club.name);
+			const events = await attachRsvpLists(await getEventsForClub(club.name));
+			const chatMessages = await getChatMessages(club.name);
 
 			return {
 				...club,
 				clubWebsite: settings?.clubWebsite || '',
 				memberCount,
-				events
+				events,
+				chatMessages
 			};
 		})
 	);
@@ -48,6 +51,7 @@ export async function load({ locals }) {
 	console.log('[MyClub] Returning', clubsWithWebsite?.length, 'clubs');
 	return {
 		user: locals.userPublic,
+		effectiveEmail,
 		clubs: clubsWithWebsite
 	};
 }
@@ -337,6 +341,94 @@ export const actions = {
 			if (error.status === 302) throw error;
 			console.error('[MyClub] Error changing leader:', error);
 			return fail(500, { error: 'Failed to change leader' });
+		}
+	},
+
+	sendChatMessage: async ({ request, locals }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/auth/login');
+		}
+
+		const formData = await request.formData();
+		const clubName = formData.get('clubName');
+		const message = formData.get('message');
+
+		if (!clubName || !message) {
+			return fail(400, { error: 'Missing club name or message' });
+		}
+
+		const trimmed = message.toString().trim();
+		if (!trimmed) {
+			return fail(400, { error: 'Message cannot be empty' });
+		}
+
+		if (trimmed.length > 1000) {
+			return fail(400, { error: 'Message too long (max 1000 characters)' });
+		}
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club) {
+			return fail(403, { error: 'You do not have access to this club' });
+		}
+
+		const senderName =
+			`${locals.userPublic.firstName || ''} ${locals.userPublic.lastName || ''}`.trim() ||
+			locals.userPublic.username ||
+			effectiveEmail;
+
+		try {
+			await saveChatMessage({
+				clubName: clubName.toString(),
+				senderName,
+				senderEmail: effectiveEmail,
+				isLeader: true,
+				message: trimmed
+			});
+			return { success: true, chatSent: true };
+		} catch (error) {
+			console.error('[MyClub] Error sending chat message:', error);
+			return fail(500, { error: 'Failed to send message' });
+		}
+	},
+
+	deleteChatMessage: async ({ request, locals }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/auth/login');
+		}
+
+		const formData = await request.formData();
+		const clubName = formData.get('clubName');
+		const messageId = formData.get('messageId');
+
+		if (!clubName || !messageId) {
+			return fail(400, { error: 'Missing club name or message id' });
+		}
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club) {
+			return fail(403, { error: 'You do not have access to this club' });
+		}
+
+		if (club.role !== 'leader') {
+			return fail(403, { error: 'Only club leaders can delete messages' });
+		}
+
+		try {
+			await deleteChatMessage(Number(messageId), clubName.toString());
+			return { success: true, chatDeleted: true };
+		} catch (error) {
+			console.error('[MyClub] Error deleting chat message:', error);
+			return fail(500, { error: 'Failed to delete message' });
 		}
 	}
 };

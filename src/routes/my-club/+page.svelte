@@ -2,6 +2,7 @@
 	import RefreshButton from '$lib/RefreshButton.svelte';
 	import Modal from '$lib/Modal.svelte';
 	import ClubCalendar from '$lib/ClubCalendar.svelte';
+	import ClubChat from '$lib/ClubChat.svelte';
 	import SiteNav from '$lib/SiteNav.svelte';
 	import { mergeClubData } from '$lib/club-utils.js';
 	import { onMount } from 'svelte';
@@ -9,8 +10,33 @@
 	let { data, form } = $props();
 	let clubs = $state(data.clubs);
 
+	// Keep the local clubs state in sync with fresh load data (e.g. after a
+	// chat message is sent or deleted and the form action invalidates the page).
+	$effect(() => {
+		clubs = data.clubs;
+	});
+
 	let isDark = $state(false);
 	let iconColor = $derived(isDark ? 'white' : 'black');
+
+	// Track whether each club's chat is expanded. Non-leaders have no toggle
+	// button, so their chat is shown by default.
+	let chatExpanded = $state(
+		Object.fromEntries(data.clubs.map((club) => [club.name, club.role !== 'leader']))
+	);
+
+	function todayMessageCount(messages) {
+		const now = new Date();
+		return (messages ?? []).filter((msg) => {
+			const date = new Date(msg.created_at);
+			if (isNaN(date.getTime())) return false;
+			return (
+				date.getFullYear() === now.getFullYear() &&
+				date.getMonth() === now.getMonth() &&
+				date.getDate() === now.getDate()
+			);
+		}).length;
+	}
 
 	function resolveTheme() {
 		const explicit = document.documentElement.getAttribute('data-theme');
@@ -83,11 +109,11 @@
 	}
 
 	let eventModal = $state({ open: false, clubName: null, mode: 'create' });
-	let eventForm = $state({ id: null, title: '', eventDate: '', eventTime: '', location: '', description: '' });
+	let eventForm = $state({ id: null, title: '', eventDate: '', eventTime: '', location: '', description: '', rsvps: [] });
 	let isScheduling = $state(false);
 
 	function openCreateEvent(clubName, dateStr = '') {
-		eventForm = { id: null, title: '', eventDate: dateStr, eventTime: '', location: '', description: '' };
+		eventForm = { id: null, title: '', eventDate: dateStr, eventTime: '', location: '', description: '', rsvps: [] };
 		eventModal = { open: true, clubName, mode: 'create' };
 	}
 
@@ -98,10 +124,14 @@
 			eventDate: (event.event_date || '').slice(0, 10),
 			eventTime: event.event_time || '',
 			location: event.location || '',
-			description: event.description || ''
+			description: event.description || '',
+			rsvps: event.rsvps || []
 		};
 		eventModal = { open: true, clubName, mode: 'edit' };
 	}
+
+	let goingRsvps = $derived((eventForm.rsvps || []).filter((r) => r.status === 'going'));
+	let notGoingRsvps = $derived((eventForm.rsvps || []).filter((r) => r.status === 'not_going'));
 
 	function closeEventModal() {
 		eventModal = { open: false, clubName: null, mode: 'create' };
@@ -234,8 +264,25 @@
 								<img src="https://icons.hackclub.com/api/icons/{iconColor}/external" alt="" width="20" height="20" />
 								<span>Transfer Leadership</span>
 							</button>
+							<button class="action-btn action-btn-secondary" onclick={() => (chatExpanded[club.name] = !chatExpanded[club.name])}>
+								<img src="https://icons.hackclub.com/api/icons/{iconColor}/message-simple-fill" alt="" width="20" height="20" />
+								<span>{chatExpanded[club.name] ? 'Hide Chat' : 'Open Chat'}</span>
+								{#if todayMessageCount(club.chatMessages) > 0}
+									<span class="chat-count-badge">{todayMessageCount(club.chatMessages)}</span>
+								{/if}
+							</button>
 						</div>
 					{/if}
+
+					<div class="chat-section">
+						<ClubChat
+							clubName={club.name}
+							messages={club.chatMessages ?? []}
+							canDelete={club.role === 'leader'}
+							currentEmail={data.effectiveEmail}
+							bind:expanded={chatExpanded[club.name]}
+						/>
+					</div>
 				</article>
 			{/each}
 		</div>
@@ -326,7 +373,7 @@
 	</div>
 </Modal>
 
-<Modal open={eventModal.open} title={eventModal.mode === 'edit' ? 'Edit Event' : 'Schedule Event'} onClose={closeEventModal}>
+<Modal open={eventModal.open} title={eventModal.mode === 'edit' ? 'Edit Event' : 'Schedule Event'} maxWidth={eventModal.mode === 'edit' ? '720px' : '400px'} onClose={closeEventModal}>
 	<div class="event-modal-content">
 		<p class="help-intro">
 			{#if eventModal.mode === 'edit'}
@@ -336,62 +383,93 @@
 			{/if}
 		</p>
 
-		<form method="POST" action={eventModal.mode === 'edit' ? '?/updateEvent' : '?/scheduleEvent'} onsubmit={() => (isScheduling = true)}>
-			<input type="hidden" name="clubName" value={eventModal.clubName} />
-			{#if eventModal.mode === 'edit'}
-				<input type="hidden" name="eventId" value={eventForm.id} />
-			{/if}
-			<div class="form-group">
-				<label for="eventTitle">Title</label>
-				<input type="text" id="eventTitle" name="title" bind:value={eventForm.title} placeholder="e.g. Weekly Hack Night" maxlength="200" required />
-			</div>
-			<div class="form-row">
-				<div class="form-group">
-					<label for="eventDate">Date</label>
-					<input type="date" id="eventDate" name="eventDate" bind:value={eventForm.eventDate} required />
-				</div>
-				<div class="form-group">
-					<label for="eventTime">Time (optional)</label>
-					<input type="time" id="eventTime" name="eventTime" bind:value={eventForm.eventTime} />
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="eventLocation">Location</label>
-				<input type="text" id="eventLocation" name="location" bind:value={eventForm.location} placeholder="e.g. Room 204 or a video call link" maxlength="500" required />
-			</div>
-			<div class="form-group">
-				<label for="eventDescription">Description</label>
-				<textarea
-					id="eventDescription"
-					name="description"
-					bind:value={eventForm.description}
-					placeholder="What's happening at this event?"
-					rows="4"
-					maxlength="2000"
-					required
-				></textarea>
-			</div>
-			<div class="modal-actions">
-				<button type="button" class="btn cancel-btn" onclick={closeEventModal}>Cancel</button>
-				<button type="submit" class="btn submit-btn" disabled={isScheduling}>
-					{#if isScheduling}
-						Saving...
-					{:else if eventModal.mode === 'edit'}
-						Save Changes
-					{:else}
-						Schedule Event
-					{/if}
-				</button>
-			</div>
-		</form>
-
-		{#if eventModal.mode === 'edit'}
-			<form method="POST" action="?/deleteEvent" class="delete-form" onsubmit={() => (isScheduling = true)}>
+		<div class="event-edit-layout" class:has-rsvps={eventModal.mode === 'edit'}>
+			<form class="event-form" method="POST" action={eventModal.mode === 'edit' ? '?/updateEvent' : '?/scheduleEvent'} onsubmit={() => (isScheduling = true)}>
 				<input type="hidden" name="clubName" value={eventModal.clubName} />
-				<input type="hidden" name="eventId" value={eventForm.id} />
-				<button type="submit" class="btn delete-btn" disabled={isScheduling}>Delete Event</button>
+				{#if eventModal.mode === 'edit'}
+					<input type="hidden" name="eventId" value={eventForm.id} />
+				{/if}
+				<div class="form-group">
+					<label for="eventTitle">Title</label>
+					<input type="text" id="eventTitle" name="title" bind:value={eventForm.title} placeholder="e.g. Weekly Hack Night" maxlength="200" required />
+				</div>
+				<div class="form-row">
+					<div class="form-group">
+						<label for="eventDate">Date</label>
+						<input type="date" id="eventDate" name="eventDate" bind:value={eventForm.eventDate} required />
+					</div>
+					<div class="form-group">
+						<label for="eventTime">Time (optional)</label>
+						<input type="time" id="eventTime" name="eventTime" bind:value={eventForm.eventTime} />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="eventLocation">Location</label>
+					<input type="text" id="eventLocation" name="location" bind:value={eventForm.location} placeholder="e.g. Room 204 or a video call link" maxlength="500" required />
+				</div>
+				<div class="form-group">
+					<label for="eventDescription">Description</label>
+					<textarea
+						id="eventDescription"
+						name="description"
+						bind:value={eventForm.description}
+						placeholder="What's happening at this event?"
+						rows="4"
+						maxlength="2000"
+						required
+					></textarea>
+				</div>
+				<div class="modal-actions">
+					<button type="button" class="btn cancel-btn" onclick={closeEventModal}>Cancel</button>
+					<button type="submit" class="btn submit-btn" disabled={isScheduling}>
+						{#if isScheduling}
+							Saving...
+						{:else if eventModal.mode === 'edit'}
+							Save Changes
+						{:else}
+							Schedule Event
+						{/if}
+					</button>
+					{#if eventModal.mode === 'edit'}
+						<button type="submit" formaction="?/deleteEvent" formnovalidate class="btn delete-btn" disabled={isScheduling}>Delete Event</button>
+					{/if}
+				</div>
 			</form>
-		{/if}
+
+			{#if eventModal.mode === 'edit'}
+				<div class="rsvp-section">
+					<h3 class="rsvp-heading">
+						RSVPs
+						<span class="rsvp-summary">{goingRsvps.length} going · {notGoingRsvps.length} can't make it</span>
+					</h3>
+
+					{#if eventForm.rsvps.length === 0}
+						<p class="rsvp-empty">No RSVPs yet. Member responses will appear here.</p>
+					{:else}
+						{#if goingRsvps.length > 0}
+							<div class="rsvp-group">
+								<span class="rsvp-group-label going">Going ({goingRsvps.length})</span>
+								<ul class="rsvp-people">
+									{#each goingRsvps as person}
+										<li class="rsvp-person">{person.member_name || person.member_email}</li>
+									{/each}
+								</ul>
+							</div>
+						{/if}
+						{#if notGoingRsvps.length > 0}
+							<div class="rsvp-group">
+								<span class="rsvp-group-label not-going">Can't make it ({notGoingRsvps.length})</span>
+								<ul class="rsvp-people">
+									{#each notGoingRsvps as person}
+										<li class="rsvp-person">{person.member_name || person.member_email}</li>
+									{/each}
+								</ul>
+							</div>
+						{/if}
+					{/if}
+				</div>
+			{/if}
+		</div>
 	</div>
 </Modal>
 
@@ -640,6 +718,12 @@
 		border-top: 1px solid var(--color-border);
 	}
 
+	.chat-section {
+		margin-top: 20px;
+		padding-top: 20px;
+		border-top: 1px solid var(--color-border);
+	}
+
 	.section-heading {
 		font-size: 16px;
 		font-weight: 700;
@@ -691,6 +775,20 @@
 	.action-btn-secondary:hover {
 		background: var(--bg-sunken);
 		border-color: var(--color-muted);
+	}
+
+	.chat-count-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 20px;
+		height: 20px;
+		padding: 0 6px;
+		background: #ec3750;
+		color: #fff;
+		font-size: 12px;
+		font-weight: 700;
+		border-radius: 999px;
 	}
 
 	.empty-state {
@@ -909,11 +1007,104 @@
 		background-color: #ec3750 !important;
 	}
 
-	.delete-form {
-		margin-top: 12px;
-		padding-top: 12px;
-		border-top: 1px solid var(--color-border);
-		text-align: center;
+	.event-edit-layout {
+		display: flex;
+		gap: 24px;
+		align-items: flex-start;
+	}
+
+	.event-edit-layout .event-form {
+		flex: 1 1 0;
+		min-width: 0;
+	}
+
+	.rsvp-section {
+		flex: 0 0 240px;
+		align-self: stretch;
+		padding-left: 24px;
+		border-left: 1px solid var(--color-border);
+	}
+
+	@media (max-width: 640px) {
+		.event-edit-layout {
+			flex-direction: column;
+			gap: 16px;
+		}
+
+		.rsvp-section {
+			flex-basis: auto;
+			width: 100%;
+			padding-left: 0;
+			padding-top: 16px;
+			border-left: none;
+			border-top: 1px solid var(--color-border);
+		}
+	}
+
+	.rsvp-heading {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 8px;
+		font-size: 16px;
+		font-weight: 700;
+		color: var(--color-text);
+		margin: 0 0 12px;
+	}
+
+	.rsvp-summary {
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--color-muted);
+	}
+
+	.rsvp-empty {
+		font-size: 14px;
+		color: var(--color-muted);
+		margin: 0;
+	}
+
+	.rsvp-group {
+		margin-bottom: 12px;
+	}
+
+	.rsvp-group:last-child {
+		margin-bottom: 0;
+	}
+
+	.rsvp-group-label {
+		display: inline-block;
+		font-size: 13px;
+		font-weight: 700;
+		margin-bottom: 6px;
+	}
+
+	.rsvp-group-label.going {
+		color: #1f9e7a;
+	}
+
+	.rsvp-group-label.not-going {
+		color: #ec3750;
+	}
+
+	.rsvp-people {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.rsvp-person {
+		padding: 4px 10px;
+		background: var(--bg-sunken);
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--color-text);
 	}
 
 	.delete-btn {

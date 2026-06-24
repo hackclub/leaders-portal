@@ -1,5 +1,5 @@
 <script>
-	let { open = false, title = '', onClose, children } = $props();
+	let { open = false, title = '', onClose, children, maxWidth = '400px' } = $props();
 
 	function handleOverlayClick() {
 		onClose?.();
@@ -14,7 +14,7 @@
 
 {#if open}
 	<div class="modal-overlay" role="button" tabindex="-1" onclick={handleOverlayClick} onkeydown={handleKeydown}>
-		<div class="modal" role="dialog" aria-modal="true" tabindex="-1" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
+		<div class="modal" role="dialog" aria-modal="true" tabindex="-1" style="max-width: {maxWidth};" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
 			<div class="modal-header">
 				<h2>{title}</h2>
 				<button class="modal-close" onclick={onClose}>&times;</button>

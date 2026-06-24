@@ -1,6 +1,8 @@
 <script>
+	import { enhance } from '$app/forms';
 	import SiteNav from '$lib/SiteNav.svelte';
 	import ClubCalendar from '$lib/ClubCalendar.svelte';
+	import ClubChat from '$lib/ClubChat.svelte';
 	import Modal from '$lib/Modal.svelte';
 
 	let { data } = $props();
@@ -12,14 +14,32 @@
 	let calendarEvents = $derived(data.calendarEvents ?? []);
 	let club = $derived(data.club ?? null);
 
-	let eventDetail = $state({ open: false, event: null });
+	let eventDetail = $state({ open: false, eventId: null });
+	let savingRsvp = $state(false);
+
+	// Resolve the currently open event from fresh data so RSVP changes (which
+	// reload `data`) are reflected immediately in the open modal.
+	let detailEvent = $derived.by(() => {
+		if (eventDetail.eventId == null) return null;
+		return (
+			[...calendarEvents, ...events].find((e) => e.id === eventDetail.eventId) ?? null
+		);
+	});
 
 	function openEventDetail(event) {
-		eventDetail = { open: true, event };
+		eventDetail = { open: true, eventId: event.id };
 	}
 
 	function closeEventDetail() {
-		eventDetail = { open: false, event: null };
+		eventDetail = { open: false, eventId: null };
+	}
+
+	function handleRsvp() {
+		savingRsvp = true;
+		return async ({ update }) => {
+			await update();
+			savingRsvp = false;
+		};
 	}
 
 	function formatDate(value) {
@@ -95,7 +115,20 @@
 									<span class="event-title">{event.title}</span>
 									<span class="event-date">{formatEventDate(event.event_date, event.event_time)}</span>
 								</div>
-						
+
+								<div class="event-rsvp">
+									{#if event.my_rsvp === 'going'}
+										<span class="rsvp-tag going">✓ You're going</span>
+									{:else if event.my_rsvp === 'not_going'}
+										<span class="rsvp-tag not-going">Not going</span>
+									{:else}
+										<span class="rsvp-tag tap">Tap to RSVP</span>
+									{/if}
+									{#if event.rsvp_count > 0}
+										<span class="rsvp-tag count">👥 {event.rsvp_count} going</span>
+									{/if}
+								</div>
+
 								{#if event.description}
 									<p class="event-description">{event.description}</p>
 								{/if}
@@ -186,27 +219,91 @@
 			{/if}
 		</section>
 	</div>
+
+	<section class="card card-full chat-card">
+		<header class="card-head">
+			<h2 class="card-title">Club chat</h2>
+		</header>
+		{#if data.clubName}
+			<ClubChat
+				clubName={data.clubName}
+				messages={data.chatMessages ?? []}
+				canDelete={false}
+				currentEmail={data.user?.email}
+				expanded={true}
+			/>
+		{:else}
+			<div class="empty">
+				<span class="empty-icon">💬</span>
+				<p class="empty-text">Join a club to start chatting with your fellow members.</p>
+			</div>
+		{/if}
+	</section>
 </div>
 
-<Modal open={eventDetail.open} title={eventDetail.event?.title ?? 'Event'} onClose={closeEventDetail}>
-	{#if eventDetail.event}
+<Modal open={eventDetail.open} title={detailEvent?.title ?? 'Event'} onClose={closeEventDetail}>
+	{#if detailEvent}
 		<div class="detail-content">
 			<div class="detail-row">
 				<span class="detail-label">When</span>
-				<span class="detail-value">{formatEventDate(eventDetail.event.event_date, eventDetail.event.event_time)}</span>
+				<span class="detail-value">{formatEventDate(detailEvent.event_date, detailEvent.event_time)}</span>
 			</div>
-			{#if eventDetail.event.location}
+			{#if detailEvent.location}
 				<div class="detail-row">
 					<span class="detail-label">Where</span>
-					<span class="detail-value">{eventDetail.event.location}</span>
+					<span class="detail-value">{detailEvent.location}</span>
 				</div>
 			{/if}
-			{#if eventDetail.event.description}
+			{#if detailEvent.description}
 				<div class="detail-block">
 					<span class="detail-label">Details</span>
-					<p class="detail-description">{eventDetail.event.description}</p>
+					<p class="detail-description">{detailEvent.description}</p>
 				</div>
 			{/if}
+
+			<div class="detail-block rsvp-block">
+				<span class="detail-label">
+					RSVP
+					{#if detailEvent.rsvp_count > 0}
+						<span class="rsvp-count">· {detailEvent.rsvp_count} going</span>
+					{/if}
+				</span>
+				<div class="rsvp-actions">
+					<form method="POST" action="?/rsvp" use:enhance={handleRsvp}>
+						<input type="hidden" name="eventId" value={detailEvent.id} />
+						<input type="hidden" name="status" value="going" />
+						<button
+							type="submit"
+							class="rsvp-btn going"
+							class:active={detailEvent.my_rsvp === 'going'}
+							disabled={savingRsvp}
+						>
+							✓ I'm going
+						</button>
+					</form>
+					<form method="POST" action="?/rsvp" use:enhance={handleRsvp}>
+						<input type="hidden" name="eventId" value={detailEvent.id} />
+						<input type="hidden" name="status" value="not_going" />
+						<button
+							type="submit"
+							class="rsvp-btn not-going"
+							class:active={detailEvent.my_rsvp === 'not_going'}
+							disabled={savingRsvp}
+						>
+							Can't make it
+						</button>
+					</form>
+					{#if detailEvent.my_rsvp}
+						<form method="POST" action="?/rsvp" use:enhance={handleRsvp}>
+							<input type="hidden" name="eventId" value={detailEvent.id} />
+							<input type="hidden" name="status" value="clear" />
+							<button type="submit" class="rsvp-btn clear" disabled={savingRsvp}>
+								Clear
+							</button>
+						</form>
+					{/if}
+				</div>
+			</div>
 		</div>
 	{/if}
 </Modal>
@@ -329,6 +426,10 @@
 
 	.card-full {
 		margin-bottom: 20px;
+	}
+
+	.chat-card {
+		margin-top: 20px;
 	}
 
 	.card-head {
@@ -583,6 +684,93 @@
 		line-height: 1.5;
 		white-space: pre-wrap;
 		word-break: break-word;
+	}
+
+	.rsvp-block {
+		padding-top: 16px;
+		border-top: 1px solid var(--color-border);
+	}
+
+	.rsvp-count {
+		font-weight: 600;
+		color: #33d6a6;
+		text-transform: none;
+		letter-spacing: 0;
+	}
+
+	.rsvp-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.rsvp-btn {
+		padding: 8px 14px;
+		border: 2px solid var(--color-border);
+		background: var(--bg-card);
+		border-radius: 8px;
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--color-text);
+		cursor: pointer;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+		transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+	}
+
+	.rsvp-btn:hover:not(:disabled) {
+		border-color: #338eda;
+		color: #338eda;
+	}
+
+	.rsvp-btn:disabled {
+		opacity: 0.6;
+		cursor: default;
+	}
+
+	.rsvp-btn.going.active {
+		background: #33d6a6;
+		border-color: #33d6a6;
+		color: #fff;
+	}
+
+	.rsvp-btn.not-going.active {
+		background: #ec3750;
+		border-color: #ec3750;
+		color: #fff;
+	}
+
+	.rsvp-btn.clear {
+		color: var(--color-muted);
+	}
+
+	.event-rsvp {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.rsvp-tag {
+		display: inline-flex;
+		align-items: center;
+		padding: 2px 8px;
+		border-radius: 999px;
+		font-size: 12px;
+		font-weight: 700;
+		background: var(--bg-card);
+		border: 1px solid var(--color-border);
+		color: var(--color-muted);
+	}
+
+	.rsvp-tag.going {
+		background: light-dark(#e8faf4, rgba(51, 214, 166, 0.18));
+		border-color: #33d6a6;
+		color: #1f9e7a;
+	}
+
+	.rsvp-tag.not-going {
+		background: light-dark(#fff0f3, rgba(236, 55, 80, 0.16));
+		border-color: #ec3750;
+		color: #ec3750;
 	}
 
 	.event-header {
