@@ -4,6 +4,7 @@ import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clu
 import { deleteMember, sendAnnouncement } from '$lib/server/clubapi.js';
 import { getClubSettings, getClubLeaders, getColeaders } from '$lib/server/airtable.js';
 import { saveAnnouncement } from '$lib/server/announcements.js';
+import { saveEvent, updateEvent, deleteEvent, getEventsForClub, getEventById } from '$lib/server/events.js';
 
 export async function load({ locals }) {
 	console.log('[MyClub] load called, userPublic:', !!locals.userPublic, 'userId:', locals.userId);
@@ -33,10 +34,13 @@ export async function load({ locals }) {
 			);
 			const memberCount = leaders.length + coleaders.length + nonLeaderMembers.length;
 
+			const events = await getEventsForClub(club.name);
+
 			return {
 				...club,
 				clubWebsite: settings?.clubWebsite || '',
-				memberCount
+				memberCount,
+				events
 			};
 		})
 	);
@@ -123,6 +127,163 @@ export const actions = {
 		} catch (error) {
 			console.error('[MyClub] Error sending announcement:', error);
 			return fail(500, { error: 'Failed to send announcement' });
+		}
+	},
+
+	scheduleEvent: async ({ request, locals }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/auth/login');
+		}
+
+		const formData = await request.formData();
+		const clubName = formData.get('clubName');
+		const title = formData.get('title');
+		const description = formData.get('description');
+		const eventDate = formData.get('eventDate');
+		const eventTime = formData.get('eventTime');
+		const location = formData.get('location');
+
+		if (!clubName || !title || !description || !eventDate || !location) {
+			return fail(400, { error: 'Missing required event details' });
+		}
+
+		if (title.length > 200) {
+			return fail(400, { error: 'Title too long (max 200 characters)' });
+		}
+
+		if (description.length > 2000) {
+			return fail(400, { error: 'Description too long (max 2000 characters)' });
+		}
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club) {
+			return fail(403, { error: 'You do not have access to this club' });
+		}
+
+		if (club.role !== 'leader') {
+			return fail(403, { error: 'Only club leaders can schedule events' });
+		}
+
+		try {
+			await saveEvent({
+				clubName: clubName.toString(),
+				title: title.toString(),
+				description: description.toString(),
+				eventDate: eventDate.toString(),
+				eventTime: eventTime ? eventTime.toString() : null,
+				location: location.toString(),
+				createdBy: effectiveEmail
+			});
+			return { success: true, eventScheduled: true };
+		} catch (error) {
+			console.error('[MyClub] Error scheduling event:', error);
+			return fail(500, { error: 'Failed to schedule event' });
+		}
+	},
+
+	updateEvent: async ({ request, locals }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/auth/login');
+		}
+
+		const formData = await request.formData();
+		const eventId = formData.get('eventId');
+		const clubName = formData.get('clubName');
+		const title = formData.get('title');
+		const description = formData.get('description');
+		const eventDate = formData.get('eventDate');
+		const eventTime = formData.get('eventTime');
+		const location = formData.get('location');
+
+		if (!eventId || !clubName || !title || !description || !eventDate || !location) {
+			return fail(400, { error: 'Missing required event details' });
+		}
+
+		if (title.length > 200) {
+			return fail(400, { error: 'Title too long (max 200 characters)' });
+		}
+
+		if (description.length > 2000) {
+			return fail(400, { error: 'Description too long (max 2000 characters)' });
+		}
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club) {
+			return fail(403, { error: 'You do not have access to this club' });
+		}
+
+		if (club.role !== 'leader') {
+			return fail(403, { error: 'Only club leaders can edit events' });
+		}
+
+		const existing = await getEventById(Number(eventId));
+		if (!existing || existing.club_name !== clubName) {
+			return fail(403, { error: 'You cannot edit this event' });
+		}
+
+		try {
+			await updateEvent(Number(eventId), {
+				title: title.toString(),
+				description: description.toString(),
+				eventDate: eventDate.toString(),
+				eventTime: eventTime ? eventTime.toString() : null,
+				location: location.toString()
+			});
+			return { success: true, eventUpdated: true };
+		} catch (error) {
+			console.error('[MyClub] Error updating event:', error);
+			return fail(500, { error: 'Failed to update event' });
+		}
+	},
+
+	deleteEvent: async ({ request, locals }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/auth/login');
+		}
+
+		const formData = await request.formData();
+		const eventId = formData.get('eventId');
+		const clubName = formData.get('clubName');
+
+		if (!eventId || !clubName) {
+			return fail(400, { error: 'Missing event id or club name' });
+		}
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club) {
+			return fail(403, { error: 'You do not have access to this club' });
+		}
+
+		if (club.role !== 'leader') {
+			return fail(403, { error: 'Only club leaders can delete events' });
+		}
+
+		const existing = await getEventById(Number(eventId));
+		if (!existing || existing.club_name !== clubName) {
+			return fail(403, { error: 'You cannot delete this event' });
+		}
+
+		try {
+			await deleteEvent(Number(eventId));
+			return { success: true, eventDeleted: true };
+		} catch (error) {
+			console.error('[MyClub] Error deleting event:', error);
+			return fail(500, { error: 'Failed to delete event' });
 		}
 	},
 

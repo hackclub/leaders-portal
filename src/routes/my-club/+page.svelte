@@ -1,6 +1,7 @@
 <script>
 	import RefreshButton from '$lib/RefreshButton.svelte';
 	import Modal from '$lib/Modal.svelte';
+	import ClubCalendar from '$lib/ClubCalendar.svelte';
 	import SiteNav from '$lib/SiteNav.svelte';
 	import { mergeClubData } from '$lib/club-utils.js';
 	import { onMount } from 'svelte';
@@ -80,6 +81,32 @@
 	function closeAnnounceModal() {
 		announceModal = { open: false, clubName: null };
 	}
+
+	let eventModal = $state({ open: false, clubName: null, mode: 'create' });
+	let eventForm = $state({ id: null, title: '', eventDate: '', eventTime: '', location: '', description: '' });
+	let isScheduling = $state(false);
+
+	function openCreateEvent(clubName, dateStr = '') {
+		eventForm = { id: null, title: '', eventDate: dateStr, eventTime: '', location: '', description: '' };
+		eventModal = { open: true, clubName, mode: 'create' };
+	}
+
+	function openEditEvent(clubName, event) {
+		eventForm = {
+			id: event.id,
+			title: event.title || '',
+			eventDate: (event.event_date || '').slice(0, 10),
+			eventTime: event.event_time || '',
+			location: event.location || '',
+			description: event.description || ''
+		};
+		eventModal = { open: true, clubName, mode: 'edit' };
+	}
+
+	function closeEventModal() {
+		eventModal = { open: false, clubName: null, mode: 'create' };
+		isScheduling = false;
+	}
 </script>
 
 <svelte:head>
@@ -100,6 +127,18 @@
 
 	{#if form?.success && form?.membersUpdated !== undefined}
 		<div class="success-banner">Announcement sent to {form.membersUpdated} members!</div>
+	{/if}
+
+	{#if form?.success && form?.eventScheduled}
+		<div class="success-banner">Event scheduled! Your members can now see it on their dashboard.</div>
+	{/if}
+
+	{#if form?.success && form?.eventUpdated}
+		<div class="success-banner">Event updated!</div>
+	{/if}
+
+	{#if form?.success && form?.eventDeleted}
+		<div class="success-banner">Event deleted.</div>
 	{/if}
 
 	{#if clubs.length > 0}
@@ -168,11 +207,25 @@
 					{/if}
 
 					{#if club.role === 'leader'}
+						<div class="calendar-section">
+							<h3 class="section-heading">Club calendar</h3>
+							<ClubCalendar
+								events={club.events ?? []}
+								canEdit={true}
+								onDayClick={(date) => openCreateEvent(club.name, date)}
+								onEventClick={(event) => openEditEvent(club.name, event)}
+							/>
+						</div>
+
 						<div class="actions-row">
 							<a href="/my-club/{encodeURIComponent(club.name)}/manage" class="action-btn">
 								<img src="https://icons.hackclub.com/api/icons/white/settings" alt="" width="20" height="20" />
 								<span>Manage Club</span>
 							</a>
+							<button class="action-btn action-btn-secondary" onclick={() => openCreateEvent(club.name)}>
+								<img src="https://icons.hackclub.com/api/icons/{iconColor}/event-add" alt="" width="20" height="20" />
+								<span>Schedule Event</span>
+							</button>
 							<button class="action-btn action-btn-secondary" onclick={() => openAnnounceModal(club.name)}>
 								<img src="https://icons.hackclub.com/api/icons/{iconColor}/message-simple-fill" alt="" width="20" height="20" />
 								<span>Send Announcement</span>
@@ -270,6 +323,75 @@
 				</button>
 			</div>
 		</form>
+	</div>
+</Modal>
+
+<Modal open={eventModal.open} title={eventModal.mode === 'edit' ? 'Edit Event' : 'Schedule Event'} onClose={closeEventModal}>
+	<div class="event-modal-content">
+		<p class="help-intro">
+			{#if eventModal.mode === 'edit'}
+				Edit this event for <strong>{eventModal.clubName}</strong>. Changes appear on your members' dashboards.
+			{:else}
+				Schedule an event for <strong>{eventModal.clubName}</strong>. It will appear on your members' dashboards.
+			{/if}
+		</p>
+
+		<form method="POST" action={eventModal.mode === 'edit' ? '?/updateEvent' : '?/scheduleEvent'} onsubmit={() => (isScheduling = true)}>
+			<input type="hidden" name="clubName" value={eventModal.clubName} />
+			{#if eventModal.mode === 'edit'}
+				<input type="hidden" name="eventId" value={eventForm.id} />
+			{/if}
+			<div class="form-group">
+				<label for="eventTitle">Title</label>
+				<input type="text" id="eventTitle" name="title" bind:value={eventForm.title} placeholder="e.g. Weekly Hack Night" maxlength="200" required />
+			</div>
+			<div class="form-row">
+				<div class="form-group">
+					<label for="eventDate">Date</label>
+					<input type="date" id="eventDate" name="eventDate" bind:value={eventForm.eventDate} required />
+				</div>
+				<div class="form-group">
+					<label for="eventTime">Time (optional)</label>
+					<input type="time" id="eventTime" name="eventTime" bind:value={eventForm.eventTime} />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="eventLocation">Location</label>
+				<input type="text" id="eventLocation" name="location" bind:value={eventForm.location} placeholder="e.g. Room 204 or a video call link" maxlength="500" required />
+			</div>
+			<div class="form-group">
+				<label for="eventDescription">Description</label>
+				<textarea
+					id="eventDescription"
+					name="description"
+					bind:value={eventForm.description}
+					placeholder="What's happening at this event?"
+					rows="4"
+					maxlength="2000"
+					required
+				></textarea>
+			</div>
+			<div class="modal-actions">
+				<button type="button" class="btn cancel-btn" onclick={closeEventModal}>Cancel</button>
+				<button type="submit" class="btn submit-btn" disabled={isScheduling}>
+					{#if isScheduling}
+						Saving...
+					{:else if eventModal.mode === 'edit'}
+						Save Changes
+					{:else}
+						Schedule Event
+					{/if}
+				</button>
+			</div>
+		</form>
+
+		{#if eventModal.mode === 'edit'}
+			<form method="POST" action="?/deleteEvent" class="delete-form" onsubmit={() => (isScheduling = true)}>
+				<input type="hidden" name="clubName" value={eventModal.clubName} />
+				<input type="hidden" name="eventId" value={eventForm.id} />
+				<button type="submit" class="btn delete-btn" disabled={isScheduling}>Delete Event</button>
+			</form>
+		{/if}
 	</div>
 </Modal>
 
@@ -512,6 +634,19 @@
 		text-overflow: ellipsis;
 	}
 
+	.calendar-section {
+		margin-top: 20px;
+		padding-top: 20px;
+		border-top: 1px solid var(--color-border);
+	}
+
+	.section-heading {
+		font-size: 16px;
+		font-weight: 700;
+		color: var(--color-text);
+		margin: 0 0 12px;
+	}
+
 	.actions-row {
 		display: flex;
 		gap: 10px;
@@ -721,6 +856,15 @@
 		margin-bottom: 20px;
 	}
 
+	.form-row {
+		display: flex;
+		gap: 12px;
+	}
+
+	.form-row .form-group {
+		flex: 1;
+	}
+
 	.form-group label {
 		display: block;
 		font-size: 14px;
@@ -763,5 +907,23 @@
 
 	.submit-btn {
 		background-color: #ec3750 !important;
+	}
+
+	.delete-form {
+		margin-top: 12px;
+		padding-top: 12px;
+		border-top: 1px solid var(--color-border);
+		text-align: center;
+	}
+
+	.delete-btn {
+		background-color: transparent !important;
+		color: #ec3750 !important;
+		border: 2px solid #ec3750 !important;
+	}
+
+	.delete-btn:hover {
+		background-color: #ec3750 !important;
+		color: #ffffff !important;
 	}
 </style>

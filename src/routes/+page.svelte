@@ -11,6 +11,25 @@
 	let events = $state([]);
 	let selectedEvent = $state(null);
 	let activeTab = $state('ysws');
+	let showPortalSwitchBanner = $state(data.showPortalSwitchBanner);
+
+	const HOME_PREFERENCE_COOKIE = 'homePreference';
+
+	function setHomePreference(value) {
+		// Persist for a year so the choice survives across visits and sign-ins.
+		document.cookie = `${HOME_PREFERENCE_COOKIE}=${value}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+	}
+
+	function switchToMemberSide() {
+		setHomePreference('member');
+		showPortalSwitchBanner = false;
+		window.location.href = '/members';
+	}
+
+	function dismissPortalSwitchBanner() {
+		setHomePreference('dismissed');
+		showPortalSwitchBanner = false;
+	}
 	let hasWebdevEvents = $derived(events.some(e => e.category === 'Webdev'));
 	let hasCadEvents = $derived(events.some(e => e.category === 'CAD'));
 	let hasGamedevEvents = $derived(events.some(e => e.category === 'GameDev'));
@@ -80,6 +99,25 @@
 </svelte:head>
 
 <SiteNav user={data.user} />
+
+{#if showPortalSwitchBanner}
+	<div class="portal-switch-banner" role="region" aria-label="Portal selection">
+		<div class="portal-switch-inner">
+			<div class="portal-switch-text">
+				<strong>You're viewing the Club Leaders Portal.</strong>
+				<span>Are you a club member instead? You can switch to the member side of the portal.</span>
+			</div>
+			<div class="portal-switch-actions">
+				<button class="portal-switch-btn primary" onclick={switchToMemberSide}>
+					View member side
+				</button>
+				<button class="portal-switch-btn secondary" onclick={dismissPortalSwitchBanner}>
+					Don't show again
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}
 
 <div class="container">
 	<section class="hero">
@@ -195,6 +233,75 @@
 		margin: 0 auto;
 		padding: 24px 16px 48px;
 		font-family: 'Phantom Sans', system-ui, sans-serif;
+	}
+
+	.portal-switch-banner {
+		background: var(--bg-sunken);
+		border-bottom: 2px solid var(--color-border);
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+	}
+
+	.portal-switch-inner {
+		max-width: 1024px;
+		margin: 0 auto;
+		padding: 14px 16px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		flex-wrap: wrap;
+	}
+
+	.portal-switch-text {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.portal-switch-text strong {
+		color: var(--color-text);
+		font-size: 15px;
+	}
+
+	.portal-switch-text span {
+		color: var(--color-muted);
+		font-size: 14px;
+	}
+
+	.portal-switch-actions {
+		display: flex;
+		gap: 10px;
+		flex-shrink: 0;
+	}
+
+	.portal-switch-btn {
+		padding: 8px 16px;
+		border-radius: 8px;
+		font-family: inherit;
+		font-weight: 600;
+		font-size: 14px;
+		cursor: pointer;
+		border: 2px solid transparent;
+	}
+
+	.portal-switch-btn.primary {
+		background: #ec3750;
+		color: #fff;
+	}
+
+	.portal-switch-btn.primary:hover {
+		background: #d62e45;
+	}
+
+	.portal-switch-btn.secondary {
+		background: transparent;
+		color: var(--color-muted);
+		border-color: var(--color-border);
+	}
+
+	.portal-switch-btn.secondary:hover {
+		color: var(--color-text);
+		border-color: var(--color-muted);
 	}
 
 	.hero {

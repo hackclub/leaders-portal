@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import ThemeToggle from '$lib/ThemeToggle.svelte';
 
-	let { user = null } = $props();
+	let { user = null, memberView = false } = $props();
 
 	let path = $derived($page.url.pathname);
 	let menuOpen = $state(false);
@@ -54,6 +54,10 @@
 				<form method="POST" action="/logout" class="logout-form">
 					<button type="submit" class="nav-cta secondary">Logout</button>
 				</form>
+			{:else if memberView}
+				<a href="/members" class="nav-link" class:active={path === '/members'} onclick={closeMenu}>Home</a>
+				<a href="/join" class="nav-link" class:active={isActive('/join')} onclick={closeMenu}>Join a club</a>
+				<a href="/members/login" class="nav-cta" onclick={closeMenu}>Member login</a>
 			{:else}
 				<a href="/" class="nav-link" class:active={isActive('/')} onclick={closeMenu}>Home</a>
 				<a href="/auth/login" class="nav-cta" onclick={closeMenu}>Sign in</a>

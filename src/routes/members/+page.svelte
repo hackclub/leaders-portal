@@ -2,13 +2,15 @@
 	import SiteNav from '$lib/SiteNav.svelte';
 
 	let { data } = $props();
+
+	let isMember = $derived(data.user?.provider === 'member');
 </script>
 
 <svelte:head>
 	<title>Club Members</title>
 </svelte:head>
 
-<SiteNav user={data.user} />
+<SiteNav user={data.user} memberView={true} />
 
 <div class="container">
 	<section class="hero">
@@ -32,11 +34,19 @@
 				<a href="/join" class="cta">Join a club</a>
 			</div>
 
-			<div class="action-card">
- 				<h2 class="card-title">Log in as a member</h2>
-				<p class="card-text">Already part of a club? Log in to view your club's progress and stay in the loop.</p>
-				<a href="/members/login" class="cta secondary">Log in</a>
-			</div>
+			{#if isMember}
+				<div class="action-card">
+					<h2 class="card-title">Go to dashboard</h2>
+					<p class="card-text">You're logged in. Head to your dashboard to view your club's progress and stay in the loop.</p>
+					<a href="/members/dashboard" class="cta secondary">Go to dashboard</a>
+				</div>
+			{:else}
+				<div class="action-card">
+					<h2 class="card-title">Log in as a member</h2>
+					<p class="card-text">Already part of a club? Log in to view your club's progress and stay in the loop.</p>
+					<a href="/members/login" class="cta secondary">Log in</a>
+				</div>
+			{/if}
 		</section>
 	</main>
 
