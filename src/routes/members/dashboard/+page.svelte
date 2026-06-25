@@ -14,8 +14,59 @@
 	let calendarEvents = $derived(data.calendarEvents ?? []);
 	let club = $derived(data.club ?? null);
 
+	let chatMessages = $derived(data.chatMessages ?? []);
+
 	let eventDetail = $state({ open: false, eventId: null });
 	let savingRsvp = $state(false);
+
+	let inboxOpen = $state(false);
+
+	function isToday(value) {
+		const date = new Date(value);
+		if (isNaN(date.getTime())) return false;
+		const now = new Date();
+		return (
+			date.getFullYear() === now.getFullYear() &&
+			date.getMonth() === now.getMonth() &&
+			date.getDate() === now.getDate()
+		);
+	}
+
+	// Upcoming events the member hasn't RSVP'd to yet.
+	let unsubscribedEvents = $derived(events.filter((e) => !e.my_rsvp));
+
+	// Chat messages from today, excluding the member's own messages. Leader
+	// messages always count (a leader may share the member's email, so we only
+	// drop messages this member sent as a member, i.e. non-leader + own email).
+	let todaysChat = $derived(
+		chatMessages.filter(
+			(m) =>
+				isToday(m.created_at) &&
+				!(m.is_leader === false && m.sender_email === data.user?.email)
+		)
+	);
+
+	// Announcements from today.
+	let todaysAnnouncements = $derived(
+		announcements.filter((a) => isToday(a.created_at))
+	);
+
+	let notificationCount = $derived(
+		unsubscribedEvents.length + todaysChat.length + todaysAnnouncements.length
+	);
+
+	function openInbox() {
+		inboxOpen = true;
+	}
+
+	function closeInbox() {
+		inboxOpen = false;
+	}
+
+	function openEventFromInbox(event) {
+		inboxOpen = false;
+		openEventDetail(event);
+	}
 
 	// Resolve the currently open event from fresh data so RSVP changes (which
 	// reload `data`) are reflected immediately in the open modal.
@@ -86,6 +137,31 @@
 <div class="container">
 	<header class="hero">
 		<h1 class="title">Welcome, {memberName}</h1>
+		<button
+			type="button"
+			class="inbox-btn"
+			onclick={openInbox}
+			aria-label="Open inbox ({notificationCount} notifications)"
+		>
+			<svg
+				class="inbox-icon"
+				xmlns="http://www.w3.org/2000/svg"
+				width="26"
+				height="26"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<path d="M22 12h-6l-2 3h-4l-2-3H2" />
+				<path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+			</svg>
+			{#if notificationCount > 0}
+				<span class="inbox-badge">{notificationCount}</span>
+			{/if}
+		</button>
 	</header>
 
 
@@ -125,7 +201,7 @@
 										<span class="rsvp-tag tap">Tap to RSVP</span>
 									{/if}
 									{#if event.rsvp_count > 0}
-										<span class="rsvp-tag count">👥 {event.rsvp_count} going</span>
+										<span class="rsvp-tag count">{event.rsvp_count} going</span>
 									{/if}
 								</div>
 
@@ -308,6 +384,79 @@
 	{/if}
 </Modal>
 
+<Modal open={inboxOpen} title="Inbox" onClose={closeInbox} maxWidth="520px">
+	{#if notificationCount === 0}
+		<div class="empty">
+			<span class="empty-icon">📭</span>
+			<p class="empty-text">You're all caught up! No new notifications.</p>
+		</div>
+	{:else}
+		<div class="inbox-content">
+			{#if unsubscribedEvents.length > 0}
+				<div class="inbox-group">
+					<h3 class="inbox-group-title">
+						<span class="inbox-group-dot" style="--dot: #338eda;"></span>
+						Events to RSVP
+						<span class="inbox-group-count">{unsubscribedEvents.length}</span>
+					</h3>
+					<ul class="inbox-list">
+						{#each unsubscribedEvents as event}
+							<li>
+								<button type="button" class="inbox-item" onclick={() => openEventFromInbox(event)}>
+									<span class="inbox-item-title">{event.title}</span>
+									<span class="inbox-item-meta">{formatEventDate(event.event_date, event.event_time)}</span>
+									{#if event.location}
+										<span class="inbox-item-sub">{event.location}</span>
+									{/if}
+								</button>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
+
+			{#if todaysAnnouncements.length > 0}
+				<div class="inbox-group">
+					<h3 class="inbox-group-title">
+						<span class="inbox-group-dot" style="--dot: #ec3750;"></span>
+						Announcements today
+						<span class="inbox-group-count">{todaysAnnouncements.length}</span>
+					</h3>
+					<ul class="inbox-list">
+						{#each todaysAnnouncements as announcement}
+							<li class="inbox-item static">
+								<p class="inbox-item-message">{announcement.message}</p>
+								<span class="inbox-item-meta">{formatDate(announcement.created_at)}</span>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
+
+			{#if todaysChat.length > 0}
+				<div class="inbox-group">
+					<h3 class="inbox-group-title">
+						<span class="inbox-group-dot" style="--dot: #33d6a6;"></span>
+						Chat today
+						<span class="inbox-group-count">{todaysChat.length}</span>
+					</h3>
+					<ul class="inbox-list">
+						{#each todaysChat as message}
+							<li class="inbox-item static">
+								<span class="inbox-item-title">
+									{message.sender_name}{#if message.is_leader}<span class="inbox-leader-tag">Leader</span>{/if}
+								</span>
+								<p class="inbox-item-message">{message.message}</p>
+								<span class="inbox-item-meta">{formatDate(message.created_at)}</span>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
+		</div>
+	{/if}
+</Modal>
+
 <style>
 	:global(body) {
 		background-color: var(--bg-page);
@@ -325,9 +474,176 @@
 
 	.hero {
 		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		margin-bottom: 28px;
+	}
+
+	.inbox-btn {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 48px;
+		height: 48px;
+		flex-shrink: 0;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
+		border-radius: 12px;
+		color: var(--color-text);
+		cursor: pointer;
+		transition: border-color 0.15s, color 0.15s, transform 0.15s;
+	}
+
+	.inbox-btn:hover {
+		border-color: #ec3750;
+		color: #ec3750;
+		transform: scale(1.04);
+	}
+
+	.inbox-icon {
+		display: block;
+	}
+
+	.inbox-badge {
+		position: absolute;
+		top: -8px;
+		right: -8px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 22px;
+		height: 22px;
+		padding: 0 6px;
+		border-radius: 999px;
+		background: #ec3750;
+		border: 2px solid var(--bg-page);
+		color: #fff;
+		font-size: 12px;
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	.inbox-content {
+		display: flex;
+		flex-direction: column;
+		gap: 22px;
+	}
+
+	.inbox-group {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.inbox-group-title {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin: 0;
+		font-size: 14px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--color-muted);
+	}
+
+	.inbox-group-dot {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: var(--dot, #ec3750);
+		flex-shrink: 0;
+	}
+
+	.inbox-group-count {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 20px;
+		height: 20px;
+		padding: 0 6px;
+		border-radius: 999px;
+		background: var(--bg-sunken);
+		border: 1px solid var(--color-border);
+		color: var(--color-text);
+		font-size: 12px;
+		font-weight: 700;
+	}
+
+	.inbox-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
 		flex-direction: column;
 		gap: 8px;
-		margin-bottom: 28px;
+	}
+
+	.inbox-item {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		width: 100%;
+		text-align: left;
+		padding: 12px 14px;
+		background: var(--bg-sunken);
+		border: 1px solid var(--color-border);
+		border-radius: 8px;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+	}
+
+	button.inbox-item {
+		cursor: pointer;
+		transition: border-color 0.15s, transform 0.15s;
+	}
+
+	button.inbox-item:hover {
+		border-color: #338eda;
+		transform: scale(1.01);
+	}
+
+	.inbox-item-title {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-size: 15px;
+		font-weight: 700;
+		color: var(--color-text);
+	}
+
+	.inbox-leader-tag {
+		font-size: 11px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: #ec3750;
+		background: light-dark(#fff0f3, rgba(236, 55, 80, 0.16));
+		border: 1px solid #ec3750;
+		border-radius: 999px;
+		padding: 1px 7px;
+	}
+
+	.inbox-item-message {
+		font-size: 14px;
+		color: var(--color-text);
+		margin: 0;
+		line-height: 1.5;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	.inbox-item-meta {
+		font-size: 13px;
+		font-weight: 600;
+		color: #338eda;
+	}
+
+	.inbox-item-sub {
+		font-size: 13px;
+		color: var(--color-muted);
 	}
 
 	.eyebrow {

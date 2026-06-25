@@ -25,17 +25,54 @@
 		Object.fromEntries(data.clubs.map((club) => [club.name, club.role !== 'leader']))
 	);
 
-	function todayMessageCount(messages) {
+	function isToday(value) {
+		const date = new Date(value);
+		if (isNaN(date.getTime())) return false;
 		const now = new Date();
-		return (messages ?? []).filter((msg) => {
-			const date = new Date(msg.created_at);
-			if (isNaN(date.getTime())) return false;
-			return (
-				date.getFullYear() === now.getFullYear() &&
-				date.getMonth() === now.getMonth() &&
-				date.getDate() === now.getDate()
-			);
-		}).length;
+		return (
+			date.getFullYear() === now.getFullYear() &&
+			date.getMonth() === now.getMonth() &&
+			date.getDate() === now.getDate()
+		);
+	}
+
+	function todayMessageCount(messages) {
+		return (messages ?? []).filter((msg) => isToday(msg.created_at)).length;
+	}
+
+	function formatChatDate(value) {
+		const date = new Date(value);
+		if (isNaN(date.getTime())) return '';
+		return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+	}
+
+	// Inbox: today's chat messages across all clubs, excluding messages the
+	// leader sent themselves (their own leader-authored messages).
+	let inboxOpen = $state(false);
+
+	let inboxClubs = $derived(
+		clubs
+			.map((club) => ({
+				name: club.name,
+				messages: (club.chatMessages ?? []).filter(
+					(m) =>
+						isToday(m.created_at) &&
+						!(m.is_leader === true && m.sender_email === data.effectiveEmail)
+				)
+			}))
+			.filter((c) => c.messages.length > 0)
+	);
+
+	let notificationCount = $derived(
+		inboxClubs.reduce((total, c) => total + c.messages.length, 0)
+	);
+
+	function openInbox() {
+		inboxOpen = true;
+	}
+
+	function closeInbox() {
+		inboxOpen = false;
 	}
 
 	function resolveTheme() {
@@ -147,8 +184,35 @@
 
 <div class="container">
 	<header class="page-header">
-		<h1 class="page-title">My Club</h1>
-		<p class="page-subtitle">Manage your clubs and track your progress.</p>
+		<div class="page-header-text">
+			<h1 class="page-title">My Club</h1>
+			<p class="page-subtitle">Manage your clubs and track your progress.</p>
+		</div>
+		<button
+			type="button"
+			class="inbox-btn"
+			onclick={openInbox}
+			aria-label="Open inbox ({notificationCount} notifications)"
+		>
+			<svg
+				class="inbox-icon"
+				xmlns="http://www.w3.org/2000/svg"
+				width="26"
+				height="26"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<path d="M22 12h-6l-2 3h-4l-2-3H2" />
+				<path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+			</svg>
+			{#if notificationCount > 0}
+				<span class="inbox-badge">{notificationCount}</span>
+			{/if}
+		</button>
 	</header>
 
 	{#if form?.error}
@@ -262,7 +326,7 @@
 							</button>
 							<button class="action-btn action-btn-secondary" onclick={() => openTransferModal(club.name)}>
 								<img src="https://icons.hackclub.com/api/icons/{iconColor}/external" alt="" width="20" height="20" />
-								<span>Transfer Leadership</span>
+								<span>	adership</span>
 							</button>
 							<button class="action-btn action-btn-secondary" onclick={() => (chatExpanded[club.name] = !chatExpanded[club.name])}>
 								<img src="https://icons.hackclub.com/api/icons/{iconColor}/message-simple-fill" alt="" width="20" height="20" />
@@ -292,6 +356,38 @@
 		</div>
 	{/if}
 </div>
+
+<Modal open={inboxOpen} title="Inbox" onClose={closeInbox} maxWidth="520px">
+	{#if notificationCount === 0}
+		<div class="inbox-empty">
+			<span class="inbox-empty-icon">📭</span>
+			<p class="inbox-empty-text">You're all caught up! No new chat messages today.</p>
+		</div>
+	{:else}
+		<div class="inbox-content">
+			{#each inboxClubs as club}
+				<div class="inbox-group">
+					<h3 class="inbox-group-title">
+						<span class="inbox-group-dot"></span>
+						{club.name}
+						<span class="inbox-group-count">{club.messages.length}</span>
+					</h3>
+					<ul class="inbox-list">
+						{#each club.messages as message}
+							<li class="inbox-item">
+								<span class="inbox-item-title">
+									{message.sender_name}{#if message.is_leader}<span class="inbox-leader-tag">Leader</span>{/if}
+								</span>
+								<p class="inbox-item-message">{message.message}</p>
+								<span class="inbox-item-meta">{formatChatDate(message.created_at)}</span>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/each}
+		</div>
+	{/if}
+</Modal>
 
 <Modal open={helpModal.open} title="Contact Us" onClose={closeHelpModal}>
 	{#if helpModal.loading}
@@ -484,7 +580,181 @@
 	}
 
 	.page-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
 		margin-bottom: 24px;
+	}
+
+	.inbox-btn {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 48px;
+		height: 48px;
+		flex-shrink: 0;
+		background: var(--bg-card);
+		border: 2px solid var(--color-border);
+		border-radius: 12px;
+		color: var(--color-text);
+		cursor: pointer;
+		transition: border-color 0.15s, color 0.15s, transform 0.15s;
+	}
+
+	.inbox-btn:hover {
+		border-color: #ec3750;
+		color: #ec3750;
+		transform: scale(1.04);
+	}
+
+	.inbox-icon {
+		display: block;
+	}
+
+	.inbox-badge {
+		position: absolute;
+		top: -8px;
+		right: -8px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 22px;
+		height: 22px;
+		padding: 0 6px;
+		border-radius: 999px;
+		background: #ec3750;
+		border: 2px solid var(--bg-page);
+		color: #fff;
+		font-size: 12px;
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	.inbox-content {
+		display: flex;
+		flex-direction: column;
+		gap: 22px;
+	}
+
+	.inbox-group {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.inbox-group-title {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin: 0;
+		font-size: 14px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--color-muted);
+	}
+
+	.inbox-group-dot {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: #33d6a6;
+		flex-shrink: 0;
+	}
+
+	.inbox-group-count {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 20px;
+		height: 20px;
+		padding: 0 6px;
+		border-radius: 999px;
+		background: var(--bg-sunken);
+		border: 1px solid var(--color-border);
+		color: var(--color-text);
+		font-size: 12px;
+		font-weight: 700;
+	}
+
+	.inbox-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.inbox-item {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		padding: 12px 14px;
+		background: var(--bg-sunken);
+		border: 1px solid var(--color-border);
+		border-radius: 8px;
+	}
+
+	.inbox-item-title {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-size: 15px;
+		font-weight: 700;
+		color: var(--color-text);
+	}
+
+	.inbox-leader-tag {
+		font-size: 11px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: #ec3750;
+		background: light-dark(#fff0f3, rgba(236, 55, 80, 0.16));
+		border: 1px solid #ec3750;
+		border-radius: 999px;
+		padding: 1px 7px;
+	}
+
+	.inbox-item-message {
+		font-size: 14px;
+		color: var(--color-text);
+		margin: 0;
+		line-height: 1.5;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	.inbox-item-meta {
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--color-muted);
+	}
+
+	.inbox-empty {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 8px;
+		padding: 24px 16px;
+		background: var(--bg-sunken);
+		border: 1px dashed var(--color-border);
+		border-radius: 10px;
+	}
+
+	.inbox-empty-icon {
+		font-size: 26px;
+		line-height: 1;
+	}
+
+	.inbox-empty-text {
+		font-size: 15px;
+		color: var(--color-muted);
+		margin: 0;
 	}
 
 	.page-title {
