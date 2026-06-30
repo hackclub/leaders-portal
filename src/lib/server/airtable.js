@@ -576,8 +576,11 @@ export async function getClubLeaders(clubName) {
 	const base = getAirtableBase();
 	
 	try {
+		// Wrap each joined club name in "|" delimiters so we match a whole
+		// club name rather than a substring (e.g. "Forge" must not match
+		// "CyberForge").
 		const records = await base('Leaders').select({
-			filterByFormula: `SEARCH("${escapeAirtableString(clubName)}", ARRAYJOIN({club_name (from rel_leader_to_clubs)})) > 0`
+			filterByFormula: `SEARCH("|${escapeAirtableString(clubName)}|", "|" & ARRAYJOIN({club_name (from rel_leader_to_clubs)}, "|") & "|") > 0`
 		}).all();
 
 		return records.map(record => {
@@ -602,8 +605,11 @@ export async function getColeaders(clubName) {
 	const base = getAirtableBase();
 	
 	try {
+		// Wrap each joined club name in "|" delimiters so we match a whole
+		// club name rather than a substring (e.g. "Forge" must not match
+		// "CyberForge").
 		const records = await base('Leaders').select({
-			filterByFormula: `SEARCH("${escapeAirtableString(clubName)}", ARRAYJOIN({club_name (from rel_coleader_to_clubs)})) > 0`
+			filterByFormula: `SEARCH("|${escapeAirtableString(clubName)}|", "|" & ARRAYJOIN({club_name (from rel_coleader_to_clubs)}, "|") & "|") > 0`
 		}).all();
 
 		return records.map(record => {
