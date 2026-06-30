@@ -6,6 +6,16 @@
 	let isSubmitting = $state(false);
 	let hasJoined = $state(false);
 
+	const colors = data.colors ?? {};
+	const bgColor = colors.bgColor || '#f9fafc';
+	const colorStyle = [
+		`--join-bg: ${bgColor}`,
+		`--join-card: ${colors.cardColor || '#ffffff'}`,
+		`--join-text: ${colors.textColor || '#1f2d3d'}`,
+		`--join-btn: ${colors.buttonColor || '#ec3750'}`
+	].join('; ');
+	const bodyStyleTag = `<style>html, body { background-color: ${bgColor} !important; }</style>`;
+
 	function handleSubmit() {
 		isSubmitting = true;
 		return async ({ result, update }) => {
@@ -20,9 +30,10 @@
 
 <svelte:head>
 	<title>Join {data.clubName}</title>
+	{@html bodyStyleTag}
 </svelte:head>
 
-<div class="container">
+<div class="container" style={colorStyle}>
 	<div class="card">
 		{#if hasJoined}
 			<div class="success-icon">
@@ -76,31 +87,32 @@
 
 <style>
 	:global(body) {
-		background-color: var(--bg-page);
-		color: var(--color-text);
 		margin: 0;
 		padding: 0;
 	}
 
 	.container {
-		max-width: 480px;
 		margin: 0 auto;
 		min-height: 100vh;
 		min-height: 100dvh;
 		display: flex;
 		flex-direction: column;
+		align-items: center;
 		justify-content: center;
 		padding: 48px 16px;
 		box-sizing: border-box;
 		font-family: 'Phantom Sans', system-ui, sans-serif;
+		color: var(--join-text);
+		background: var(--join-bg);
 	}
 
 	.card {
-		background: var(--bg-card);
-		border: 2px solid var(--color-border);
+		background: var(--join-card);
+		border: 2px solid color-mix(in srgb, var(--join-text) 12%, transparent);
 		border-radius: 12px;
 		padding: 48px;
 		width: 100%;
+		max-width: 480px;
 		box-sizing: border-box;
 		text-align: center;
 	}
@@ -112,19 +124,19 @@
 	}
 
 	h1 {
-		color: var(--color-text);
+		color: var(--join-text);
 		font-size: 28px;
 		margin: 0 0 16px 0;
 	}
 
 	.message {
-		color: var(--color-muted);
+		color: color-mix(in srgb, var(--join-text) 65%, transparent);
 		font-size: 16px;
 		margin-bottom: 24px;
 	}
 
 	.message strong {
-		color: var(--color-text);
+		color: var(--join-text);
 	}
 
 	.field {
@@ -134,7 +146,7 @@
 
 	label {
 		display: block;
-		color: var(--color-text);
+		color: var(--join-text);
 		font-weight: 600;
 		font-size: 14px;
 		margin-bottom: 6px;
@@ -144,17 +156,17 @@
 		width: 100%;
 		box-sizing: border-box;
 		padding: 12px 14px;
-		border: 2px solid var(--color-border);
+		border: 2px solid color-mix(in srgb, var(--join-text) 18%, transparent);
 		border-radius: 8px;
 		font-size: 16px;
 		font-family: inherit;
-		background: var(--bg-card);
-		color: var(--color-text);
+		background: var(--join-card);
+		color: var(--join-text);
 	}
 
 	input:focus {
 		outline: none;
-		border-color: #ec3750;
+		border-color: var(--join-btn);
 	}
 
 	.btn {
@@ -166,8 +178,8 @@
 		text-decoration: none;
 		padding: 12px 16px;
 		color: #ffffff;
-		background: #ec3750;
-		border: 2px solid #ec3750;
+		background: var(--join-btn);
+		border: 2px solid var(--join-btn);
 		border-radius: 8px;
 		cursor: pointer;
 		font-family: inherit;

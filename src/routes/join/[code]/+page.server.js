@@ -1,6 +1,7 @@
 import { error, fail } from '@sveltejs/kit';
 import { getClubByCode } from '$lib/server/clubapi.js';
 import { createMember } from '$lib/server/airtable.js';
+import { getJoinPageColors } from '$lib/server/club-join-colors.js';
 
 export async function load({ params }) {
 	const { code } = params;
@@ -10,10 +11,13 @@ export async function load({ params }) {
 	if (!clubName) {
 		throw error(404, 'Club not found');
 	}
+
+	const colors = await getJoinPageColors(clubName);
 	
 	return {
 		code,
-		clubName
+		clubName,
+		colors
 	};
 }
 

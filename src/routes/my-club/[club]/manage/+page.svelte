@@ -35,6 +35,19 @@
 	let fuzz = $state(settings?.venueFuzz || 0);
 	let optedOut = $state(settings?.mapOptOut || false);
 
+	let isColorsSaving = $state(false);
+	let bgColor = $state(data.joinColors?.bgColor || '#f9fafc');
+	let cardColor = $state(data.joinColors?.cardColor || '#ffffff');
+	let textColor = $state(data.joinColors?.textColor || '#1f2d3d');
+	let buttonColor = $state(data.joinColors?.buttonColor || '#ec3750');
+
+	function resetJoinColors() {
+		bgColor = '#f9fafc';
+		cardColor = '#ffffff';
+		textColor = '#1f2d3d';
+		buttonColor = '#ec3750';
+	}
+
 	const venueTypeOptions = ['School/College', 'Makerspace', 'Online', 'Other'];
 	const meetingDayOptions = ['Undecided', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 	const meetingLengthOptions = ['Undecided', '30min', '45min', '60min', '90min', '120+min'];
@@ -400,6 +413,73 @@
 		</section>
 
 		<section class="settings-section">
+			<h2>Join Page Colors</h2>
+			<p class="section-intro">
+				Customize the colors people see when they join your club at
+				<a href="/join/{club.joinCode}" target="_blank" rel="noopener noreferrer">/join/{club.joinCode}</a>.
+			</p>
+
+			{#if form?.colorsSuccess}
+				<div class="success-message">{form.message || 'Join page colors updated!'}</div>
+			{/if}
+
+			{#if form?.colorsError}
+				<div class="error-message">{form.colorsError}</div>
+			{/if}
+
+			<form method="POST" action="?/updateJoinColors" onsubmit={() => isColorsSaving = true}>
+				<div class="form-row">
+					<div class="form-group">
+						<label for="bg_color">Background Color</label>
+						<div class="color-input">
+							<input type="color" id="bg_color" name="bg_color" bind:value={bgColor} />
+							<input type="text" class="color-hex" bind:value={bgColor} aria-label="Background color hex" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="card_color">Card Color</label>
+						<div class="color-input">
+							<input type="color" id="card_color" name="card_color" bind:value={cardColor} />
+							<input type="text" class="color-hex" bind:value={cardColor} aria-label="Card color hex" />
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label for="text_color">Text Color</label>
+						<div class="color-input">
+							<input type="color" id="text_color" name="text_color" bind:value={textColor} />
+							<input type="text" class="color-hex" bind:value={textColor} aria-label="Text color hex" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="button_color">Button Color</label>
+						<div class="color-input">
+							<input type="color" id="button_color" name="button_color" bind:value={buttonColor} />
+							<input type="text" class="color-hex" bind:value={buttonColor} aria-label="Button color hex" />
+						</div>
+					</div>
+				</div>
+
+				<div class="color-preview" style="background: {bgColor};">
+					<div class="color-preview-card" style="background: {cardColor}; color: {textColor};">
+						<div class="color-preview-title" style="color: {textColor};">Join {club.name}</div>
+						<div class="color-preview-text">Enter your details below to join the club.</div>
+						<div class="color-preview-btn" style="background: {buttonColor};">Join Club</div>
+					</div>
+				</div>
+
+				<div class="color-actions">
+					<button type="submit" class="save-btn" disabled={isColorsSaving}>
+						{isColorsSaving ? 'Saving...' : 'Save Join Page Colors'}
+					</button>
+					<button type="button" class="cancel-btn" onclick={resetJoinColors}>Reset to defaults</button>
+				</div>
+			</form>
+		</section>
+
+		<section class="settings-section">
 			<h2>Co-Leaders</h2>
 			<p class="section-intro">
 				Invite another leader to help manage your club.
@@ -667,6 +747,74 @@
 
 	.map-save-btn {
 		margin-top: 16px;
+	}
+
+	.color-input {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.color-input input[type="color"] {
+		width: 48px;
+		height: 40px;
+		padding: 2px;
+		border: 2px solid var(--color-border);
+		border-radius: 6px;
+		cursor: pointer;
+		flex-shrink: 0;
+	}
+
+	.color-input .color-hex {
+		flex: 1;
+		text-transform: lowercase;
+	}
+
+	.color-preview {
+		margin-top: 8px;
+		margin-bottom: 16px;
+		padding: 24px;
+		border-radius: 12px;
+		border: 2px solid var(--color-border);
+	}
+
+	.color-preview-card {
+		max-width: 320px;
+		margin: 0 auto;
+		padding: 24px;
+		border-radius: 12px;
+		text-align: center;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	}
+
+	.color-preview-title {
+		font-size: 20px;
+		font-weight: 700;
+		margin-bottom: 8px;
+	}
+
+	.color-preview-text {
+		font-size: 14px;
+		opacity: 0.7;
+		margin-bottom: 16px;
+	}
+
+	.color-preview-btn {
+		display: inline-block;
+		width: 100%;
+		box-sizing: border-box;
+		padding: 12px 16px;
+		color: #ffffff;
+		border-radius: 8px;
+		font-weight: 700;
+		font-size: 16px;
+	}
+
+	.color-actions {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex-wrap: wrap;
 	}
 
 	.action-btn {

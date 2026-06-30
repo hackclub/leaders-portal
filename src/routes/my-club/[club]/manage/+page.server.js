@@ -3,6 +3,7 @@ import { getKnex } from '$lib/server/db/knex.js';
 import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clubs.js';
 import { getClubSettings, updateClubSettings, updateMapSettings } from '$lib/server/airtable.js';
 import { invalidateClubCache } from '$lib/server/club-cache.js';
+import { getJoinPageColors, updateJoinPageColors } from '$lib/server/club-join-colors.js';
 
 export async function load({ locals, params }) {
 	if (!locals.userPublic) {
@@ -26,11 +27,13 @@ export async function load({ locals, params }) {
 	}
 
 	const settings = await getClubSettings(clubName);
+	const joinColors = await getJoinPageColors(clubName);
 
 	return {
 		user: locals.userPublic,
 		club,
-		settings
+		settings,
+		joinColors
 	};
 }
 
@@ -193,6 +196,40 @@ export const actions = {
 		} catch (error) {
 			console.error('[ManageClub] Error updating map settings:', error);
 			return fail(500, { mapError: 'Failed to update map settings' });
+		}
+	},
+
+	updateJoinColors: async ({ request, locals, params }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/auth/login');
+		}
+
+		const clubName = decodeURIComponent(params.club);
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club || club.role !== 'leader') {
+			return fail(403, { colorsError: 'You do not have permission to manage this club' });
+		}
+
+		const formData = await request.formData();
+		const colors = {
+			bgColor: formData.get('bg_color')?.toString(),
+			cardColor: formData.get('card_color')?.toString(),
+			textColor: formData.get('text_color')?.toString(),
+			buttonColor: formData.get('button_color')?.toString()
+		};
+
+		try {
+			const joinColors = await updateJoinPageColors(clubName, colors);
+			return { colorsSuccess: true, message: 'Join page colors updated successfully', joinColors };
+		} catch (error) {
+			console.error('[ManageClub] Error updating join page colors:', error);
+			return fail(500, { colorsError: 'Failed to update join page colors' });
 		}
 	}
 };

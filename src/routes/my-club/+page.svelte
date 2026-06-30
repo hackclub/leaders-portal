@@ -177,7 +177,7 @@
 </script>
 
 <svelte:head>
-	<title>My Club - Clubs Event Portal</title>
+	<title>My Club - Clubs Portal</title>
 </svelte:head>
 
 <SiteNav user={data.user} />
