@@ -3,6 +3,7 @@
 	import SiteNav from '$lib/SiteNav.svelte';
 	import ClubHeader from '$lib/ClubHeader.svelte';
 	import { mergeClubData } from '$lib/club-utils.js';
+	import { deserialize } from '$app/forms';
 	
 	let { data, form } = $props();
 	let club = $state(data.club);
@@ -49,10 +50,15 @@
 	async function openEditModal(memberName) {
 		editingMember = memberName;
 		editName = memberName;
-		editEmail = '';
-		isLoadingMember = true;
+		editEmail = data.memberEmails?.[memberName] || '';
 		showEditModal = true;
 
+		// Email is preloaded during page load; only fetch if it's missing.
+		if (editEmail) {
+			return;
+		}
+
+		isLoadingMember = true;
 		const formData = new FormData();
 		formData.append('memberName', memberName);
 
@@ -61,8 +67,8 @@
 				method: 'POST',
 				body: formData
 			});
-			const result = await response.json();
-			if (result.data?.member?.email) {
+			const result = deserialize(await response.text());
+			if (result.type === 'success' && result.data?.member?.email) {
 				editEmail = result.data.member.email;
 			}
 		} catch (error) {

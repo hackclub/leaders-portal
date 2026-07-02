@@ -25,12 +25,27 @@ export async function load({ locals, params }) {
 	const leaders = await getClubLeaders(clubName);
 	const coleaders = await getColeaders(clubName);
 
+	const memberNames = club.members || [];
+	const memberEmails = {};
+	await Promise.all(
+		memberNames.map(async (name) => {
+			try {
+				const member = await getMember(name);
+				if (member?.email) {
+					memberEmails[name] = member.email;
+				}
+			} catch (error) {
+				console.error('[Members] Error preloading email for', name, error);
+			}
+		})
+	);
 
 	return {
 		user: locals.userPublic,
 		club,
 		leaders,
-		coleaders
+		coleaders,
+		memberEmails
 	};
 }
 
