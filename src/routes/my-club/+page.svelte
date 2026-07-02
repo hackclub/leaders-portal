@@ -326,7 +326,7 @@
 							</button>
 							<button class="action-btn action-btn-secondary" onclick={() => openTransferModal(club.name)}>
 								<img src="https://icons.hackclub.com/api/icons/{iconColor}/external" alt="" width="20" height="20" />
-								<span>	adership</span>
+								<span>Transfer Leadership</span>
 							</button>
 							<button class="action-btn action-btn-secondary" onclick={() => (chatExpanded[club.name] = !chatExpanded[club.name])}>
 								<img src="https://icons.hackclub.com/api/icons/{iconColor}/message-simple-fill" alt="" width="20" height="20" />
