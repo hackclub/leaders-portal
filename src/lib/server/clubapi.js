@@ -50,7 +50,7 @@ async function fetchClubApi(endpoint, params = {}) {
 	}
 }
 
-export async function getLeaderByEmail(email) {
+export async function getLeaderByEmail(email, { throwOnError = false } = {}) {
 	console.log('[ClubAPI] getLeaderByEmail called with:', email);
 	try {
 		const data = await fetchClubApi('/leader', { email });
@@ -58,6 +58,7 @@ export async function getLeaderByEmail(email) {
 		return data;
 	} catch (error) {
 		console.error('[ClubAPI] getLeaderByEmail error:', error);
+		if (throwOnError) throw error;
 		return null;
 	}
 }
@@ -97,12 +98,13 @@ export async function checkLeaderClubStatus(email) {
 	}
 }
 
-export async function getClubByName(clubName) {
+export async function getClubByName(clubName, { throwOnError = false } = {}) {
 	try {
 		const data = await fetchClubApi('/club', { name: clubName });
 		return data;
 	} catch (error) {
 		console.error(`Error fetching club ${clubName}:`, error);
+		if (throwOnError) throw error;
 		return null;
 	}
 }
@@ -117,12 +119,13 @@ export async function getClubByCode(code) {
 	}
 }
 
-export async function getClubLevel(clubName) {
+export async function getClubLevel(clubName, { throwOnError = false } = {}) {
 	try {
 		const data = await fetchClubApi('/level', { club_name: clubName });
 		return data?.fields?.level || data?.level || null;
 	} catch (error) {
 		console.error(`Error fetching level for club ${clubName}:`, error);
+		if (throwOnError) throw error;
 		return null;
 	}
 }
@@ -140,7 +143,7 @@ function sanitizeUrl(url) {
 	}
 }
 
-export async function getClubShips(clubName) {
+export async function getClubShips(clubName, { throwOnError = false } = {}) {
 	try {
 		const data = await fetchClubApi('/ships', { club_name: clubName });
 		if (!data || !Array.isArray(data)) {
@@ -156,6 +159,7 @@ export async function getClubShips(clubName) {
 		}));
 	} catch (error) {
 		console.error(`Error fetching ships for club ${clubName}:`, error);
+		if (throwOnError) throw error;
 		return [];
 	}
 }
@@ -180,13 +184,14 @@ export async function getMemberShips(email) {
 	}
 }
 
-export async function getClubMembers(clubName) {
+export async function getClubMembers(clubName, { throwOnError = false } = {}) {
 	try {
 		const data = await fetchClubApi('/members', { club_name: clubName });
 		console.log('[ClubAPI] getClubMembers raw data:', JSON.stringify(data, null, 2));
 		return Array.isArray(data?.members) ? data.members : [];
 	} catch (error) {
 		console.error(`Error fetching members for club ${clubName}:`, error);
+		if (throwOnError) throw error;
 		return [];
 	}
 }
@@ -370,10 +375,10 @@ export async function getMemberByCode(code) {
 	}
 }
 
-export async function getClubsForLeaderEmail(email) {
+export async function getClubsForLeaderEmail(email, { throwOnError = false } = {}) {
 	console.log('[ClubAPI] getClubsForLeaderEmail called with:', email);
 	try {
-		const leaderData = await getLeaderByEmail(email);
+		const leaderData = await getLeaderByEmail(email, { throwOnError });
 		console.log('[ClubAPI] getClubsForLeaderEmail leaderData:', leaderData);
 		if (!leaderData || !leaderData.club_name) {
 			console.log('[ClubAPI] getClubsForLeaderEmail: No leader data or club_name found');
@@ -388,8 +393,8 @@ export async function getClubsForLeaderEmail(email) {
 		const clubs = await Promise.all(
 			clubNames.map(async (clubName) => {
 				const [clubInfo, level] = await Promise.all([
-					getClubByName(clubName),
-					getClubLevel(clubName)
+					getClubByName(clubName, { throwOnError }),
+					getClubLevel(clubName, { throwOnError })
 				]);
 				console.log('[ClubAPI] Club info for', clubName, ':', clubInfo, 'level:', level);
 				return {
@@ -408,6 +413,7 @@ export async function getClubsForLeaderEmail(email) {
 		return clubs;
 	} catch (error) {
 		console.error('[ClubAPI] getClubsForLeaderEmail error:', error);
+		if (throwOnError) throw error;
 		return [];
 	}
 }

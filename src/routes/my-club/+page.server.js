@@ -29,9 +29,13 @@ export async function load({ locals }) {
 				getColeaders(club.name)
 			]);
 
-			// Count members but avoid double-counting anyone already listed as a leader
+			// Count members but avoid double-counting anyone already listed as a
+			// leader or co-leader.
+			const leaderNames = new Set(
+				[...leaders, ...coleaders].map((l) => l.name.toLowerCase())
+			);
 			const nonLeaderMembers = (club.members || []).filter(
-				(member) => !leaders.some((l) => l.name.toLowerCase() === member.toLowerCase())
+				(member) => !leaderNames.has(member.toLowerCase())
 			);
 			const memberCount = leaders.length + coleaders.length + nonLeaderMembers.length;
 
@@ -84,8 +88,13 @@ export const actions = {
 			return fail(403, { error: 'Only club leaders can remove members' });
 		}
 
+		const isMemberOfClub = club.members?.includes(memberName);
+		if (!isMemberOfClub) {
+			return fail(400, { error: 'Member not found in this club' });
+		}
+
 		try {
-			await deleteMember(memberName);
+			await deleteMember(memberName, clubName);
 			return { success: true };
 		} catch (error) {
 			console.error('[MyClub] Error removing member:', error);

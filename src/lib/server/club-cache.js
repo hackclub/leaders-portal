@@ -71,17 +71,40 @@ export async function cacheLeaderClubs(email, clubNames) {
 	console.log('[ClubCache] Cached leader clubs for:', email, 'clubs:', clubNames);
 }
 
+function cachedRowToData(cached) {
+	return {
+		clubId: cached.club_id,
+		level: cached.level,
+		location: cached.location,
+		joinCode: cached.join_code,
+		ships: parseJsonArray(cached.ships),
+		members: parseJsonArray(cached.members)
+	};
+}
+
 export async function refreshClubFromApi(clubName) {
 	console.log('[ClubCache] Refreshing club from API:', clubName);
 
-	const [clubInfo, level, members] = await Promise.all([
-		getClubByName(clubName),
-		getClubLevel(clubName),
-		getClubMembers(clubName)
-	]);
-
-	const clubId = clubInfo?.id || clubInfo?.fields?.id || null;
-	const ships = await getClubShips(clubName);
+	let clubInfo, level, members, ships;
+	try {
+		[clubInfo, level, members] = await Promise.all([
+			getClubByName(clubName, { throwOnError: true }),
+			getClubLevel(clubName, { throwOnError: true }),
+			getClubMembers(clubName, { throwOnError: true })
+		]);
+		ships = await getClubShips(clubName, { throwOnError: true });
+	} catch (error) {
+		// A transient API failure must never overwrite good cached data with
+		// empty/null values. Preserve the existing cache entry (if any) and
+		// surface the error so callers can decide to serve stale data.
+		console.error('[ClubCache] API refresh failed for club:', clubName, error.message);
+		const existing = await getCachedClub(clubName);
+		if (existing) {
+			console.log('[ClubCache] Preserving existing cache for club:', clubName);
+			return cachedRowToData(existing);
+		}
+		throw error;
+	}
 
 	const data = {
 		clubId: clubInfo?.id || clubInfo?.fields?.id || null,
@@ -99,25 +122,33 @@ export async function refreshClubFromApi(clubName) {
 export async function refreshLeaderClubsFromApi(email) {
 	console.log('[ClubCache] Refreshing leader clubs from API:', email);
 
-	const apiClubs = await getClubsForLeaderEmail(email);
+	// Let a transient API failure propagate rather than caching an empty club
+	// list, which would incorrectly lock the leader out of their own clubs.
+	const apiClubs = await getClubsForLeaderEmail(email, { throwOnError: true });
 	const clubNames = apiClubs.map(c => c.name);
 
 	await cacheLeaderClubs(email, clubNames);
 
 	for (const club of apiClubs) {
-		const [ships, members] = await Promise.all([
-			getClubShips(club.name),
-			getClubMembers(club.name)
-		]);
+		try {
+			const [ships, members] = await Promise.all([
+				getClubShips(club.name, { throwOnError: true }),
+				getClubMembers(club.name, { throwOnError: true })
+			]);
 
-		await cacheClubData(club.name, {
-			clubId: club.id,
-			level: club.level,
-			location: club.location,
-			joinCode: club.joinCode,
-			ships,
-			members
-		});
+			await cacheClubData(club.name, {
+				clubId: club.id,
+				level: club.level,
+				location: club.location,
+				joinCode: club.joinCode,
+				ships,
+				members
+			});
+		} catch (error) {
+			// Skip caching this club on failure so we don't overwrite good data
+			// with empties; the existing cache entry (if any) is left intact.
+			console.error('[ClubCache] Failed to refresh club data for:', club.name, error.message);
+		}
 	}
 
 	return clubNames;
@@ -178,7 +209,27 @@ export async function getLeaderClubsWithCache(email) {
 	}
 
 	console.log('[ClubCache] Cache miss or stale for leader clubs:', email);
-	await refreshLeaderClubsFromApi(email);
+	try {
+		await refreshLeaderClubsFromApi(email);
+	} catch (error) {
+		// If the refresh failed but we still have a (stale) cached club list,
+		// serve it rather than falsely reporting the leader has no clubs.
+		console.error('[ClubCache] Leader clubs refresh failed for:', email, error.message);
+		if (cached) {
+			console.log('[ClubCache] Serving stale leader clubs for:', email);
+			const staleClubNames = typeof cached.club_names === 'string'
+				? JSON.parse(cached.club_names)
+				: cached.club_names;
+
+			return Promise.all(
+				staleClubNames.map(async (clubName) => {
+					const clubData = await getClubWithCache(clubName);
+					return { ...clubData, role: 'leader' };
+				})
+			);
+		}
+		throw error;
+	}
 
 	const freshCached = await getCachedLeaderClubs(email);
 	if (!freshCached) {
