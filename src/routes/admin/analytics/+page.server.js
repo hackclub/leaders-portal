@@ -1,15 +1,14 @@
 import { getKnex } from '$lib/server/db/knex.js';
-import Airtable from 'airtable';
-import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME } from '$env/static/private';
+import { getAirtableBase } from '$lib/server/airtable.js';
+import { AIRTABLE_TABLE_NAME } from '$env/static/private';
 import { error } from '@sveltejs/kit';
-
-const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
 
 export async function load({ locals }) {
     if (!locals.userPublic?.isAdmin) {
         throw error(403, 'Forbidden');
     }
     const knex = getKnex();
+    const base = getAirtableBase();
 
     // 1. Fetch Event Completions
     const completions = await knex('user_completed_events')

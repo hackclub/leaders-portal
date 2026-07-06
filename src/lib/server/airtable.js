@@ -3,14 +3,14 @@ import { env } from '$env/dynamic/private';
 
 export { checkLeaderEmail, getClubsForLeaderEmail as getClubsForLeader } from './clubapi.js';
 
-function getAirtableBase() {
+export function getAirtableBase(baseId = env.AIRTABLE_BASE_ID) {
 	if (!env.AIRTABLE_API_KEY) {
 		throw new Error("Missing AIRTABLE_API_KEY");
 	}
-	if (!env.AIRTABLE_BASE_ID) {
+	if (!baseId) {
 		throw new Error("Missing AIRTABLE_BASE_ID");
 	}
-	return new Airtable({ apiKey: env.AIRTABLE_API_KEY }).base(env.AIRTABLE_BASE_ID);
+	return new Airtable({ apiKey: env.AIRTABLE_API_KEY }).base(baseId);
 }
 
 function escapeAirtableString(str) {

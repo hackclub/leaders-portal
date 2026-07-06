@@ -1,13 +1,11 @@
 import { error, fail } from '@sveltejs/kit';
-import Airtable from 'airtable';
-import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '$env/static/private';
-
-const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
+import { getAirtableBase } from '$lib/server/airtable.js';
 
 export async function load({ locals }) {
     if (!locals.userPublic?.isAdmin) {
         throw error(403, 'Forbidden');
     }
+    const base = getAirtableBase();
     let clubsData = {};
     let totalMembers = 0;
     let totalShips = 0;
@@ -122,6 +120,7 @@ export const actions = {
             return fail(400, { searchError: 'Search query must be at least 2 characters' });
         }
         
+        const base = getAirtableBase();
         let clubResults = [];
         let clubStats = {};
 

@@ -1,12 +1,12 @@
-import Airtable from 'airtable';
-import { AIRTABLE_API_KEY} from '$env/static/private';
+import { getAirtableBase } from '$lib/server/airtable.js';
+import { AIRTABLE_API_KEY } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 
 export async function load({ locals }) {
     if (!locals.userPublic?.isAdmin) {
         throw error(403, 'Forbidden');
     }
-    var AIRTABLE_BASE_ID = 'appLfgyztvTfaKGNc';
+    const AIRTABLE_BASE_ID = 'appLfgyztvTfaKGNc';
 
 
     console.log('Loading review page...');
@@ -18,8 +18,7 @@ export async function load({ locals }) {
         return { projects: [] };
     }
 
-    const baseId = AIRTABLE_BASE_ID || 'appLfgyztvTfaKGNc';
-    const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(baseId);
+    const base = getAirtableBase(AIRTABLE_BASE_ID);
     
     try {
         const records = await base("Project Submission")

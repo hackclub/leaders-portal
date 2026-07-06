@@ -1,8 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import Airtable from 'airtable';
-import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '$env/static/private';
-
-const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
+import { getAirtableBase } from '$lib/server/airtable.js';
 
 export async function POST({ request, locals }) {
     if (!locals.userPublic?.isAdmin) {
@@ -15,6 +12,7 @@ export async function POST({ request, locals }) {
         throw error(400, 'Club ID is required');
     }
 
+    const base = getAirtableBase();
     try {
         const records = await base('Leaders').create([
             {

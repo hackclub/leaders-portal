@@ -3,10 +3,8 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import crypto from 'node:crypto';
 import { dev } from '$app/environment';
 import { createSession } from '$lib/server/auth/sessions.js';
-import Airtable from 'airtable';
-import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '$env/static/private';
+import { getAirtableBase } from '$lib/server/airtable.js';
 
-const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
 const SESSION_COOKIE = 'sid';
 
 function normalizeEmail(email) {
@@ -110,6 +108,7 @@ export async function load({ locals }) {
     });
 
     // Fetch Members from Airtable
+    const base = getAirtableBase();
     let membersData = {
         total: 0,
         byClub: {},
@@ -382,6 +381,7 @@ export const actions = {
         }
         
         // Search in Airtable Members table by club_name
+        const base = getAirtableBase();
         let clubResults = [];
         try {
             const memberRecords = await base('Members')
@@ -437,6 +437,7 @@ export const actions = {
             return fail(400, { memberSearchError: 'Search query must be at least 2 characters' });
         }
         
+        const base = getAirtableBase();
         let memberResults = [];
         try {
             const memberRecords = await base('Members')

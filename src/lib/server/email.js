@@ -1,15 +1,4 @@
-import Airtable from 'airtable';
-import { env } from '$env/dynamic/private';
-
-function getAirtableBase() {
-	if (!env.AIRTABLE_API_KEY) {
-		throw new Error("Missing AIRTABLE_API_KEY");
-	}
-	if (!env.AIRTABLE_BASE_ID) {
-		throw new Error("Missing AIRTABLE_BASE_ID");
-	}
-	return new Airtable({ apiKey: env.AIRTABLE_API_KEY }).base(env.AIRTABLE_BASE_ID);
-}
+import { getAirtableBase } from './airtable.js';
 
 export async function sendOTPEmail(email, code) {
 	const base = getAirtableBase();

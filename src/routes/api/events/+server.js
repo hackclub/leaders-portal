@@ -1,12 +1,11 @@
-import Airtable from 'airtable';
-import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME } from '$env/static/private';
+import { getAirtableBase } from '$lib/server/airtable.js';
+import { AIRTABLE_TABLE_NAME } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import { getKnex } from '$lib/server/db/knex.js';
 
-const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
-
 export async function GET({ locals }) {
 	try {
+		const base = getAirtableBase();
 		const events = [];
 
 		const records = await base(AIRTABLE_TABLE_NAME)
