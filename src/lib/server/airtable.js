@@ -18,11 +18,17 @@ function escapeAirtableString(str) {
 	return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
 
+// Map data (venue_lat, venue_lng, venue_fuzz, map-opt-out) lives in a separate
+// Airtable base, in the "Map" table. Field names match the old Clubs columns and
+// records are matched by club_name.
+const MAP_BASE_ID = 'app3sG13yVpMwree2';
+const MAP_TABLE = 'Map';
+
 export async function getMapOptOut(clubName) {
-	const base = getAirtableBase();
+	const base = getAirtableBase(MAP_BASE_ID);
 	
 	try {
-		const records = await base('Clubs').select({
+		const records = await base(MAP_TABLE).select({
 			filterByFormula: `{club_name} = "${escapeAirtableString(clubName)}"`,
 			maxRecords: 1
 		}).firstPage();
@@ -49,10 +55,10 @@ export async function getMapOptOut(clubName) {
 }
 
 export async function toggleMapOptOut(clubName) {
-	const base = getAirtableBase();
+	const base = getAirtableBase(MAP_BASE_ID);
 	
 	try {
-		const records = await base('Clubs').select({
+		const records = await base(MAP_TABLE).select({
 			filterByFormula: `{club_name} = "${escapeAirtableString(clubName)}"`,
 			maxRecords: 1
 		}).firstPage();
@@ -64,7 +70,7 @@ export async function toggleMapOptOut(clubName) {
 		const currentValue = !!records[0].get('map-opt-out');
 		const newValue = !currentValue;
 
-		await base('Clubs').update(records[0].id, {
+		await base(MAP_TABLE).update(records[0].id, {
 			'map-opt-out': newValue
 		});
 		
@@ -77,10 +83,10 @@ export async function toggleMapOptOut(clubName) {
 }
 
 export async function optInToMap(clubName, latitude, longitude) {
-	const base = getAirtableBase();
+	const base = getAirtableBase(MAP_BASE_ID);
 	
 	try {
-		const records = await base('Clubs').select({
+		const records = await base(MAP_TABLE).select({
 			filterByFormula: `{club_name} = "${escapeAirtableString(clubName)}"`,
 			maxRecords: 1
 		}).firstPage();
@@ -89,7 +95,7 @@ export async function optInToMap(clubName, latitude, longitude) {
 			throw new Error("Club not found in Airtable");
 		}
 
-		await base('Clubs').update(records[0].id, {
+		await base(MAP_TABLE).update(records[0].id, {
 			'map-opt-out': false,
 			'venue_lat': String(latitude),
 			'venue_lng': String(longitude)
@@ -104,10 +110,10 @@ export async function optInToMap(clubName, latitude, longitude) {
 }
 
 export async function updateMapSettings(clubName, { optedOut, latitude, longitude, fuzz }) {
-	const base = getAirtableBase();
+	const base = getAirtableBase(MAP_BASE_ID);
 	
 	try {
-		const records = await base('Clubs').select({
+		const records = await base(MAP_TABLE).select({
 			filterByFormula: `{club_name} = "${escapeAirtableString(clubName)}"`,
 			maxRecords: 1
 		}).firstPage();
@@ -129,7 +135,7 @@ export async function updateMapSettings(clubName, { optedOut, latitude, longitud
 			updateData['venue_fuzz'] = fuzz;
 		}
 
-		await base('Clubs').update(records[0].id, updateData);
+		await base(MAP_TABLE).update(records[0].id, updateData);
 		
 		console.log(`Updated map settings for club ${clubName}:`, updateData);
 		return { 
@@ -162,8 +168,28 @@ const ALLOWED_CLUB_FIELDS = [
 	'club_website'
 ];
 
+// Maps the portal's internal/logical field names to the Airtable column names
+// in the new base. Only fields that were renamed in the new base differ; the
+// rest map to themselves.
+const CLUB_FIELD_TO_AIRTABLE = {
+	club_name: 'club_name',
+	club_status: 'status',
+	venue_type: 'venue_type',
+	venue_name: 'venue_name',
+	venue_address_line_1: 'venue_addr_line_1',
+	venue_address_city: 'venue_addr_city',
+	venue_address_state: 'venue_addr_state',
+	venue_address_country: 'venue_addr_country',
+	venue_address_zip: 'venue_addr_zip',
+	'Est. # of Attendees': 'Est. # of Attendees',
+	call_meeting_days: 'call_meeting_days',
+	call_meeting_length: 'call_meeting_length',
+	call_club_intrest: 'call_club_intrest',
+	club_website: 'club_website'
+};
+
 const VENUE_TYPE_OPTIONS = ['School/College', 'Makerspace', 'Online', 'Other'];
-const CLUB_STATUS_OPTIONS = ['Active', 'Dormant'];
+const CLUB_STATUS_OPTIONS = ['Active', 'Dormant', 'Pending'];
 const MEETING_DAY_OPTIONS = ['Undecided', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MEETING_LENGTH_OPTIONS = ['Undecided', '30min', '45min', '60min', '90min', '120+min'];
 const CLUB_INTEREST_OPTIONS = ['Web Dev', 'Game Dev', 'CAD', 'Hardware', 'Hackathons', 'Mobile App Dev, and Arduino', "Other"];
@@ -205,22 +231,25 @@ export async function getClubSettings(clubName) {
 			return null;
 		}
 
+		// Map data lives in a separate base/table, so fetch it separately.
+		const mapData = await getMapOptOut(clubName);
+
 		const record = records[0];
 		return {
 			clubName: record.get('club_name') || '',
-			clubStatus: record.get('club_status') || '',
+			clubStatus: record.get('status') || '',
 			venueType: record.get('venue_type') || '',
 			venueName: record.get('venue_name') || '',
-			venueAddressLine1: record.get('venue_address_line_1') || '',
-			venueAddressCity: record.get('venue_address_city') || '',
-			venueAddressState: record.get('venue_address_state') || '',
-			venueAddressCountry: record.get('venue_address_country') || '',
-			venueAddressZip: record.get('venue_address_zip') || '',
+			venueAddressLine1: record.get('venue_addr_line_1') || '',
+			venueAddressCity: record.get('venue_addr_city') || '',
+			venueAddressState: record.get('venue_addr_state') || '',
+			venueAddressCountry: record.get('venue_addr_country') || '',
+			venueAddressZip: record.get('venue_addr_zip') || '',
 			estAttendees: record.get('Est. # of Attendees') || '',
-			venueLat: record.get('venue_lat') || '',
-			venueLng: record.get('venue_lng') || '',
-			venueFuzz: record.get('venue_fuzz') ?? 0,
-			mapOptOut: !!record.get('map-opt-out'),
+			venueLat: mapData?.venueLat || '',
+			venueLng: mapData?.venueLng || '',
+			venueFuzz: mapData?.venueFuzz ?? 0,
+			mapOptOut: !!mapData?.optedOut,
 			callMeetingDays: record.get('call_meeting_days') || [],
 			callMeetingLength: record.get('call_meeting_length') || '',
 			callClubIntrest: record.get('call_club_intrest') || [],
@@ -295,9 +324,15 @@ export async function updateClubSettings(clubName, updates, currentStatus) {
 			throw new Error("Club not found in Airtable");
 		}
 
-		await base('Clubs').update(records[0].id, filteredUpdates);
+		// Translate logical field names to the new base's Airtable column names.
+		const airtableUpdates = {};
+		for (const [key, value] of Object.entries(filteredUpdates)) {
+			airtableUpdates[CLUB_FIELD_TO_AIRTABLE[key] || key] = value;
+		}
+
+		await base('Clubs').update(records[0].id, airtableUpdates);
 		
-		console.log(`Updated club settings for ${clubName}:`, filteredUpdates);
+		console.log(`Updated club settings for ${clubName}:`, airtableUpdates);
 		return { success: true, updated: Object.keys(filteredUpdates) };
 	} catch (error) {
 		console.error('Error updating club settings in Airtable:', error);
@@ -322,6 +357,26 @@ const ALLOWED_LEADER_FIELDS = [
 	'link_social_media'
 ];
 
+// Maps the portal's internal/logical leader field names to the Airtable column
+// names in the new base. Only renamed fields differ; the rest map to themselves.
+const LEADER_FIELD_TO_AIRTABLE = {
+	first_name: 'name_first',
+	last_name: 'name_last',
+	pronouns: 'pronouns',
+	gender: 'gender',
+	email: 'contact_email',
+	phone_number: 'contact_phone',
+	address_line_1: 'lead_addr_line_1',
+	address_line_2: 'lead_addr_line_2',
+	address_city: 'lead_addr_city',
+	address_state: 'lead_addr_state',
+	address_country: 'lead_addr_country',
+	address_zip_code: 'lead_addr_zip',
+	link_github: 'link_github',
+	link_personal_website: 'link_personal_website',
+	link_social_media: 'link_social_media'
+};
+
 const PRONOUN_OPTIONS = ['he/him', 'she/her', 'they/them', 'it/its', 'any/all'];
 const GENDER_OPTIONS = ['Female', 'Male', 'Non-binary/non-confirming'];
 
@@ -330,7 +385,7 @@ export async function getLeaderProfile(email) {
 	
 	try {
 		const records = await base('Leaders').select({
-			filterByFormula: `{email} = "${escapeAirtableString(email)}"`,
+			filterByFormula: `{contact_email} = "${escapeAirtableString(email)}"`,
 			maxRecords: 1
 		}).firstPage();
 
@@ -340,18 +395,18 @@ export async function getLeaderProfile(email) {
 
 		const record = records[0];
 		return {
-			firstName: record.get('first_name') || '',
-			lastName: record.get('last_name') || '',
+			firstName: record.get('name_first') || '',
+			lastName: record.get('name_last') || '',
 			pronouns: record.get('pronouns') || '',
 			gender: record.get('gender') || '',
-			email: record.get('email') || '',
-			phoneNumber: record.get('phone_number') || '',
-			addressLine1: record.get('address_line_1') || '',
-			addressLine2: record.get('address_line_2') || '',
-			addressCity: record.get('address_city') || '',
-			addressState: record.get('address_state') || '',
-			addressCountry: record.get('address_country') || '',
-			addressZipCode: record.get('address_zip_code') || '',
+			email: record.get('contact_email') || '',
+			phoneNumber: record.get('contact_phone') || '',
+			addressLine1: record.get('lead_addr_line_1') || '',
+			addressLine2: record.get('lead_addr_line_2') || '',
+			addressCity: record.get('lead_addr_city') || '',
+			addressState: record.get('lead_addr_state') || '',
+			addressCountry: record.get('lead_addr_country') || '',
+			addressZipCode: record.get('lead_addr_zip') || '',
 			linkGithub: record.get('link_github') || '',
 			linkPersonalWebsite: record.get('link_personal_website') || '',
 			linkSocialMedia: record.get('link_social_media') || ''
@@ -393,7 +448,7 @@ export async function updateLeaderProfile(email, updates) {
 	const base = getAirtableBase();
 	
 	const records = await base('Leaders').select({
-		filterByFormula: `{email} = "${escapeAirtableString(email)}"`,
+		filterByFormula: `{contact_email} = "${escapeAirtableString(email)}"`,
 		maxRecords: 1
 	}).firstPage();
 
@@ -468,9 +523,15 @@ export async function updateLeaderProfile(email, updates) {
 		throw new Error('No valid fields to update');
 	}
 
+	// Translate logical field names to the new base's Airtable column names.
+	const airtableUpdates = {};
+	for (const [key, value] of Object.entries(filteredUpdates)) {
+		airtableUpdates[LEADER_FIELD_TO_AIRTABLE[key] || key] = value;
+	}
+
 	try {
-		await base('Leaders').update(records[0].id, filteredUpdates);
-		console.log(`Updated leader profile for ${email}:`, Object.keys(filteredUpdates));
+		await base('Leaders').update(records[0].id, airtableUpdates);
+		console.log(`Updated leader profile for ${email}:`, Object.keys(airtableUpdates));
 		return { success: true, updated: Object.keys(filteredUpdates) };
 	} catch (error) {
 		console.error('Error updating leader profile in Airtable:', error);
@@ -580,19 +641,19 @@ export async function getClubLeaders(clubName) {
 		// club name rather than a substring (e.g. "Forge" must not match
 		// "CyberForge").
 		const records = await base('Leaders').select({
-			filterByFormula: `SEARCH("|${escapeAirtableString(clubName)}|", "|" & ARRAYJOIN({club_name (from rel_leader_to_clubs)}, "|") & "|") > 0`
+			filterByFormula: `AND(SEARCH("|${escapeAirtableString(clubName)}|", "|" & ARRAYJOIN({club_name (from rel_clubs)}, "|") & "|") > 0, {type} = "Main")`
 		}).all();
 
 		return records.map(record => {
-			const firstName = record.get('first_name') || '';
-			const lastName = record.get('last_name') || '';
-			const email = record.get('email') || '';
+			const firstName = record.get('name_first') || '';
+			const lastName = record.get('name_last') || '';
+			const email = record.get('contact_email') || '';
 			const fullName = `${firstName} ${lastName}`.trim();
 			return {
 				// Fall back to the email when the leader has no name set in Airtable
 				name: fullName || email.split('@')[0] || 'Leader',
 				email,
-				isPrimary: record.get('leader') === true
+				isPrimary: true
 			};
 		});
 	} catch (error) {
@@ -609,19 +670,19 @@ export async function getColeaders(clubName) {
 		// club name rather than a substring (e.g. "Forge" must not match
 		// "CyberForge").
 		const records = await base('Leaders').select({
-			filterByFormula: `SEARCH("|${escapeAirtableString(clubName)}|", "|" & ARRAYJOIN({club_name (from rel_coleader_to_clubs)}, "|") & "|") > 0`
+			filterByFormula: `AND(SEARCH("|${escapeAirtableString(clubName)}|", "|" & ARRAYJOIN({club_name (from rel_clubs)}, "|") & "|") > 0, {type} = "Co-Lead")`
 		}).all();
 
 		return records.map(record => {
-			const firstName = record.get('first_name') || '';
-			const lastName = record.get('last_name') || '';
-			const email = record.get('email') || '';
+			const firstName = record.get('name_first') || '';
+			const lastName = record.get('name_last') || '';
+			const email = record.get('contact_email') || '';
 			const fullName = `${firstName} ${lastName}`.trim();
 			return {
 				// Fall back to the email when the leader has no name set in Airtable
 				name: fullName || email.split('@')[0] || 'Leader',
 				email,
-				isPrimary: record.get('leader') === true
+				isPrimary: false
 			};
 		});
 	} catch (error) {

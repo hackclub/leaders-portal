@@ -83,24 +83,26 @@ export async function recordAttempt(key, maxAttempts) {
 	return { blocked: false };
 }
 
-export async function checkIpRateLimit(ip) {
-	const key = `ip:${ip}`;
-	return checkRateLimit(key, MAX_ATTEMPTS_IP);
+// `scope` keeps separate counters for different actions (e.g. requesting an OTP
+// vs. verifying one) so that one action cannot exhaust the other's budget.
+function scopedKey(scope, type, value) {
+	return scope ? `${scope}:${type}:${value}` : `${type}:${value}`;
 }
 
-export async function recordIpAttempt(ip) {
-	const key = `ip:${ip}`;
-	return recordAttempt(key, MAX_ATTEMPTS_IP);
+export async function checkIpRateLimit(ip, scope = '') {
+	return checkRateLimit(scopedKey(scope, 'ip', ip), MAX_ATTEMPTS_IP);
 }
 
-export async function checkEmailRateLimit(email) {
-	const key = `email:${email.toLowerCase()}`;
-	return checkRateLimit(key, MAX_ATTEMPTS_EMAIL);
+export async function recordIpAttempt(ip, scope = '') {
+	return recordAttempt(scopedKey(scope, 'ip', ip), MAX_ATTEMPTS_IP);
 }
 
-export async function recordEmailAttempt(email) {
-	const key = `email:${email.toLowerCase()}`;
-	return recordAttempt(key, MAX_ATTEMPTS_EMAIL);
+export async function checkEmailRateLimit(email, scope = '') {
+	return checkRateLimit(scopedKey(scope, 'email', email.toLowerCase()), MAX_ATTEMPTS_EMAIL);
+}
+
+export async function recordEmailAttempt(email, scope = '') {
+	return recordAttempt(scopedKey(scope, 'email', email.toLowerCase()), MAX_ATTEMPTS_EMAIL);
 }
 
 export async function resetRateLimit(key) {

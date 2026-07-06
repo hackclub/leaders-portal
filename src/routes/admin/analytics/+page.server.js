@@ -1,7 +1,10 @@
 import { getKnex } from '$lib/server/db/knex.js';
 import { getAirtableBase } from '$lib/server/airtable.js';
-import { AIRTABLE_TABLE_NAME } from '$env/static/private';
 import { error } from '@sveltejs/kit';
+
+// Events live in a dedicated Airtable base, in the "Club Events" table.
+const EVENTS_BASE_ID = 'appmmb6l3gwtDXwhT';
+const EVENTS_TABLE = 'Club Events';
 
 export async function load({ locals }) {
     if (!locals.userPublic?.isAdmin) {
@@ -20,7 +23,7 @@ export async function load({ locals }) {
     // 2. Fetch Event Details from Airtable
     let eventsMap = new Map();
     try {
-        const records = await base(AIRTABLE_TABLE_NAME)
+        const records = await getAirtableBase(EVENTS_BASE_ID)(EVENTS_TABLE)
             .select({
                 fields: ['title', 'category']
             })

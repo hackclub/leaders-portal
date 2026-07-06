@@ -85,14 +85,15 @@ function cachedRowToData(cached) {
 export async function refreshClubFromApi(clubName) {
 	console.log('[ClubCache] Refreshing club from API:', clubName);
 
-	let clubInfo, level, members, ships;
+	// The club's core info (name/level/location/join code) is critical: without
+	// it we can't show the club at all. If it fails, preserve any existing cache
+	// and otherwise surface the error.
+	let clubInfo, level;
 	try {
-		[clubInfo, level, members] = await Promise.all([
+		[clubInfo, level] = await Promise.all([
 			getClubByName(clubName, { throwOnError: true }),
-			getClubLevel(clubName, { throwOnError: true }),
-			getClubMembers(clubName, { throwOnError: true })
+			getClubLevel(clubName, { throwOnError: true })
 		]);
-		ships = await getClubShips(clubName, { throwOnError: true });
 	} catch (error) {
 		// A transient API failure must never overwrite good cached data with
 		// empty/null values. Preserve the existing cache entry (if any) and
@@ -104,6 +105,25 @@ export async function refreshClubFromApi(clubName) {
 			return cachedRowToData(existing);
 		}
 		throw error;
+	}
+
+	// Members and ships are non-critical: a failing sub-endpoint (e.g. a 500
+	// from /members) should not take down the whole page. On failure, fall back
+	// to the previously cached values so we never overwrite good data with
+	// empties, and only default to empty arrays when there's nothing cached.
+	const existing = await getCachedClub(clubName);
+	let members, ships;
+	try {
+		members = await getClubMembers(clubName, { throwOnError: true });
+	} catch (error) {
+		console.error('[ClubCache] Failed to fetch members for club:', clubName, error.message);
+		members = existing ? parseJsonArray(existing.members) : [];
+	}
+	try {
+		ships = await getClubShips(clubName, { throwOnError: true });
+	} catch (error) {
+		console.error('[ClubCache] Failed to fetch ships for club:', clubName, error.message);
+		ships = existing ? parseJsonArray(existing.ships) : [];
 	}
 
 	const data = {

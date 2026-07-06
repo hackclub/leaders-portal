@@ -1,14 +1,17 @@
 import { getAirtableBase } from '$lib/server/airtable.js';
-import { AIRTABLE_TABLE_NAME } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import { getKnex } from '$lib/server/db/knex.js';
 
+// Homepage events live in a dedicated Airtable base, in the "Club Events" table.
+const EVENTS_BASE_ID = 'appmmb6l3gwtDXwhT';
+const EVENTS_TABLE = 'Club Events';
+
 export async function GET({ locals }) {
 	try {
-		const base = getAirtableBase();
+		const base = getAirtableBase(EVENTS_BASE_ID);
 		const events = [];
 
-		const records = await base(AIRTABLE_TABLE_NAME)
+		const records = await base(EVENTS_TABLE)
 			.select({
 				view: 'Grid view'
 			})

@@ -13,7 +13,7 @@ import {
 export async function POST({ request, getClientAddress }) {
 	const ip = getClientAddress();
 
-	const ipCheck = await checkIpRateLimit(ip);
+	const ipCheck = await checkIpRateLimit(ip, 'request');
 	if (!ipCheck.allowed) {
 		const retryAfter = ipCheck.retryAfter || 1800;
 		return json(
@@ -28,7 +28,7 @@ export async function POST({ request, getClientAddress }) {
 		return json({ error: 'Email is required' }, { status: 400 });
 	}
 
-	const emailCheck = await checkEmailRateLimit(email);
+	const emailCheck = await checkEmailRateLimit(email, 'request');
 	if (!emailCheck.allowed) {
 		const retryAfter = emailCheck.retryAfter || 1800;
 		return json(
@@ -37,8 +37,8 @@ export async function POST({ request, getClientAddress }) {
 		);
 	}
 
-	await recordIpAttempt(ip);
-	await recordEmailAttempt(email);
+	await recordIpAttempt(ip, 'request');
+	await recordEmailAttempt(email, 'request');
 
 	const { isMember } = await checkMemberEmail(email);
 

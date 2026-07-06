@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 
-const CLUB_API_BASE = 'https://clubapi.hackclub.com';
+const CLUB_API_BASE = 'http://localhost:3000';
 
 async function safeParseJson(response) {
 	const text = await response.text();
@@ -10,8 +10,11 @@ async function safeParseJson(response) {
 	try {
 		return JSON.parse(text);
 	} catch (error) {
-		console.error('[ClubAPI] JSON parse error on content:', text);
-		throw error;
+		// Some endpoints occasionally respond with an HTML error/fallback page
+		// while still returning a 200 status. Don't crash the caller on that;
+		// return null so callers can fall back to other data sources.
+		console.error('[ClubAPI] Non-JSON response, treating as null. Content:', text.slice(0, 500));
+		return null;
 	}
 }
 
