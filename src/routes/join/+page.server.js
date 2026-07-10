@@ -1,5 +1,5 @@
 import { fail } from '@sveltejs/kit';
-import { createMember } from '$lib/server/airtable.js';
+import { createMember } from '$lib/server/clubapi.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const JOIN_CODE_REGEX = /^[A-Z1-9]{2,6}$/;
@@ -27,7 +27,7 @@ export const actions = {
 		}
 
 		try {
-			await createMember({ name, email, joinCode });
+			await createMember(name, email, joinCode);
 			return { success: true };
 		} catch (err) {
 			console.error('Error creating member:', err);

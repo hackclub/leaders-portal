@@ -539,50 +539,14 @@ export async function updateLeaderProfile(email, updates) {
 	}
 }
 
-export async function createMember({ name, email, joinCode }) {
-	const base = getAirtableBase();
-
-	const cleanName = sanitizeString(name, 100);
-	const cleanEmail = sanitizeString(email, 200);
-	const cleanJoinCode = sanitizeString(joinCode, 100);
-
-	if (!cleanName) {
-		throw new Error('Name is required');
-	}
-	if (!cleanEmail) {
-		throw new Error('Email is required');
-	}
-	if (!cleanJoinCode) {
-		throw new Error('Join Code is required');
-	}
-
-	try {
-		const records = await base('Members').create([
-			{
-				fields: {
-					Name: cleanName,
-					Email: cleanEmail,
-					'Join Code': cleanJoinCode
-				}
-			}
-		]);
-
-		console.log(`Created member ${cleanName} (${cleanEmail}) with join code ${cleanJoinCode}`);
-		return { success: true, id: records[0]?.id };
-	} catch (error) {
-		console.error('Error creating member in Airtable:', error);
-		throw new Error('Failed to create member');
-	}
-}
-
 export async function checkMemberEmail(email) {
 	const base = getAirtableBase();
 
 	try {
 		const records = await base('Members').select({
-			filterByFormula: `LOWER({Email}) = LOWER("${escapeAirtableString(email)}")`,
+			filterByFormula: `LOWER({email}) = LOWER("${escapeAirtableString(email)}")`,
 			maxRecords: 1,
-			fields: ['Name', 'Email']
+			fields: ['name', 'email']
 		}).firstPage();
 
 		if (records.length === 0) {
@@ -591,7 +555,7 @@ export async function checkMemberEmail(email) {
 
 		return {
 			isMember: true,
-			name: records[0].get('Name') || null
+			name: records[0].get('name') || null
 		};
 	} catch (error) {
 		console.error('Error checking member email in Airtable:', error);
@@ -600,8 +564,8 @@ export async function checkMemberEmail(email) {
 }
 
 /**
- * Get the club name a member belongs to, using the `club_name` field on the
- * Members table in Airtable. Returns null if the member or field is missing.
+ * Get the club name a member belongs to, using the `club_name (from rel_club)`
+ * field on the Members table in Airtable. Returns null if the member or field is missing.
  * @param {string} email
  * @returns {Promise<string | null>}
  */
@@ -611,16 +575,16 @@ export async function getMemberClubName(email) {
 
 	try {
 		const records = await base('Members').select({
-			filterByFormula: `LOWER({Email}) = LOWER("${escapeAirtableString(email)}")`,
+			filterByFormula: `LOWER({email}) = LOWER("${escapeAirtableString(email)}")`,
 			maxRecords: 1,
-			fields: ['club_name']
+			fields: ['club_name (from rel_club)']
 		}).firstPage();
 
 		if (records.length === 0) {
 			return null;
 		}
 
-		const clubName = records[0].get('club_name');
+		const clubName = records[0].get('club_name (from rel_club)');
 		// club_name may be a linked-record array or a plain string.
 		if (Array.isArray(clubName)) {
 			return clubName[0] || null;

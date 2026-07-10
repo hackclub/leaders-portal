@@ -1,6 +1,5 @@
 import { error, fail } from '@sveltejs/kit';
-import { getClubByCode } from '$lib/server/clubapi.js';
-import { createMember } from '$lib/server/airtable.js';
+import { getClubByCode, createMember } from '$lib/server/clubapi.js';
 import { getJoinPageColors } from '$lib/server/club-join-colors.js';
 
 export async function load({ params }) {
@@ -38,7 +37,7 @@ export const actions = {
 		}
 
 		try {
-			await createMember({ name, email, joinCode: code });
+			await createMember(name, email, code);
 			return { success: true };
 		} catch (err) {
 			console.error('Error creating member:', err);

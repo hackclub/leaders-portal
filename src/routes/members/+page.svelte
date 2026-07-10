@@ -13,7 +13,7 @@
 <SiteNav user={data.user} memberView={true} />
 
 <div class="container">
-	<section class="hero">
+	<section class="hero"> 	
 		<div class="hero-text">
 			<h1 class="title">Club Members</h1>
 			<p class="subtitle">Join your Hack Club, connect with other members, and keep up with everything your club is building.</p>

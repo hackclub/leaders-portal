@@ -118,14 +118,14 @@ export async function load({ locals }) {
     try {
         const memberRecords = await base('Members')
             .select({
-                fields: ['Name', 'club_name', 'Email']
+                fields: ['name', 'club_name (from rel_club)', 'email']
             })
             .all();
         
         membersData.total = memberRecords.length;
         
         memberRecords.forEach(record => {
-            const clubNames = record.get('club_name');
+            const clubNames = record.get('club_name (from rel_club)');
             const clubName = Array.isArray(clubNames) ? clubNames[0] : clubNames;
             
             if (clubName) {
@@ -154,17 +154,18 @@ export async function load({ locals }) {
     try {
         const shipRecords = await base('Club Ships')
             .select({
-                fields: ['YSWS–Name (from Unified YSWS Database)', 'code_url', 'member_name', 'club_name (from Clubs)']
+                fields: ['YSWS', 'Code URL', 'First Name', 'Last Name', 'club_name']
             })
             .all();
         
         shipsData.total = shipRecords.length;
         
         shipRecords.forEach(record => {
-            const clubNames = record.get('club_name (from Clubs)');
+            const clubNames = record.get('club_name');
             const clubName = Array.isArray(clubNames) ? clubNames[0] : (clubNames || 'Unknown');
-            const yswsNames = record.get('YSWS–Name (from Unified YSWS Database)');
+            const yswsNames = record.get('YSWS');
             const ysws = Array.isArray(yswsNames) ? yswsNames[0] : (yswsNames || 'Unknown');
+            const memberName = `${record.get('First Name') || ''} ${record.get('Last Name') || ''}`.trim() || 'Unknown';
             
             if (clubName) {
                 shipsData.byClub[clubName] = (shipsData.byClub[clubName] || 0) + 1;
@@ -175,8 +176,8 @@ export async function load({ locals }) {
             shipsData.recentShips.push({
                 name: ysws,
                 club: clubName,
-                memberName: record.get('member_name') || 'Unknown',
-                codeUrl: record.get('code_url')
+                memberName,
+                codeUrl: record.get('Code URL')
             });
         });
         
@@ -386,13 +387,13 @@ export const actions = {
         try {
             const memberRecords = await base('Members')
                 .select({
-                    fields: ['club_name']
+                    fields: ['club_name (from rel_club)']
                 })
                 .all();
             
             const clubStats = {};
             memberRecords.forEach(record => {
-                const clubNames = record.get('club_name');
+                const clubNames = record.get('club_name (from rel_club)');
                 const clubName = Array.isArray(clubNames) ? clubNames[0] : clubNames;
                 
                 if (clubName && clubName.toLowerCase().includes(query)) {
@@ -442,22 +443,22 @@ export const actions = {
         try {
             const memberRecords = await base('Members')
                 .select({
-                    fields: ['Name', 'club_name', 'Email']
+                    fields: ['name', 'club_name (from rel_club)', 'email']
                 })
                 .all();
             
             memberResults = memberRecords
                 .filter(record => {
-                    const name = record.get('Name')?.toLowerCase() || '';
-                    const email = record.get('Email')?.toLowerCase() || '';
+                    const name = record.get('name')?.toLowerCase() || '';
+                    const email = record.get('email')?.toLowerCase() || '';
                     return name.includes(query) || email.includes(query);
                 })
                 .slice(0, 20)
                 .map(record => {
-                    const clubNames = record.get('club_name');
+                    const clubNames = record.get('club_name (from rel_club)');
                     return {
-                        name: record.get('Name') || 'Unknown',
-                        email: record.get('Email') || 'N/A',
+                        name: record.get('name') || 'Unknown',
+                        email: record.get('email') || 'N/A',
                         club: Array.isArray(clubNames) ? clubNames[0] : (clubNames || 'N/A')
                     };
                 });

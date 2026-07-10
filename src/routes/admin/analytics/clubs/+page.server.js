@@ -11,12 +11,12 @@ export async function load({ locals }) {
     try {
         const memberRecords = await base('Members')
             .select({
-                fields: ['Name', 'club_name']
+                fields: ['name', 'club_name (from rel_club)']
             })
             .all();
 
         memberRecords.forEach(record => {
-            const clubNames = record.get('club_name');
+            const clubNames = record.get('club_name (from rel_club)');
             const clubName = Array.isArray(clubNames) ? clubNames[0] : (clubNames || 'Unknown');
             
             if (!clubData[clubName]) {
@@ -32,12 +32,12 @@ export async function load({ locals }) {
     try {
         const shipRecords = await base('Club Ships')
             .select({
-                fields: ['club_name (from Clubs)', 'YSWS–Name (from Unified YSWS Database)']
+                fields: ['club_name', 'YSWS']
             })
             .all();
 
         shipRecords.forEach(record => {
-            const clubNames = record.get('club_name (from Clubs)');
+            const clubNames = record.get('club_name');
             const clubName = Array.isArray(clubNames) ? clubNames[0] : (clubNames || 'Unknown');
             
             if (!clubData[clubName]) {

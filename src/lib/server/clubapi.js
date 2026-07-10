@@ -1,6 +1,30 @@
 import { env } from '$env/dynamic/private';
+import https from 'node:https';
 
-const CLUB_API_BASE = 'http://localhost:3000';
+const CLUB_API_BASE = 'https://lulw4ms8d44dpodchq4tvd6n.a.selfhosted.hackclub.com/';
+
+function fetchWithOptionalSelfSignedCert(url, headers) {
+	if (env.CLUB_API_ALLOW_SELF_SIGNED_CERTS !== 'true') {
+		return fetch(url, { headers });
+	}
+
+	return new Promise((resolve, reject) => {
+		const request = https.get(url, { headers, rejectUnauthorized: false }, (response) => {
+			const chunks = [];
+			response.on('data', (chunk) => chunks.push(chunk));
+			response.on('end', () => {
+				resolve(
+					new Response(Buffer.concat(chunks), {
+						status: response.statusCode,
+						statusText: response.statusMessage,
+						headers: response.headers
+					})
+				);
+			});
+		});
+		request.on('error', reject);
+	});
+}
 
 async function safeParseJson(response) {
 	const text = await response.text();
@@ -35,7 +59,7 @@ async function fetchClubApi(endpoint, params = {}) {
 	console.log('[ClubAPI] Has API key:', !!env.CLUB_API_KEY);
 
 	try {
-		const response = await fetch(url.toString(), { headers });
+		const response = await fetchWithOptionalSelfSignedCert(url, headers);
 		console.log('[ClubAPI] Response status:', response.status, response.statusText);
 		
 		if (!response.ok) {
@@ -156,9 +180,10 @@ export async function getClubShips(clubName, { throwOnError = false } = {}) {
 		console.log('[ClubAPI] getClubShips fetched', data.length, 'ships for club:', clubName);
 
 		return data.map((ship) => ({
-			ysws: ship.fields?.ysws || 'Unknown',
-			codeUrl: sanitizeUrl(ship.fields?.code_url),
-			email: ship.fields?.email || null
+			ysws: ship.fields?.YSWS || ship.YSWS || 'Unknown',
+			codeUrl: sanitizeUrl(ship.fields?.['Code URL'] || ship['Code URL']),
+			email: ship.fields?.Email || ship.Email || null,
+			hoursSpent: ship.fields?.['Hours Spent'] ?? ship['Hours Spent'] ?? null
 		}));
 	} catch (error) {
 		console.error(`Error fetching ships for club ${clubName}:`, error);
@@ -177,9 +202,10 @@ export async function getMemberShips(email) {
 		console.log('[ClubAPI] getMemberShips fetched', data.length, 'ships for email:', email);
 
 		return data.map((ship) => ({
-			ysws: ship.fields?.ysws || ship.ysws || 'Unknown',
-			codeUrl: sanitizeUrl(ship.fields?.code_url || ship.code_url),
-			email: ship.fields?.email || ship.email || null
+			ysws: ship.fields?.YSWS || ship.YSWS || 'Unknown',
+			codeUrl: sanitizeUrl(ship.fields?.['Code URL'] || ship['Code URL']),
+			email: ship.fields?.Email || ship.Email || null,
+			hoursSpent: ship.fields?.['Hours Spent'] ?? ship['Hours Spent'] ?? null
 		}));
 	} catch (error) {
 		console.error(`Error fetching ships for member ${email}:`, error);

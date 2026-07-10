@@ -1,7 +1,7 @@
 import { redirect, fail } from '@sveltejs/kit';
 import { getKnex } from '$lib/server/db/knex.js';
 import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clubs.js';
-import { deleteMember, sendAnnouncement, getMember, updateMember, createMember } from '$lib/server/clubapi.js';
+import { deleteMember, sendAnnouncement, getMember, updateMember, createMember, getMemberShips } from '$lib/server/clubapi.js';
 import { getClubLeaders, getColeaders } from '$lib/server/airtable.js';
 import { saveAnnouncement } from '$lib/server/announcements.js';
 
@@ -165,6 +165,44 @@ export const actions = {
 		} catch (error) {
 			console.error('[Members] Error getting member info:', error);
 			return fail(500, { error: 'Failed to get member info' });
+		}
+	},
+
+	getMemberDetails: async ({ request, locals, params }) => {
+		if (!locals.userPublic) {
+			throw redirect(302, '/auth/login');
+		}
+
+		const formData = await request.formData();
+		const memberName = formData.get('memberName');
+		const clubName = decodeURIComponent(params.club);
+
+		if (!memberName) {
+			return fail(400, { error: 'Missing member name' });
+		}
+
+		const knex = getKnex();
+		const user = await knex('users').where({ id: locals.userId }).first();
+		const effectiveEmail = getEffectiveEmailForUser(user);
+		const clubs = await getClubsForEmail(effectiveEmail);
+
+		const club = clubs.find(c => c.name === clubName);
+		if (!club) {
+			return fail(403, { error: 'You do not have access to this club' });
+		}
+
+		if (club.role !== 'leader') {
+			return fail(403, { error: 'Only club leaders can view member details' });
+		}
+
+		try {
+			const member = await getMember(memberName);
+			const email = member?.email || null;
+			const ships = email ? await getMemberShips(email) : [];
+			return { success: true, member: { name: member?.name || memberName, email }, ships };
+		} catch (error) {
+			console.error('[Members] Error getting member details:', error);
+			return fail(500, { error: 'Failed to get member details' });
 		}
 	},
 

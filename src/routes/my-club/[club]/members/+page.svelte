@@ -31,6 +31,51 @@
 	let newMemberEmail = $state('');
 	let isAdding = $state(false);
 
+	let showDetailsModal = $state(false);
+	let detailsMemberName = $state('');
+	let detailsMemberEmail = $state('');
+	let detailsShips = $state([]);
+	let isLoadingDetails = $state(false);
+
+	let detailsTotalHours = $derived(
+		detailsShips.reduce((sum, ship) => sum + (Number(ship.hoursSpent) || 0), 0)
+	);
+
+	async function openDetailsModal(memberName) {
+		detailsMemberName = memberName;
+		detailsMemberEmail = data.memberEmails?.[memberName] || '';
+		detailsShips = [];
+		isLoadingDetails = true;
+		showDetailsModal = true;
+
+		const formData = new FormData();
+		formData.append('memberName', memberName);
+
+		try {
+			const response = await fetch('?/getMemberDetails', {
+				method: 'POST',
+				body: formData
+			});
+			const result = deserialize(await response.text());
+			if (result.type === 'success' && result.data?.success) {
+				detailsMemberEmail = result.data.member?.email || detailsMemberEmail;
+				detailsShips = result.data.ships || [];
+			}
+		} catch (error) {
+			console.error('Error fetching member details:', error);
+		} finally {
+			isLoadingDetails = false;
+		}
+	}
+
+	function closeDetailsModal() {
+		showDetailsModal = false;
+		detailsMemberName = '';
+		detailsMemberEmail = '';
+		detailsShips = [];
+		isLoadingDetails = false;
+	}
+
 	function confirmRemove(event, memberName) {
 		if (!confirm(`Remove ${memberName} from the club?`)) {
 			event.preventDefault();
@@ -169,16 +214,24 @@
 					{#each club.members as member}
 						{#if !leaders.some(l => l.name.toLowerCase() === member.toLowerCase())}
 							<div class="member-card">
-								<div class="member-avatar">{member.charAt(0).toUpperCase()}</div>
-								<div class="member-info">
-									<span class="member-name">{member}</span>
-								</div>
 								{#if club.role === 'leader'}
+									<button type="button" class="member-clickable" title="View ships" onclick={() => openDetailsModal(member)}>
+										<div class="member-avatar">{member.charAt(0).toUpperCase()}</div>
+										<div class="member-info">
+											<span class="member-name">{member}</span>
+											<span class="member-subtext">View ships →</span>
+										</div>
+									</button>
 									<button type="button" class="edit-btn" title="Edit member" onclick={() => openEditModal(member)}>✎</button>
 									<form method="POST" action="?/removeMember" class="remove-form" onsubmit={(e) => confirmRemove(e, member)}>
 										<input type="hidden" name="memberName" value={member} />
 										<button type="submit" class="remove-btn" title="Remove member">×</button>
 									</form>
+								{:else}
+									<div class="member-avatar">{member.charAt(0).toUpperCase()}</div>
+									<div class="member-info">
+										<span class="member-name">{member}</span>
+									</div>
 								{/if}
 							</div>
 						{/if}
@@ -321,6 +374,57 @@
 	</div>
 {/if}
 
+{#if showDetailsModal}
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+	<div class="modal-overlay" role="dialog" aria-modal="true" tabindex="-1" onclick={closeDetailsModal} onkeydown={(e) => e.key === 'Escape' && closeDetailsModal()}>
+		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+		<div class="modal" role="document" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
+			<div class="modal-header">
+				<h3>{detailsMemberName}</h3>
+				<button type="button" class="modal-close" onclick={closeDetailsModal}>×</button>
+			</div>
+			<div class="modal-body">
+				<div class="detail-row">
+					<span class="detail-label">Email</span>
+					<span class="detail-value">{detailsMemberEmail || 'Not available'}</span>
+				</div>
+
+				<div class="detail-row detail-row-ships">
+					<span class="detail-label">Ships ({detailsShips.length})</span>
+					{#if detailsTotalHours > 0}
+						<span class="detail-total-hours">{detailsTotalHours} {detailsTotalHours === 1 ? 'hour' : 'hours'} total</span>
+					{/if}
+				</div>
+
+				{#if isLoadingDetails}
+					<div class="loading-text">Loading ships...</div>
+				{:else if detailsShips.length > 0}
+					<div class="ships-list">
+						{#each detailsShips as ship}
+							<div class="ship-item">
+								<span class="ship-detail">
+									<span class="ship-name">{ship.ysws}</span>
+									{#if ship.hoursSpent != null}
+										<span class="ship-hours">{ship.hoursSpent} {ship.hoursSpent === 1 ? 'hour' : 'hours'} spent</span>
+									{/if}
+								</span>
+								{#if ship.codeUrl}
+									<a href={ship.codeUrl} target="_blank" rel="noopener noreferrer" class="ship-link">View Code →</a>
+								{/if}
+							</div>
+						{/each}
+					</div>
+				{:else}
+					<div class="empty-ships">No ships yet.</div>
+				{/if}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="cancel-btn" onclick={closeDetailsModal}>Close</button>
+			</div>
+		</div>
+	</div>
+{/if}
+
 <style>
 	.container {
 		max-width: 1024px;
@@ -436,6 +540,28 @@
 		flex-shrink: 0;
 	}
 
+	.member-clickable {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex: 1;
+		min-width: 0;
+		padding: 0;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		text-align: left;
+		font-family: 'Phantom Sans', sans-serif;
+	}
+
+	.member-subtext {
+		display: block;
+		font-size: 12px;
+		font-weight: 600;
+		color: #338eda;
+		margin-top: 2px;
+	}
+
 	.member-info {
 		flex: 1;
 		min-width: 0;
@@ -532,7 +658,14 @@
 		border-radius: 12px;
 		width: 90%;
 		max-width: 500px;
+		max-height: 90vh;
+		display: flex;
+		flex-direction: column;
 		border: 2px solid var(--color-border);
+	}
+
+	.modal-body {
+		overflow-y: auto;
 	}
 
 	.modal-header {
@@ -609,6 +742,97 @@
 		color: var(--color-muted);
 		font-size: 14px;
 		margin-bottom: 16px;
+	}
+
+	.detail-row {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		margin-bottom: 16px;
+	}
+
+	.detail-row-ships {
+		flex-direction: row;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 16px;
+	}
+
+	.detail-total-hours {
+		font-size: 14px;
+		font-weight: 600;
+		color: #33d6a6;
+		white-space: nowrap;
+	}
+
+	.detail-label {
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--color-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+	}
+
+	.detail-value {
+		font-size: 15px;
+		color: var(--color-text);
+		word-break: break-all;
+	}
+
+	.ships-list {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.ship-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 12px 14px;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
+		border-radius: 8px;
+	}
+
+	.ship-detail {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
+
+	.ship-name {
+		font-size: 14px;
+		font-weight: 600;
+		color: var(--color-text);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.ship-hours {
+		font-size: 13px;
+		color: var(--color-muted);
+	}
+
+	.ship-link {
+		font-size: 13px;
+		color: #ec3750;
+		text-decoration: none;
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.ship-link:hover {
+		text-decoration: underline;
+	}
+
+	.empty-ships {
+		color: var(--color-muted);
+		font-size: 14px;
+		padding: 12px 0;
 	}
 
 	.modal-footer {

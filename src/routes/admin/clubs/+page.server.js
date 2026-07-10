@@ -13,14 +13,14 @@ export async function load({ locals }) {
     try {
         const memberRecords = await base('Members')
             .select({
-                fields: ['Name', 'club_name', 'Email']
+                fields: ['name', 'club_name (from rel_club)', 'email']
             })
             .all();
         
         totalMembers = memberRecords.length;
         
         memberRecords.forEach(record => {
-            const clubNames = record.get('club_name');
+            const clubNames = record.get('club_name (from rel_club)');
             const clubName = Array.isArray(clubNames) ? clubNames[0] : clubNames;
             
             if (clubName) {
@@ -36,8 +36,8 @@ export async function load({ locals }) {
                 }
                 clubsData[clubName].memberCount++;
                 clubsData[clubName].members.push({
-                    name: record.get('Name'),
-                    email: record.get('Email')
+                    name: record.get('name'),
+                    email: record.get('email')
                 });
             }
         });
@@ -48,24 +48,25 @@ export async function load({ locals }) {
     try {
         const shipRecords = await base('Club Ships')
             .select({
-                fields: ['YSWS–Name (from Unified YSWS Database)', 'code_url', 'member_name', 'club_name (from Clubs)']
+                fields: ['YSWS', 'Code URL', 'First Name', 'Last Name', 'club_name']
             })
             .all();
         
         totalShips = shipRecords.length;
         
         shipRecords.forEach(record => {
-            const clubNames = record.get('club_name (from Clubs)');
+            const clubNames = record.get('club_name');
             const clubName = Array.isArray(clubNames) ? clubNames[0] : (clubNames || 'Unknown');
-            const yswsNames = record.get('YSWS–Name (from Unified YSWS Database)');
+            const yswsNames = record.get('YSWS');
             const ysws = Array.isArray(yswsNames) ? yswsNames[0] : (yswsNames || 'Unknown');
+            const memberName = `${record.get('First Name') || ''} ${record.get('Last Name') || ''}`.trim() || null;
             
             if (clubName && clubsData[clubName]) {
                 clubsData[clubName].shipCount++;
                 clubsData[clubName].ships.push({
                     ysws,
-                    memberName: record.get('member_name'),
-                    codeUrl: record.get('code_url')
+                    memberName,
+                    codeUrl: record.get('Code URL')
                 });
                 
                 clubsData[clubName].yswsStats[ysws] = (clubsData[clubName].yswsStats[ysws] || 0) + 1;
@@ -77,8 +78,8 @@ export async function load({ locals }) {
                     members: [],
                     ships: [{
                         ysws,
-                        memberName: record.get('member_name'),
-                        codeUrl: record.get('code_url')
+                        memberName,
+                        codeUrl: record.get('Code URL')
                     }],
                     yswsStats: { [ysws]: 1 }
                 };
@@ -127,12 +128,12 @@ export const actions = {
         try {
             const memberRecords = await base('Members')
                 .select({
-                    fields: ['club_name']
+                    fields: ['club_name (from rel_club)']
                 })
                 .all();
             
             memberRecords.forEach(record => {
-                const clubNames = record.get('club_name');
+                const clubNames = record.get('club_name (from rel_club)');
                 const clubName = Array.isArray(clubNames) ? clubNames[0] : clubNames;
                 
                 if (clubName && clubName.toLowerCase().includes(query)) {
@@ -145,12 +146,12 @@ export const actions = {
             
             const shipRecords = await base('Club Ships')
                 .select({
-                    fields: ['club_name (from Clubs)']
+                    fields: ['club_name']
                 })
                 .all();
             
             shipRecords.forEach(record => {
-                const clubNames = record.get('club_name (from Clubs)');
+                const clubNames = record.get('club_name');
                 const clubName = Array.isArray(clubNames) ? clubNames[0] : clubNames;
                 
                 if (clubName && clubStats[clubName]) {
