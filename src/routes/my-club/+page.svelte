@@ -267,9 +267,11 @@
 							<span class="stat-number">{club.ships?.length || 0}</span>
 							<span class="stat-label">Ships</span>
 						</a>
-						<a href="/my-club/{encodeURIComponent(club.name)}/levels" class="stat-card">
-							<span class="stat-number">{(club.level || 'level 1').replace('level ', '')}</span>
-							<span class="stat-label">Club Level</span>
+						<a href="/my-club/{encodeURIComponent(club.name)}/ships" class="stat-card">
+							<span class="stat-number">
+								{(club.ships ?? []).reduce((sum, ship) => sum + (Number(ship.hoursSpent) || 0), 0)}
+							</span>
+							<span class="stat-label">Hours Shipped</span>
 						</a>
 					</div>
 

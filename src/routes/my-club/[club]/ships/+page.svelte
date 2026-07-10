@@ -1,5 +1,4 @@
 <script>
-	import LevelCard from '$lib/LevelCard.svelte';
 	import RefreshButton from '$lib/RefreshButton.svelte';
 	import SiteNav from '$lib/SiteNav.svelte';
 	import ClubHeader from '$lib/ClubHeader.svelte';
