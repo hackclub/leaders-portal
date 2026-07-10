@@ -11,6 +11,33 @@
 	function handleRefresh(refreshedClub) {
 		club = mergeClubData(club, refreshedClub);
 	}
+
+	let totalHours = $derived(
+		(club.ships ?? []).reduce((sum, ship) => sum + (Number(ship.hoursSpent) || 0), 0)
+	);
+
+	let groupedShips = $derived.by(() => {
+		const groups = new Map();
+		for (const ship of club.ships ?? []) {
+			const key = ship.ysws || 'Other';
+			if (!groups.has(key)) groups.set(key, []);
+			groups.get(key).push(ship);
+		}
+		return [...groups.entries()]
+			.sort((a, b) => a[0].localeCompare(b[0]))
+			.map(([ysws, ships]) => ({
+				ysws,
+				ships,
+				hours: ships.reduce((sum, ship) => sum + (Number(ship.hoursSpent) || 0), 0)
+			}));
+	});
+
+	let expanded = $state({});
+
+	function toggleGroup(event, ysws) {
+		expanded[ysws] = !expanded[ysws];
+		event.currentTarget.blur();
+	}
 </script>
 
 <svelte:head>
@@ -27,19 +54,46 @@
 
 
 	<section class="ships-section">
-		<h2 class="section-title">All Ships ({club.ships.length})</h2>
+		<div class="section-header">
+			<h2 class="section-title">All Ships ({club.ships.length})</h2>
+
+		</div>
 		
 		{#if club.ships && club.ships.length > 0}
-			<div class="ships-grid">
-				{#each club.ships as ship}
-					<div class="ship-card">
-						<div class="ship-info">
-							<span class="ship-name">{ship.ysws} - {ship.email}</span>
-						</div>
-						{#if ship.codeUrl}
-							<a href={ship.codeUrl} target="_blank" rel="noopener noreferrer" class="ship-link">
-								View Code →
-							</a>
+			<div class="ysws-groups">
+				{#each groupedShips as group}
+					<div class="ysws-group">
+						<button
+							type="button"
+							class="ysws-header"
+							aria-expanded={!!expanded[group.ysws]}
+							onclick={(event) => toggleGroup(event, group.ysws)}
+						>
+							<span class="ysws-toggle" class:collapsed={!expanded[group.ysws]}>▾</span>
+							<span class="ysws-title">{group.ysws}</span>
+							{#if group.hours > 0}
+								<span class="ysws-hours">{group.hours} {group.hours === 1 ? 'hour' : 'hours'}</span>
+							{/if}
+							<span class="ysws-count">{group.ships.length}</span>
+						</button>
+						{#if expanded[group.ysws]}
+							<div class="ships-grid">
+								{#each group.ships as ship}
+									<div class="ship-card">
+										<div class="ship-info">
+											<span class="ship-name">{ship.email}</span>
+											{#if ship.hoursSpent != null}
+												<span class="ship-hours">{ship.hoursSpent} {ship.hoursSpent === 1 ? 'hour' : 'hours'} spent</span>
+											{/if}
+										</div>
+										{#if ship.codeUrl}
+											<a href={ship.codeUrl} target="_blank" rel="noopener noreferrer" class="ship-link">
+												View Code →
+											</a>
+										{/if}
+									</div>
+								{/each}
+							</div>
 						{/if}
 					</div>
 				{/each}
@@ -111,11 +165,90 @@
 		border-color: #d62c47;
 	}
 
+	.section-header {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 16px;
+		margin: 0 0 16px 0;
+	}
+
 	.section-title {
 		font-size: 20px;
 		font-weight: 600;
 		color: var(--color-text);
-		margin: 0 0 16px 0;
+		margin: 0;
+	}
+
+	.total-hours {
+		font-size: 15px;
+		font-weight: 600;
+		color: #33d6a6;
+		white-space: nowrap;
+	}
+
+	.ysws-groups {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.ysws-group {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.ysws-header {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		width: 100%;
+		padding: 12px 16px;
+		background: var(--bg-sunken);
+		border: 2px solid var(--color-border);
+		border-radius: 8px;
+		cursor: pointer;
+		font-family: 'Phantom Sans', system-ui, sans-serif;
+		text-align: left;
+	}
+
+	.ysws-header:hover {
+		border-color: #ec3750;
+	}
+
+	.ysws-toggle {
+		font-size: 14px;
+		color: var(--color-muted);
+		transition: transform 0.15s ease;
+	}
+
+	.ysws-toggle.collapsed {
+		transform: rotate(-90deg);
+	}
+
+	.ysws-title {
+		flex: 1;
+		font-size: 16px;
+		font-weight: 600;
+		color: var(--color-text);
+	}
+
+	.ysws-hours {
+		font-size: 13px;
+		font-weight: 600;
+		color: #33d6a6;
+		white-space: nowrap;
+	}
+
+	.ysws-count {
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--color-muted);
+		background: var(--bg-card);
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+		padding: 2px 10px;
 	}
 
 	.ships-grid {
@@ -165,6 +298,11 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.ship-hours {
+		font-size: 14px;
+		color: var(--color-muted);
 	}
 
 	.ship-link {

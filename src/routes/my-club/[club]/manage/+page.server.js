@@ -2,7 +2,7 @@ import { redirect, fail } from '@sveltejs/kit';
 import { getKnex } from '$lib/server/db/knex.js';
 import { getClubsForEmail, getEffectiveEmailForUser } from '$lib/server/sync-clubs.js';
 import { getClubSettings, updateClubSettings, updateMapSettings } from '$lib/server/airtable.js';
-import { invalidateClubCache } from '$lib/server/club-cache.js';
+import { invalidateClubCache, invalidateLeaderCache } from '$lib/server/club-cache.js';
 import { getJoinPageColors, updateJoinPageColors } from '$lib/server/club-join-colors.js';
 
 export async function load({ locals, params }) {
@@ -73,11 +73,6 @@ export const actions = {
 			updates['club_status'] = clubStatus;
 		}
 
-		const venueType = formData.get('venue_type')?.toString();
-		if (venueType !== undefined) {
-			updates['venue_type'] = venueType;
-		}
-
 		const venueName = formData.get('venue_name')?.toString().trim();
 		if (venueName !== undefined) {
 			updates['venue_name'] = venueName;
@@ -108,22 +103,6 @@ export const actions = {
 			updates['venue_address_zip'] = venueAddressZip;
 		}
 
-		const estAttendees = formData.get('est_attendees')?.toString().trim();
-		if (estAttendees !== undefined) {
-			updates['Est. # of Attendees'] = Number(estAttendees);
-		}
-
-		const callMeetingDays = formData.getAll('call_meeting_days').map(v => v.toString());
-		updates['call_meeting_days'] = callMeetingDays;
-
-		const callMeetingLength = formData.get('call_meeting_length')?.toString();
-		if (callMeetingLength !== undefined) {
-			updates['call_meeting_length'] = callMeetingLength;
-		}
-
-		const callClubIntrest = formData.getAll('call_club_intrest').map(v => v.toString());
-		updates['call_club_intrest'] = callClubIntrest;
-
 		const clubWebsite = formData.get('club_website')?.toString().trim();
 		if (clubWebsite !== undefined) {
 			updates['club_website'] = clubWebsite;
@@ -138,6 +117,13 @@ export const actions = {
 			await invalidateClubCache(clubName);
 			
 			if (updates['club_name']) {
+				// Renaming changes the club_name key used by both caches. The old
+				// club_cache row was just invalidated, but the leader's club list
+				// cache still references the old name (1h TTL), which would 404 the
+				// new manage page and show a stale/broken club on /my-club. Drop the
+				// leader cache so the list re-fetches with the new name.
+				await invalidateLeaderCache(effectiveEmail);
+				await invalidateClubCache(updates['club_name']);
 				throw redirect(302, `/my-club/${encodeURIComponent(updates['club_name'])}/manage?success=1`);
 			}
 			

@@ -14,17 +14,17 @@ export async function load({ locals }) {
     try {
         const records = await base('Club Ships')
             .select({
-                fields: ['YSWS–Name (from Unified YSWS Database)', 'code_url', 'member_name', 'club_name (from Clubs)']
+                fields: ['YSWS', 'Code URL', 'First Name', 'Last Name', 'club_name']
             })
             .all();
 
         records.forEach(record => {
-            const clubNames = record.get('club_name (from Clubs)');
+            const clubNames = record.get('club_name');
             const clubName = Array.isArray(clubNames) ? clubNames[0] : (clubNames || 'Unknown');
-            const yswsNames = record.get('YSWS–Name (from Unified YSWS Database)');
+            const yswsNames = record.get('YSWS');
             const ysws = Array.isArray(yswsNames) ? yswsNames[0] : (yswsNames || 'Unknown');
-            const memberName = record.get('member_name') || 'Unknown';
-            const codeUrl = record.get('code_url') || null;
+            const memberName = `${record.get('First Name') || ''} ${record.get('Last Name') || ''}`.trim() || 'Unknown';
+            const codeUrl = record.get('Code URL') || null;
 
             allShips.push({
                 ysws,

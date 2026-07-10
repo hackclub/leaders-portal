@@ -18,7 +18,7 @@ const SESSION_COOKIE = 'sid';
 export async function POST({ request, cookies, getClientAddress }) {
 	const ip = getClientAddress();
 
-	const ipCheck = await checkIpRateLimit(ip);
+	const ipCheck = await checkIpRateLimit(ip, 'verify');
 	if (!ipCheck.allowed) {
 		const retryAfter = ipCheck.retryAfter || 1800;
 		return json(
@@ -33,7 +33,7 @@ export async function POST({ request, cookies, getClientAddress }) {
 		return json({ error: 'Email and code are required' }, { status: 400 });
 	}
 
-	const emailCheck = await checkEmailRateLimit(email);
+	const emailCheck = await checkEmailRateLimit(email, 'verify');
 	if (!emailCheck.allowed) {
 		const retryAfter = emailCheck.retryAfter || 1800;
 		return json(
@@ -47,8 +47,8 @@ export async function POST({ request, cookies, getClientAddress }) {
 	const isValid = await verifyOTP(knex, email, code);
 
 	if (!isValid) {
-		await recordIpAttempt(ip);
-		await recordEmailAttempt(email);
+		await recordIpAttempt(ip, 'verify');
+		await recordEmailAttempt(email, 'verify');
 		return json({ error: 'Invalid or expired OTP code' }, { status: 401 });
 	}
 
@@ -60,8 +60,10 @@ export async function POST({ request, cookies, getClientAddress }) {
 		return json({ error: 'Your club is marked as Dormant. Please contact Hack Club HQ to reactivate your club.' }, { status: 403 });
 	}
 
-	await resetRateLimit(`ip:${ip}`);
-	await resetRateLimit(`email:${email.toLowerCase()}`);
+	await resetRateLimit(`verify:ip:${ip}`);
+	await resetRateLimit(`verify:email:${email.toLowerCase()}`);
+	await resetRateLimit(`request:ip:${ip}`);
+	await resetRateLimit(`request:email:${email.toLowerCase()}`);
 
 	let user = await knex('users')
 		.where({ provider: 'email', provider_user_id: email })

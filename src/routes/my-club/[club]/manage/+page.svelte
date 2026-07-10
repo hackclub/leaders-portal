@@ -13,17 +13,12 @@
 	
 	let clubName = $state(settings?.clubName || '');
 	let clubStatus = $state(settings?.clubStatus || '');
-	let venueType = $state(settings?.venueType || '');
 	let venueName = $state(settings?.venueName || '');
 	let venueAddressLine1 = $state(settings?.venueAddressLine1 || '');
 	let venueAddressCity = $state(settings?.venueAddressCity || '');
 	let venueAddressState = $state(settings?.venueAddressState || '');
 	let venueAddressCountry = $state(settings?.venueAddressCountry || '');
 	let venueAddressZip = $state(settings?.venueAddressZip || '');
-	let estAttendees = $state(settings?.estAttendees || '');
-	let callMeetingDays = $state(settings?.callMeetingDays || []);
-	let callMeetingLength = $state(settings?.callMeetingLength || '');
-	let callClubIntrest = $state(settings?.callClubIntrest || []);
 	let clubWebsite = $state(settings?.clubWebsite || '');
 	
 	function getClubSlug(name) {
@@ -48,27 +43,7 @@
 		buttonColor = '#ec3750';
 	}
 
-	const venueTypeOptions = ['School/College', 'Makerspace', 'Online', 'Other'];
-	const meetingDayOptions = ['Undecided', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-	const meetingLengthOptions = ['Undecided', '30min', '45min', '60min', '90min', '120+min'];
-	const clubInterestOptions = ['Web Dev', 'Game Dev', 'CAD', 'Hardware', 'Hackathons', 'Other', 'Mobile App Dev, and Arduino'];
 	const isActive = settings?.clubStatus === 'Active';
-	
-	function toggleMeetingDay(day) {
-		if (callMeetingDays.includes(day)) {
-			callMeetingDays = callMeetingDays.filter(d => d !== day);
-		} else {
-			callMeetingDays = [...callMeetingDays, day];
-		}
-	}
-
-	function toggleInterest(interest) {
-		if (callClubIntrest.includes(interest)) {
-			callClubIntrest = callClubIntrest.filter(i => i !== interest);
-		} else {
-			callClubIntrest = [...callClubIntrest, interest];
-		}
-	}
 	
 	function handleStatusChange(e) {
 		const newStatus = e.target.value;
@@ -167,86 +142,7 @@
 					{/if}
 				</div>
 
-				<div class="form-group">
-					<label for="est_attendees">Estimated # of Attendees</label>
-					<input 
-						type="text" 
-						id="est_attendees" 
-						name="est_attendees" 
-						bind:value={estAttendees}
-						placeholder="e.g., 15-20"
-					/>
-				</div>
-
-				<h3>Meeting Preferences</h3>
-
-				<div class="form-group">
-					<label>Meeting Days</label>
-					<p class="field-hint">Select all that apply</p>
-					<div class="checkbox-group">
-						{#each meetingDayOptions as day}
-							<label class="checkbox-label">
-								<input 
-									type="checkbox" 
-									name="call_meeting_days"
-									value={day}
-									checked={callMeetingDays.includes(day)}
-									onchange={() => toggleMeetingDay(day)}
-								/>
-								<span class="checkbox-text">{day}</span>
-							</label>
-						{/each}
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label for="call_meeting_length">Meeting Length</label>
-					<select 
-						id="call_meeting_length" 
-						name="call_meeting_length" 
-						bind:value={callMeetingLength}
-					>
-						<option value="">Select meeting length...</option>
-						{#each meetingLengthOptions as option}
-							<option value={option}>{option}</option>
-						{/each}
-					</select>
-				</div>
-
-				<div class="form-group">
-					<label>Club Interests</label>
-					<p class="field-hint">Select all that apply</p>
-					<div class="checkbox-group">
-						{#each clubInterestOptions as interest}
-							<label class="checkbox-label">
-								<input 
-									type="checkbox" 
-									name="call_club_intrest"
-									value={interest}
-									checked={callClubIntrest.includes(interest)}
-									onchange={() => toggleInterest(interest)}
-								/>
-								<span class="checkbox-text">{interest}</span>
-							</label>
-						{/each}
-					</div>
-				</div>
-
 				<h3>Venue Information</h3>
-
-				<div class="form-group">
-					<label for="venue_type">Venue Type</label>
-					<select 
-						id="venue_type" 
-						name="venue_type" 
-						bind:value={venueType}
-					>
-						<option value="">Select venue type...</option>
-						{#each venueTypeOptions as option}
-							<option value={option}>{option}</option>
-						{/each}
-					</select>
-				</div>
 
 				<div class="form-group">
 					<label for="venue_name">Venue Name</label>
@@ -382,17 +278,29 @@
 
 				<div class="form-group">
 					<label for="fuzz">Location Offset: {fuzz}</label>
-					<input 
-						type="range" 
-						id="fuzz" 
-						name="fuzz" 
-						bind:value={fuzz}
-						min="-0.5"
-						max="0.5"
-						step="0.01"
-						disabled={optedOut}
-					/>
-					<p class="field-hint">Add a small offset to your exact location for privacy.</p>
+					<div class="fuzz-controls">
+						<input 
+							type="range" 
+							id="fuzz" 
+							name="fuzz" 
+							bind:value={fuzz}
+							min="-0.5"
+							max="0.5"
+							step="0.01"
+							disabled={optedOut}
+						/>
+						<input 
+							type="number" 
+							class="fuzz-number"
+							aria-label="Location offset value"
+							bind:value={fuzz}
+							min="-0.5"
+							max="0.5"
+							step="0.01"
+							disabled={optedOut}
+						/>
+					</div>
+					<p class="field-hint">Add a small offset to your exact location for privacy. Use the slider or enter a value between -0.5 and 0.5.</p>
 				</div>
 
 				{#if latitude && longitude && !optedOut}
@@ -627,6 +535,21 @@
 	.form-group input[type="range"]:disabled {
 		cursor: not-allowed;
 		opacity: 0.5;
+	}
+
+	.fuzz-controls {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.fuzz-controls input[type="range"] {
+		flex: 1;
+	}
+
+	.fuzz-controls .fuzz-number {
+		width: 90px;
+		flex: none;
 	}
 
 	.disabled-input {

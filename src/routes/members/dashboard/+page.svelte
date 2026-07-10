@@ -21,6 +21,10 @@
 
 	let inboxOpen = $state(false);
 
+	const SHIPS_PREVIEW_COUNT = 3;
+	let shipsExpanded = $state(false);
+	let visibleShips = $derived(shipsExpanded ? ships : ships.slice(0, SHIPS_PREVIEW_COUNT));
+
 	function isToday(value) {
 		const date = new Date(value);
 		if (isNaN(date.getTime())) return false;
@@ -214,7 +218,6 @@
 				</ul>
 			{:else}
 				<div class="empty">
-					<span class="empty-icon">📅</span>
 					<p class="empty-text">No upcoming events. Your club leader's scheduled events will show up here.</p>
 				</div>
 			{/if}
@@ -236,7 +239,6 @@
 				</ul>
 			{:else}
 				<div class="empty">
-					<span class="empty-icon">📣</span>
 					<p class="empty-text">No announcements yet. Your club leader's announcements will show up here.</p>
 				</div>
 			{/if}
@@ -249,15 +251,25 @@
 			</header>
 			{#if ships.length > 0}
 				<ul class="ship-list">
-					{#each ships as ship}
+					{#each visibleShips as ship}
 						<li class="ship-item">
-							<span class="ship-name">{ship.ysws}</span>
+							<span class="ship-detail">
+								<span class="ship-name">{ship.ysws}</span>
+								{#if ship.hoursSpent != null}
+									<span class="ship-hours">{ship.hoursSpent} {ship.hoursSpent === 1 ? 'hour' : 'hours'} spent</span>
+								{/if}
+							</span>
 							{#if ship.codeUrl}
 								<a class="ship-link" href={ship.codeUrl} target="_blank" rel="noopener noreferrer">View code →</a>
 							{/if}
 						</li>
 					{/each}
 				</ul>
+				{#if ships.length > SHIPS_PREVIEW_COUNT}
+					<button class="ship-toggle" type="button" onclick={() => (shipsExpanded = !shipsExpanded)}>
+						{shipsExpanded ? 'Show less' : `Show all ${ships.length} ships`}
+					</button>
+				{/if}
 			{:else}
 				<div class="empty">
 					<span class="empty-icon">🚀</span>
@@ -289,7 +301,6 @@
 				</dl>
 			{:else}
 				<div class="empty">
-					<span class="empty-icon">🏷️</span>
 					<p class="empty-text">No club info available yet.</p>
 				</div>
 			{/if}
@@ -826,10 +837,22 @@
 		transform: scale(1.01);
 	}
 
+	.ship-detail {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
+
 	.ship-name {
 		font-size: 15px;
 		font-weight: 600;
 		color: var(--color-text);
+	}
+
+	.ship-hours {
+		font-size: 13px;
+		color: var(--color-muted);
 	}
 
 	.ship-link {
@@ -842,6 +865,25 @@
 
 	.ship-link:hover {
 		text-decoration: underline;
+	}
+
+	.ship-toggle {
+		margin-top: 12px;
+		width: 100%;
+		padding: 8px 14px;
+		background: transparent;
+		border: 1px solid var(--color-border);
+		border-radius: 8px;
+		font-size: 14px;
+		font-weight: 600;
+		color: #33d6a6;
+		cursor: pointer;
+		transition: border-color 0.15s, background 0.15s;
+	}
+
+	.ship-toggle:hover {
+		border-color: #33d6a6;
+		background: var(--bg-sunken);
 	}
 
 	.announcement-list {

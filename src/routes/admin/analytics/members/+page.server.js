@@ -12,15 +12,15 @@ export async function load({ locals }) {
     try {
         const records = await base('Members')
             .select({
-                fields: ['Name', 'club_name', 'Email']
+                fields: ['name', 'club_name (from rel_club)', 'email']
             })
             .all();
 
         records.forEach(record => {
-            const clubNames = record.get('club_name');
+            const clubNames = record.get('club_name (from rel_club)');
             const clubName = Array.isArray(clubNames) ? clubNames[0] : (clubNames || 'Unknown');
-            const name = record.get('Name') || 'Unknown';
-            const email = record.get('Email') || null;
+            const name = record.get('name') || 'Unknown';
+            const email = record.get('email') || null;
 
             allMembers.push({
                 name,

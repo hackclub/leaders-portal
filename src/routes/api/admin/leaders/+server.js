@@ -17,7 +17,7 @@ export async function POST({ request, locals }) {
         const records = await base('Leaders').create([
             {
                 fields: {
-                    'rel_leader_to_clubs': [clubId]
+                    'rel_clubs': [clubId]
                 }
             }
         ]);
