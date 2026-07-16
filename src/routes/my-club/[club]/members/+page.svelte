@@ -2,7 +2,7 @@
 	import RefreshButton from '$lib/RefreshButton.svelte';
 	import SiteNav from '$lib/SiteNav.svelte';
 	import ClubHeader from '$lib/ClubHeader.svelte';
-	import { mergeClubData } from '$lib/club-utils.js';
+	import { formatShipHours, mergeClubData } from '$lib/club-utils.js';
 	import { deserialize } from '$app/forms';
 	
 	let { data, form } = $props();
@@ -392,7 +392,7 @@
 				<div class="detail-row detail-row-ships">
 					<span class="detail-label">Ships ({detailsShips.length})</span>
 					{#if detailsTotalHours > 0}
-						<span class="detail-total-hours">{detailsTotalHours} {detailsTotalHours === 1 ? 'hour' : 'hours'} total</span>
+						<span class="detail-total-hours">{formatShipHours(detailsTotalHours)} {detailsTotalHours === 1 ? 'hour' : 'hours'} total</span>
 					{/if}
 				</div>
 
@@ -405,7 +405,7 @@
 								<span class="ship-detail">
 									<span class="ship-name">{ship.ysws}</span>
 									{#if ship.hoursSpent != null}
-										<span class="ship-hours">{ship.hoursSpent} {ship.hoursSpent === 1 ? 'hour' : 'hours'} spent</span>
+										<span class="ship-hours">{formatShipHours(ship.hoursSpent)} {Number(ship.hoursSpent) === 1 ? 'hour' : 'hours'} spent</span>
 									{/if}
 								</span>
 								{#if ship.codeUrl}

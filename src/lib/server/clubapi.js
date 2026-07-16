@@ -433,7 +433,12 @@ export async function getClubsForLeaderEmail(email, { throwOnError = false } = {
 					description: null,
 					location: clubInfo?.fields?.venue_address_country || clubInfo?.venue_address_country || null,
 					role: 'leader',
-					joinCode: clubInfo?.fields?.['Join Code'] || clubInfo?.['Join Code'] || null
+					joinCode:
+						clubInfo?.fields?.join_code ||
+						clubInfo?.join_code ||
+						clubInfo?.fields?.['Join Code'] ||
+						clubInfo?.['Join Code'] ||
+						null
 				};
 			})
 		);

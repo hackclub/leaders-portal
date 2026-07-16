@@ -4,6 +4,7 @@
 	import ClubCalendar from '$lib/ClubCalendar.svelte';
 	import ClubChat from '$lib/ClubChat.svelte';
 	import Modal from '$lib/Modal.svelte';
+	import { formatShipHours } from '$lib/club-utils.js';
 
 	let { data } = $props();
 
@@ -256,7 +257,7 @@
 							<span class="ship-detail">
 								<span class="ship-name">{ship.ysws}</span>
 								{#if ship.hoursSpent != null}
-									<span class="ship-hours">{ship.hoursSpent} {ship.hoursSpent === 1 ? 'hour' : 'hours'} spent</span>
+									<span class="ship-hours">{formatShipHours(ship.hoursSpent)} {Number(ship.hoursSpent) === 1 ? 'hour' : 'hours'} spent</span>
 								{/if}
 							</span>
 							{#if ship.codeUrl}

@@ -4,7 +4,7 @@
 	import ClubCalendar from '$lib/ClubCalendar.svelte';
 	import ClubChat from '$lib/ClubChat.svelte';
 	import SiteNav from '$lib/SiteNav.svelte';
-	import { mergeClubData } from '$lib/club-utils.js';
+	import { formatShipHours, mergeClubData } from '$lib/club-utils.js';
 	import { onMount } from 'svelte';
 	
 	let { data, form } = $props();
@@ -269,7 +269,7 @@
 						</a>
 						<a href="/my-club/{encodeURIComponent(club.name)}/ships" class="stat-card">
 							<span class="stat-number">
-								{(club.ships ?? []).reduce((sum, ship) => sum + (Number(ship.hoursSpent) || 0), 0)}
+								{formatShipHours((club.ships ?? []).reduce((sum, ship) => sum + (Number(ship.hoursSpent) || 0), 0))}
 							</span>
 							<span class="stat-label">Hours Shipped</span>
 						</a>

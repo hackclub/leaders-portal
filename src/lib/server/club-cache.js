@@ -130,7 +130,12 @@ export async function refreshClubFromApi(clubName) {
 		clubId: clubInfo?.id || clubInfo?.fields?.id || null,
 		level: level || clubInfo?.fields?.level || clubInfo?.level || null,
 		location: clubInfo?.fields?.venue_address_country || clubInfo?.venue_address_country || null,
-		joinCode: clubInfo?.fields?.['Join Code'] || clubInfo?.['Join Code'] || null,
+		joinCode:
+			clubInfo?.fields?.join_code ||
+			clubInfo?.join_code ||
+			clubInfo?.fields?.['Join Code'] ||
+			clubInfo?.['Join Code'] ||
+			null,
 		ships: ships || [],
 		members: members || []
 	};

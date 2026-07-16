@@ -16,3 +16,7 @@ export function mergeClubData(currentClub, refreshedClub) {
 		role: currentClub.role
 	};
 }
+
+export function formatShipHours(hours) {
+	return Number(hours).toFixed(1);
+}

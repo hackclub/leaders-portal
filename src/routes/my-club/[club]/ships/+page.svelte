@@ -2,7 +2,7 @@
 	import RefreshButton from '$lib/RefreshButton.svelte';
 	import SiteNav from '$lib/SiteNav.svelte';
 	import ClubHeader from '$lib/ClubHeader.svelte';
-	import { mergeClubData } from '$lib/club-utils.js';
+	import { formatShipHours, mergeClubData } from '$lib/club-utils.js';
 	
 	let { data } = $props();
 	let club = $state(data.club);
@@ -71,7 +71,7 @@
 							<span class="ysws-toggle" class:collapsed={!expanded[group.ysws]}>▾</span>
 							<span class="ysws-title">{group.ysws}</span>
 							{#if group.hours > 0}
-								<span class="ysws-hours">{group.hours} {group.hours === 1 ? 'hour' : 'hours'}</span>
+								<span class="ysws-hours">{formatShipHours(group.hours)} {group.hours === 1 ? 'hour' : 'hours'}</span>
 							{/if}
 							<span class="ysws-count">{group.ships.length}</span>
 						</button>
@@ -82,7 +82,7 @@
 										<div class="ship-info">
 											<span class="ship-name">{ship.email}</span>
 											{#if ship.hoursSpent != null}
-												<span class="ship-hours">{ship.hoursSpent} {ship.hoursSpent === 1 ? 'hour' : 'hours'} spent</span>
+												<span class="ship-hours">{formatShipHours(ship.hoursSpent)} {Number(ship.hoursSpent) === 1 ? 'hour' : 'hours'} spent</span>
 											{/if}
 										</div>
 										{#if ship.codeUrl}
